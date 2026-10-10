@@ -31,5 +31,5 @@
 - Mobile: open viewer dock covers much of the 3D viewport (collapsed by default).
 
 ## Next
-- 15:33: user asked to push branch `francesco` (not only `francesco-voice`). HTTPS GitHub still has no username.
+- 15:33: pushed `francesco` to origin. HEAD `30a9508` matches `origin/francesco`. Local `francesco-voice` remains at `8491f37` and was not pushed.
 - User tries voice with a real mic. Optional: ask-which when labels are ambiguous; confirmation for spending actions; resolve LDConfig pin with explicit approval.
