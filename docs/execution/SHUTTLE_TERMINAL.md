@@ -3,7 +3,7 @@
 This explicit command starts inference without Codex. It creates a fresh
 31134/booklet-01 exploration revision with no client invocation deadline.
 The original job remains frozen at 120 seconds. Both revisions share its
-300-request ceiling: the verified ledger currently contains 24 requests,
+300-request ceiling: at handoff the verified ledger contained 24 requests,
 leaving 276. Failed, cancelled and interrupted requests remain charged.
 
 Removing the deadline permits slow requests to finish; it does not accelerate
@@ -36,14 +36,14 @@ JOB="$(
 printf 'Shuttle job: %s\n' "$JOB"
 printf '%s\n' "$JOB" > "$DATA/../no-timeout-job-id.txt"
 .venv/bin/python tools/engine.py --data-dir "$DATA" resume "$JOB" \
-  --provider --retry-provider-calls
+  --provider
 exec caffeinate -i .venv/bin/python tools/engine.py --data-dir "$DATA" run \
   --job-id "$JOB" --workers 1
 SHUTTLE_RUN
 ```
 
 To resume that same new job after interruption or a resolved provider blocker,
-use this block instead of enqueueing again. Retries remain explicit and charged.
+use this block instead of enqueueing again.
 Do not run two workers for this booklet.
 
 ```sh
@@ -53,11 +53,16 @@ set -euo pipefail
 DATA=var/experiments/adk-31134-booklet01-20261010/data
 JOB="$(cat "$DATA/../no-timeout-job-id.txt")"
 .venv/bin/python tools/engine.py --data-dir "$DATA" resume "$JOB" \
-  --provider --retry-provider-calls
+  --provider
 exec caffeinate -i .venv/bin/python tools/engine.py --data-dir "$DATA" run \
   --job-id "$JOB" --workers 1
 SHUTTLE_RESUME
 ```
+
+Only add `--retry-provider-calls` to `resume` when the job has an eligible failed
+provider call to retry after its blocker is resolved. It fails on a fresh job
+with `No failed provider call is eligible for explicit retry`. Retried requests
+remain charged and their original failure evidence is preserved.
 
 In a second terminal, observe the new job without restarting it:
 
