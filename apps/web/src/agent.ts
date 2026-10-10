@@ -105,15 +105,15 @@ const defaultVoice: Required<VoiceAdapter> = {
 };
 const VOICE_KEY = 'brickvisionx:voice', VOICE_EVENT = 'brickvision:voice';
 let adapter: VoiceAdapter = defaultVoice;
-// Voice is on unless the user turned it off.
-let muted = (() => { try { return localStorage.getItem(VOICE_KEY) === 'off'; } catch { return false; } })();
+// Voice starts on at every page load: a mute left over from an earlier visit must not silence a demo.
+let muted = false;
+try { localStorage.removeItem(VOICE_KEY); } catch { /* Storage may be unavailable. */ }
 let openMics = 0;
 let cancel: (() => void) | null = null;
 export const isMuted = () => muted;
 export function setMuted(value: boolean) {
   if (value) stopSpeaking();
   muted = value;
-  try { localStorage.setItem(VOICE_KEY, value ? 'off' : 'on'); } catch { /* Storage may be unavailable. */ }
   window.dispatchEvent(new Event(VOICE_EVENT));
 }
 export function onVoiceChange(listener: () => void) { window.addEventListener(VOICE_EVENT, listener); return () => window.removeEventListener(VOICE_EVENT, listener); }

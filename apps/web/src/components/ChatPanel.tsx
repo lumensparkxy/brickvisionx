@@ -82,7 +82,7 @@ export default function ChatPanel({ controller }: { controller: RefObject<Viewer
       <header className="buddy-header">
         <span className="buddy-avatar" aria-hidden="true"><IconSparkles size={20}/></span>
         <div className="buddy-title"><strong>BrickBuddy</strong><small role="status">{listening ? 'Listening… tap mic to send' : busy ? 'Thinking…' : 'Ask me to move, explain or spin the model'}</small></div>
-        <button type="button" className="buddy-icon" aria-pressed={!silent} aria-label={silent ? 'Turn voice on' : 'Turn voice off'} title={silent ? 'Turn voice on' : 'Turn voice off'} onClick={() => setMuted(!silent)}>{silent ? <IconVolumeOff size={19}/> : <IconVolume size={19}/>}</button>
+        <button type="button" className={`buddy-icon${silent ? ' voice-off' : ''}`} aria-pressed={!silent} aria-label={silent ? 'Turn voice on' : 'Turn voice off'} title={silent ? 'Turn voice on' : 'Turn voice off'} onClick={() => setMuted(!silent)}>{silent ? <><IconVolumeOff size={17}/>Voice off</> : <IconVolume size={19}/>}</button>
         <button type="button" className="buddy-icon" aria-label="Close chat" title="Close chat" onClick={() => { stopListening(); setOpen(false); }}><IconX size={19}/></button>
       </header>
       <div className="buddy-messages" ref={list} aria-live="polite">

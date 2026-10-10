@@ -46,3 +46,6 @@
 @media(min-width:1001px){.model-pane:has(.buddy.open) .viewport-wrap{right:400px}.model-pane:has(.buddy.open) .gesture-hint{right:424px}}
 /* Live mic: a ring that grows with the input level. */
 .buddy .buddy-mic.live{animation:none;box-shadow:0 0 0 calc(2px + var(--level,0) * 14px) #e5383b55;transition:box-shadow .08s linear}
+/* Muted voice must be impossible to miss. */
+.buddy .buddy-icon.voice-off{background:#e5383b;color:#fff;width:auto;padding:0 9px;gap:5px;font-size:11.5px;font-weight:700}
+.buddy .buddy-icon.voice-off:hover:not(:disabled){background:#c92a2d}
