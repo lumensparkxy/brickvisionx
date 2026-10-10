@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4JYB9EY8TMXW05214ET4N4X",
+  "session_id": "01a12572-6c99-7c42-a24b-73bc4f51e05c",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T12:59:36.616384Z",
+  "branch": "codex/migrate-google-adk",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "apps/api/src/guide2build/engine/adk_runtime.py",
+    "apps/api/src/guide2build/engine/provider.py",
+    "apps/api/src/guide2build/engine/runtime.py",
+    "docs/execution/ENGINE.md",
+    "docs/execution/PLAN.md",
+    "docs/execution/SHUTTLE_TERMINAL.md",
+    "docs/execution/SHUTTLE_VALIDATION.md",
+    "tests/backend/test_adk_runtime_budget.py",
+    "tests/backend/test_engine_provider.py",
+    "tools/engine.py"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "24bec26626cd",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 695592,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 32685696,
+    "output_tokens": 140113,
+    "api_call_count": 342,
+    "subagent_tokens_complete": false
+  },
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T12:59:36.367159Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 517,
+    "human_modified": 25,
+    "human_removed": 0,
+    "total_committed": 517,
+    "total_lines_changed": 543,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
