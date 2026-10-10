@@ -6,8 +6,13 @@ import { readProgress } from './state';
 import type { Guide, SceneManifest, SetInfo } from './contracts';
 import LandingPage from './components/LandingPage';
 import BookletDialog from './components/BookletDialog';
+import VoiceChat from './components/VoiceChat';
+import { useAssistant } from './voice/useAssistant';
+import { collectControls, usable } from './voice/controls';
+import type { AssistantAction, AssistantContext, StepCommand, StepContext } from './voice/assistant';
 const ViewerWorkspace = lazy(() => import('./components/ViewerWorkspace'));
 const terminal = new Set(['ready', 'needs_review', 'failed', 'cancelled']);
+const FIRST_READY = '*first-ready*';
 export default function App() {
   const [config,setConfig] = useState<PortalConfig | null>(null);
   const [configError,setConfigError] = useState('');
@@ -58,7 +63,7 @@ export default function App() {
     timer = setTimeout(poll, 500); return () => { stopped = true; clearTimeout(timer); };
   }, [job?.job_id, job?.state]);
   async function findSet(event: FormEvent) { event.preventDefault(); await lookupSet(setNumber); }
-  async function lookupSet(value:string, tryExample=false) {
+  async function lookupSet(value:string, openGuideId?:string) {
     if(!config)return;
     const op = ++operation.current; focusResult.current=true;setRelease(null);setRequested(false);
     setBookletOpen(false); setError(''); setNotice(''); setScene(null); setGuide(null); setSetInfo(null); setJob(null); setViewerPreview(null);
@@ -69,7 +74,11 @@ export default function App() {
       if (op === operation.current) {
         setSetInfo(result); setBookletOpen(true);
         if(publicMode&&!result.guides.some(item=>item.tutorial_available))await requestSet(result.set_number,op);
-        if(tryExample&&!publicMode){const example=result.guides.find(item=>item.guide_id==='alt-02');if(!example)throw new Error('The supported alternate booklet is not available. Choose an available booklet below.');await openGuide(example,result);}
+        if(openGuideId&&!publicMode){
+          const example=openGuideId===FIRST_READY?result.guides.find(item=>item.tutorial_available):result.guides.find(item=>item.guide_id===openGuideId);
+          if(!example)throw new Error(openGuideId==='alt-02'?'The supported alternate booklet is not available. Choose an available booklet below.':'No 3D tutorial is ready for this set yet. Choose a booklet below.');
+          await openGuide(example,result);
+        }
       }
     }
     catch (e) { if(op===operation.current)setError(e instanceof Error ? e.message : 'The set could not be found.'); }
@@ -135,6 +144,37 @@ export default function App() {
     catch (e) { if(op===operation.current)setError(e instanceof Error ? e.message : 'Job action failed.'); } finally { if(op===operation.current)setBusy(false); }
   }
   const closeBooklet=()=>{++operation.current;returnToLookup.current=true;setBusy(false);setBookletOpen(false);setJob(null);setError('');focusResult.current=false;};
+  const voiceEnabled=Boolean(config)&&!publicMode&&!previewMode;
+  const stepContext=useRef<StepContext|null>(null);
+  const [stepCommand,setStepCommand]=useState<StepCommand|null>(null);
+  const goHome=()=>{++operation.current;setBusy(false);setBookletOpen(false);setScene(null);setJob(null);setError('');focusResult.current=false;window.scrollTo(0,0);};
+  async function performAction(action:AssistantAction){
+    switch(action.type){
+      case 'none':return;
+      case 'find_set':setSetNumber(action.set_number);await lookupSet(action.set_number);return;
+      case 'open_tutorial':setSetNumber(action.set_number);await lookupSet(action.set_number,action.guide_id??FIRST_READY);return;
+      case 'close_booklet':if(bookletOpen)closeBooklet();return;
+      case 'go_home':goHome();return;
+      case 'how_it_works':goHome();window.setTimeout(()=>{const target=document.getElementById('how-it-works');target?.scrollIntoView({behavior:'smooth',block:'start'});target?.focus({preventScroll:true});},80);return;
+      case 'click':{const element=controlElements.current.get(action.control_id);
+        if(!element||!usable(element))throw new Error('That button is no longer available.');
+        element.click();return;}
+      default:
+        if(!scene)throw new Error('Open a 3D tutorial first, then I can move through its steps.');
+        {const type:StepCommand['type']=action.type;const step=action.type==='go_to_step'?action.step:undefined;
+        setStepCommand(previous=>({type,step,token:(previous?.token??0)+1}));}
+    }
+  }
+  const controlElements=useRef(new Map<string,HTMLElement>());
+  const assistantContext=():AssistantContext=>{
+    const {controls,elements}=collectControls();controlElements.current=elements;
+    const screen:AssistantContext=scene&&guide?{screen:'tutorial',set_number:scene.set_number,guide_id:guide.guide_id,step:stepContext.current}
+      :setInfo&&bookletOpen?{screen:'booklet',set_number:setInfo.set_number,guides:setInfo.guides.map(item=>({guide_id:item.guide_id,label:item.label,tutorial_available:Boolean(item.tutorial_available)}))}
+      :{screen:'landing'};
+    return {...screen,controls};
+  };
+  const assistant=useAssistant(assistantContext,performAction);
+  const voiceDock=voiceEnabled?<VoiceChat assistant={assistant} variant="dock"/>:undefined;
   const enginePreview=scene?previewForGuide(enginePreviews,scene.set_number,scene.guide_id,scene.revision)
     ?? (viewerPreview?.revision===scene.revision&&viewerPreview.set_number===scene.set_number&&viewerPreview.guide_id===scene.guide_id?viewerPreview:null)
     :setInfo&&guide?previewForGuide(enginePreviews,setInfo.set_number,guide.guide_id):null;
@@ -143,13 +183,13 @@ export default function App() {
   const reviewedAvailable=setInfo?.guides.some(item=>item.tutorial_available&&item.release_kind!=='unverified_alpha')??false;
   const previewNotice=previewMode&&setInfo&&<aside className="notice" aria-label="Engine candidate preview"><strong>{enginePreviews.some(value=>value.execution_policy==='explore')?'Exploration candidates · provisional':enginePreviews.some(value=>value.generation_mode==='alpha_fast'||value.image_quality?.profile==='alpha')?'Alpha samples · unverified':'Local engine candidate preview · unpublished'}</strong>{visiblePreviews.map(value=><div key={value.job_id}><p><strong>{value.set_number} / {value.guide_id}</strong> · {value.state} · Stage: {value.stage}</p><p>{previewCoverageText(value)}</p>{value.generation_mode==='alpha_fast'?<p>Approximate alpha model. Colours and placements are unverified; visible gaps or overlaps may remain. Camera alignment has not been checked.</p>:value.image_quality?.profile==='alpha'&&<p>Relaxed image alignment: up to {value.image_quality.max_rms_pixels} px RMS. {value.image_quality.relaxed_steps.length} instructions exceed the strict alignment limit.</p>}{value.uncertainty_notes&&value.uncertainty_notes.length>0&&<ul>{value.uncertainty_notes.map((note,i)=><li key={i}>{note}</li>)}</ul>}{value.repair&&<p>Instruction {value.repair.panel} · Placement attempt {value.repair.attempt} of {value.repair.limit}. Accepted instructions are preserved during repair.</p>}{value.error&&<p role="status">{value.error.code}: {value.error.message}</p>}{value.candidate_message&&<p>{value.candidate_message}</p>}</div>)}<p>Human acceptance and physical testing have not been recorded.</p></aside>;
   return <>{scene && guide ? <main className="studio-main"><Suspense fallback={<p role="status">Loading the 3D viewer…</p>}>
-      <ViewerWorkspace key={scene.revision} publicMode={publicMode} releaseAlpha={release?.release.alpha} previewMode={previewMode} previewExperiment={enginePreview?.experiment_revision??undefined} previewJobId={enginePreview?.job_id} previewQuality={enginePreview?.image_quality} previewGenerationMode={enginePreview?.generation_mode} previewArtifactKind={enginePreview?.artifact_kind} exploration={enginePreview?.exploration} previewUncertaintyNotes={enginePreview?.uncertainty_notes} previewCoverage={enginePreview?previewCoverageText(enginePreview):undefined} previewSourceCoverage={typeof enginePreview?.source_coverage==='string'?enginePreview.source_coverage:undefined} sourceImages={config?.source_images??false} releaseLoader={release??undefined} scene={scene} guide={guide} onScene={setScene} onClose={() => {focusResult.current=true;setBookletOpen(true);setScene(null);}} />
-    </Suspense></main> : <LandingPage setNumber={setNumber} onSetNumber={setSetNumber} onFind={findSet} onTry={()=>{setSetNumber('30669');void lookupSet('30669',true);}} busy={busy||!config} publicMode={publicMode} previewMode={previewMode}>
+      <ViewerWorkspace key={scene.revision} publicMode={publicMode} releaseAlpha={release?.release.alpha} previewMode={previewMode} previewExperiment={enginePreview?.experiment_revision??undefined} previewJobId={enginePreview?.job_id} previewQuality={enginePreview?.image_quality} previewGenerationMode={enginePreview?.generation_mode} previewArtifactKind={enginePreview?.artifact_kind} exploration={enginePreview?.exploration} previewUncertaintyNotes={enginePreview?.uncertainty_notes} previewCoverage={enginePreview?previewCoverageText(enginePreview):undefined} previewSourceCoverage={typeof enginePreview?.source_coverage==='string'?enginePreview.source_coverage:undefined} sourceImages={config?.source_images??false} releaseLoader={release??undefined} scene={scene} guide={guide} onScene={setScene} voiceCommand={stepCommand} onStepContext={value=>{stepContext.current=value;}} voiceDock={voiceDock} onClose={() => {focusResult.current=true;setBookletOpen(true);setScene(null);}} />
+    </Suspense></main> : <LandingPage setNumber={setNumber} onSetNumber={setSetNumber} onFind={findSet} onTry={()=>{setSetNumber('30669');void lookupSet('30669','alt-02');}} voice={voiceEnabled&&<VoiceChat assistant={assistant}/>} busy={busy||!config} publicMode={publicMode} previewMode={previewMode}>
       {configError&&<div role="alert" className="notice"><p>{configError}</p><button onClick={()=>setConfigAttempt(n=>n+1)}>Retry website connection</button></div>}
       {!setInfo&&error&&<div className="landing-workflow"><div role="alert" className="notice"><h2 ref={errorHeading} tabIndex={-1}>Set lookup</h2><p>{error}</p></div></div>}
       {setInfo&&bookletOpen&&<BookletDialog onClose={closeBooklet}>
       {setInfo && <section className="set-result" aria-label="Set details"><div className="booklet-heading"><span className="eyebrow">LET’S BUILD SOMETHING</span><h2 id="booklet-title" ref={resultHeading} tabIndex={-1}>{setInfo.set_number}{setInfo.name?` · ${setInfo.name}`:''}</h2><p>{previewMode?(visiblePreviews.some(value=>value.execution_policy==='explore')?'Choose a local exploration candidate to inspect in 3D.':'Choose a local alpha sample to inspect in 3D.'):publicMode?(alphaAvailable?(reviewedAvailable?'Choose a tutorial or unverified alpha model.':'Choose an alpha model to explore in 3D. Accuracy is unverified.'):reviewedAvailable?'Choose a ready tutorial and let’s build!':'We’re making room for more builds.'):'Official source found. Choose your booklet to get started.'}</p></div><div className="booklet-options">
-        {setInfo.guides.map(item => {const metadata=previewForGuide(enginePreviews,setInfo.set_number,item.guide_id);const releasedAlpha=item.release_kind==='unverified_alpha';return <div className="guide-row" key={item.guide_id}><div><span className="booklet-tag">{releasedAlpha?'ALPHA MODEL · UNVERIFIED':item.tutorial_available ? (previewMode?'ENGINE CANDIDATE AVAILABLE':publicMode?'READY TO BUILD':'3D CANDIDATE AVAILABLE') : (previewMode?'NO ENGINE CANDIDATE YET':publicMode?'NOT READY YET':'OFFICIAL SOURCE · NO 3D TUTORIAL YET')}</span><strong>{item.label}</strong><p className="muted">{item.expected_main_steps == null ? 'Official booklet' : `Booklet: ${item.expected_main_steps} main steps`}</p>{previewMode&&metadata&&<p className="muted">{previewCoverageText(metadata)}{metadata.generation_mode==='alpha_fast'&&<><br/>Alpha sample · unverified</>}{metadata.error?.message&&<><br/>{metadata.error.message}</>}</p>}</div>{(!publicMode||item.tutorial_available)&&<button disabled={busy} onClick={() => item.tutorial_available ? openGuide(item) : openPreparation(item)}>{previewMode&&metadata?.execution_policy==='explore'&&item.tutorial_available?'Open candidate':releasedAlpha?'Open alpha model':item.tutorial_available ? 'Open tutorial' : 'Prepare booklet'}</button>}</div>;})}
+        {setInfo.guides.map(item => {const metadata=previewForGuide(enginePreviews,setInfo.set_number,item.guide_id);const releasedAlpha=item.release_kind==='unverified_alpha';return <div className="guide-row" key={item.guide_id} data-voice-scope={item.label}><div><span className="booklet-tag">{releasedAlpha?'ALPHA MODEL · UNVERIFIED':item.tutorial_available ? (previewMode?'ENGINE CANDIDATE AVAILABLE':publicMode?'READY TO BUILD':'3D CANDIDATE AVAILABLE') : (previewMode?'NO ENGINE CANDIDATE YET':publicMode?'NOT READY YET':'OFFICIAL SOURCE · NO 3D TUTORIAL YET')}</span><strong>{item.label}</strong><p className="muted">{item.expected_main_steps == null ? 'Official booklet' : `Booklet: ${item.expected_main_steps} main steps`}</p>{previewMode&&metadata&&<p className="muted">{previewCoverageText(metadata)}{metadata.generation_mode==='alpha_fast'&&<><br/>Alpha sample · unverified</>}{metadata.error?.message&&<><br/>{metadata.error.message}</>}</p>}</div>{(!publicMode||item.tutorial_available)&&<button disabled={busy} onClick={() => item.tutorial_available ? openGuide(item) : openPreparation(item)}>{previewMode&&metadata?.execution_policy==='explore'&&item.tutorial_available?'Open candidate':releasedAlpha?'Open alpha model':item.tutorial_available ? 'Open tutorial' : 'Prepare booklet'}</button>}</div>;})}
         {setInfo.official_page&&<a href={setInfo.official_page} target="_blank" rel="noreferrer">View official instructions ↗</a>}</div></section>}
       {previewNotice&&<details className="booklet-sample-details"><summary>Sample accuracy and review details</summary>{previewNotice}</details>}
       {publicMode&&!previewMode&&alphaAvailable&&<details className="booklet-sample-details"><summary>Alpha accuracy and review details</summary><p>Alpha models are approximate reconstructions from official booklets. Part choices, colours and placements remain unverified.</p><p>Human review: not run · Physical build: not run</p><p>Open a model to see its source, revision, reported coverage and uncertainty notes.</p></details>}
@@ -157,7 +197,7 @@ export default function App() {
       {publicMode&&config?.requests_enabled&&!requested&&setInfo.guides.some(item=>!item.tutorial_available)&&<button disabled={busy} onClick={()=>requestSet(setInfo.set_number)}>Request this set</button>}
       {publicMode&&config?.requests_enabled&&!requested&&setInfo.guides.length===0&&<button disabled={busy} onClick={()=>requestSet(setInfo.set_number)}>Try saving my request again</button>}
       {error && <div role="alert" className="notice"><h2 ref={errorHeading} tabIndex={-1}>{publicMode?'Let’s try again':guide ? 'Preparation needs attention' : 'Set lookup'}</h2><p>{error}</p></div>}
-      {!publicMode&&guide && <section className="preparation" aria-label="Booklet preparation"><h2 ref={preparationHeading} tabIndex={-1}>{guide.label}</h2>
+      {!publicMode&&guide && <section className="preparation" aria-label="Booklet preparation" data-voice-scope={`preparing ${guide.label}`}><h2 ref={preparationHeading} tabIndex={-1}>{guide.label}</h2>
         <p>Preparation downloads and renders this official booklet. A 3D tutorial needs a separate reconstruction and review.</p>
         {notice && <p className="muted">{notice}</p>}
         {job && <div className="job-state" role="status"><strong>{job.state === 'needs_review' && !job.output_revision ? 'Booklet prepared' : job.state.replaceAll('_', ' ')}</strong><p>Stage: {job.stage.replaceAll('_', ' ')}</p>
@@ -172,6 +212,7 @@ export default function App() {
         <p><a href={guide.pdf_url} target="_blank" rel="noreferrer">Open the original booklet ↗</a></p>
         {base && <button className="secondary" disabled={busy} onClick={() => openGuide(guide)}>Check for a reconstruction</button>}
       </section>}
+      {voiceDock}
       </BookletDialog>}
     </LandingPage>}</>;
 }

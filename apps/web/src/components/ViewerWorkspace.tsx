@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { stepIndexFor, type StepCommand, type StepContext } from '../voice/assistant';
 import IconChevronLeft from '@tabler/icons-react/dist/esm/icons/IconChevronLeft.mjs';
 import IconChevronRight from '@tabler/icons-react/dist/esm/icons/IconChevronRight.mjs';
 import IconRotate from '@tabler/icons-react/dist/esm/icons/IconRotate.mjs';
@@ -22,7 +23,7 @@ import { partsList, readProgress, saveProgress } from '../state';
 import AssemblyViewport, { type CameraCommand } from './AssemblyViewport';
 import SourcePanel from './SourcePanel';
 import ReviewPanel from './ReviewPanel';
-export default function ViewerWorkspace({ scene: initialScene, guide, onClose, onScene, publicMode=false, releaseAlpha, previewMode=false, previewExperiment, previewJobId, previewQuality, previewGenerationMode, previewArtifactKind, previewUncertaintyNotes, previewCoverage, previewSourceCoverage, exploration, sourceImages=!publicMode, releaseLoader }: {publicMode?:boolean; releaseAlpha?:AlphaReleaseMetadata; previewMode?:boolean; previewExperiment?:string; previewJobId?:string; previewQuality?:ImageQuality; previewGenerationMode?:'standard'|'alpha_fast'; previewArtifactKind?:string; previewUncertaintyNotes?:string[]; previewCoverage?:string; previewSourceCoverage?:string; exploration?:ExplorationStatus|null; sourceImages?:boolean; releaseLoader?:ReleaseLoader; scene: SceneManifest; guide: Guide; onClose: () => void; onScene: (scene: SceneManifest) => void}) {
+export default function ViewerWorkspace({ scene: initialScene, guide, onClose, onScene, publicMode=false, releaseAlpha, previewMode=false, previewExperiment, previewJobId, previewQuality, previewGenerationMode, previewArtifactKind, previewUncertaintyNotes, previewCoverage, previewSourceCoverage, exploration, sourceImages=!publicMode, releaseLoader, voiceCommand, onStepContext, voiceDock }: {voiceCommand?:StepCommand|null; onStepContext?:(context:StepContext)=>void; voiceDock?:ReactNode; publicMode?:boolean; releaseAlpha?:AlphaReleaseMetadata; previewMode?:boolean; previewExperiment?:string; previewJobId?:string; previewQuality?:ImageQuality; previewGenerationMode?:'standard'|'alpha_fast'; previewArtifactKind?:string; previewUncertaintyNotes?:string[]; previewCoverage?:string; previewSourceCoverage?:string; exploration?:ExplorationStatus|null; sourceImages?:boolean; releaseLoader?:ReleaseLoader; scene: SceneManifest; guide: Guide; onClose: () => void; onScene: (scene: SceneManifest) => void}) {
   const [scene,setLoadedScene] = useState(initialScene);
   const [chunkError,setChunkError] = useState('');
   const [chunkRetry,setChunkRetry] = useState(0);
@@ -89,6 +90,21 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   const groupName = step.assembly_group_id?.replaceAll('-',' ').replace(/^./,s=>s.toUpperCase());
   const assemblyOverview = step.action === 'inspect' && step.introduced_instance_ids.length === 0;
   const replayStep = () => {setPlayback('idle');setBuildFinished(false);setReplay(n=>n+1);};
+  const handledCommand = useRef(voiceCommand?.token);
+  useEffect(()=>{
+    if(!voiceCommand||handledCommand.current===voiceCommand.token)return;
+    handledCommand.current=voiceCommand.token;
+    if(voiceCommand.type==='next_step')change(index+1);
+    else if(voiceCommand.type==='previous_step')change(index-1);
+    else if(voiceCommand.type==='replay_step')replayStep();
+    else if(voiceCommand.type==='play_build')startBuild();
+    else if(voiceCommand.type==='go_to_step'){const target=stepIndexFor(scene.steps,voiceCommand.step??-1);if(target>=0)change(target);}
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- each command token runs once against the current step
+  },[voiceCommand?.token]);
+  useEffect(()=>{onStepContext?.({index:index+1,total:scene.steps.length,label:stepLabel(step),
+    main_step_numbers:[...new Set(scene.steps.flatMap(s=>s.main_step_number===null?[]:[s.main_step_number]))]});
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- reported whenever the visible instruction changes
+  },[index,scene]);
   return <section className="workspace">
     <header className="studio-header">
       <button className="brand studio-brand" onClick={onClose} aria-label="Back to set lookup">Guide2Build <span>3D</span></button>
@@ -143,5 +159,6 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
       <div className="instruction-progress"><div className="step-timeline" aria-label="Main steps">{mainEntries.map(entry=><button key={groupKey(entry)} className={groupKey(entry)===groupKey(step)?'current':''} aria-current={groupKey(entry)===groupKey(step)?'step':undefined} aria-label={`Go to main step ${entry.main_step_number}${entry.section_id?` in ${entry.section_id}`:''}`} onClick={()=>change(scene.steps.findIndex(s=>s.step_id===entry.step_id))}>{entry.printed_step_number===null?'✓':entry.main_step_number}</button>)}</div><div className="seek-row"><button className="replay" disabled={!ready||!snapshotReady||Boolean(chunkError)} onClick={replayStep}><IconRotateClockwise size={16} aria-hidden="true"/>Replay</button><label htmlFor="instruction-seek" className="sr-only">Jump to instruction</label><select id="instruction-seek" value={index} onChange={e=>change(Number(e.target.value))}>{scene.steps.map((s,i)=><option key={s.step_id} value={i}>{i+1}. {s.section_id?`${s.section_id} · `:''}{stepLabel(s)}{s.substep_label?` · ${s.substep_label}`:''}</option>)}</select><span className="sr-only" aria-live="polite">Instruction {index+1} of {scene.steps.length}</span></div></div>
       <button className="next-button" disabled={index===scene.steps.length-1} onClick={()=>change(index+1)}><span>Next</span><IconChevronRight size={20} aria-hidden="true"/></button>
     </nav>
+    {voiceDock}
   </section>;
 }

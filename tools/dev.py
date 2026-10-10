@@ -15,7 +15,8 @@ def main() -> int:
     env = os.environ.copy()
     env["PYTHONPATH"] = str(ROOT / "apps/api/src") + os.pathsep + env.get("PYTHONPATH", "")
     frontend_env = {key: value for key, value in env.items() if key not in {
-        "GOOGLE_API_KEY", "GEMINI_API_KEY", "OPENAI_API_KEY", "GOOGLE_APPLICATION_CREDENTIALS"}}
+        "GOOGLE_API_KEY", "GEMINI_API_KEY", "OPENAI_API_KEY", "GOOGLE_APPLICATION_CREDENTIALS",
+        "GRADIUM", "GRADIUM_API_KEY"}}
     commands = [
         [sys.executable, "-m", "uvicorn", "guide2build.main:app", "--host", "127.0.0.1", "--port", "8000"],
         [sys.executable, "tools/worker.py"],

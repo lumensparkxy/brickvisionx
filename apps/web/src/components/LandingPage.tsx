@@ -5,9 +5,9 @@ import './landing.css';
 
 const setOptions = catalogue.sets.map(({set_number,name}) => ({set_number,name}));
 
-export default function LandingPage({setNumber,onSetNumber,onFind,onTry,busy,children,publicMode=false,previewMode=false}: {
+export default function LandingPage({setNumber,onSetNumber,onFind,onTry,busy,children,voice,publicMode=false,previewMode=false}: {
   setNumber:string; onSetNumber:(value:string)=>void; onFind:(event:FormEvent)=>void;
-  onTry:()=>void; busy:boolean; publicMode?:boolean; previewMode?:boolean; children:ReactNode;
+  onTry:()=>void; busy:boolean; publicMode?:boolean; previewMode?:boolean; children:ReactNode; voice?:ReactNode;
 }) {
   return <>
     <header className="landing-header"><a href="/" className="brand">Guide2Build <span>3D</span></a><a className="how-link" href="#how-it-works">How it works</a></header>
@@ -24,6 +24,7 @@ export default function LandingPage({setNumber,onSetNumber,onFind,onTry,busy,chi
           </form>
           <button className="try-tutorial" disabled={busy} onClick={onTry}>{publicMode?'Find the plane set':'Try the plane tutorial'} <IconArrowRight size={22} aria-hidden="true"/></button>
           {busy&&<p className="landing-busy" role="status">Working on your request…</p>}
+          {voice}
         </div>
         <figure className="hero-art"><figcaption>30669 / Alternate aeroplane<small>Illustrative preview</small></figcaption><img src="/images/landing/hero-plane.webp" width="1322" height="1190" alt="Illustration of a red and white brick plane on a yellow baseplate, surrounded by colourful bricks" fetchPriority="high"/></figure>
       </section>

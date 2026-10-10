@@ -18,6 +18,9 @@ from .jobs.store import Conflict, Store
 from .jobs.source_cache import cached_receipt
 from .review.models import CorrectionRequest, ReviewRequest
 from .review.service import ReviewService
+from .core.environment import load_local_environment
+from .voice.chat import ChatRequest, ChatUnavailable, budget_from_environment, gemini_reply
+from .voice.gradium import GradiumClient, GradiumError
 
 
 def create_app(data_dir: Path | None = None) -> FastAPI:
@@ -265,7 +268,57 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
             missing("page_not_found", "Rendered source page not available")
         return FileResponse(path, media_type="image/png")
 
+    app.state.voice_budget = budget_from_environment()
+    app.state.voice_token = lambda: _gradium_token()
+    app.state.voice_reply = gemini_reply
+
+    @app.post("/api/v1/voice/token")
+    def voice_token():
+        try:
+            return app.state.voice_token()
+        except GradiumError as error:
+            missing(error.code, str(error), 401 if error.code == "authentication_required" else 502)
+
+    def ready_guide(set_number: str, guide_id: str | None) -> str | None:
+        candidates = [guide_id] if guide_id else [guide["guide_id"] for guide in find_set(set_number)["guides"]]
+        for candidate in candidates:
+            try:
+                load_scene(set_number, candidate, candidate=True)
+                return candidate
+            except HTTPException:
+                continue
+        return None
+
+    def checked_navigation(reply: dict) -> dict:
+        """The model cannot know which tutorials are prepared locally; never let it claim one opens."""
+        action = reply.get("action", {})
+        if action.get("type") != "open_tutorial":
+            return reply
+        guide_id = ready_guide(action["set_number"], action.get("guide_id"))
+        if guide_id:
+            return reply | {"action": {**action, "guide_id": guide_id}}
+        name = find_set(action["set_number"])["name"]
+        return {"text": f"No 3D tutorial is ready for {name} yet, so I'll show its official booklets instead.",
+                "action": {"type": "find_set", "set_number": action["set_number"]}}
+
+    @app.post("/api/v1/voice/reply")
+    def voice_reply(request: ChatRequest):
+        if request.messages[-1].role != "user":
+            missing("invalid_request", "The last voice message must come from the user.", 422)
+        try:
+            app.state.voice_budget.reserve()
+            return checked_navigation(app.state.voice_reply(request.messages, request.context))
+        except ChatUnavailable as error:
+            status = {"voice_budget_exhausted": 429, "quota_exceeded": 429, "authentication_required": 401}
+            missing(error.code, str(error), status.get(error.code, 502))
+
     return app
+
+
+def _gradium_token() -> dict:
+    load_local_environment()
+    with GradiumClient(timeout=10) as client:
+        return client.websocket_token()
 
 
 app = create_app()
