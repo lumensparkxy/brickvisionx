@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4JW38AMAB51V7W7AG3KWP2A",
+  "strategy": "manual-commit",
+  "branch": "feat/brickbuddy-chat",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "apps/api/src/guide2build/main.py",
+    "apps/web/src/components/AssemblyViewport.tsx",
+    "apps/web/src/components/ViewerWorkspace.tsx",
+    "apps/web/src/tabler-icons.d.ts",
+    "apps/web/vite.config.ts",
+    "docs/execution/PLAN.md",
+    "docs/execution/PROGRESS.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 86,
+    "cache_creation_tokens": 174436,
+    "cache_read_tokens": 5366355,
+    "output_tokens": 66574,
+    "api_call_count": 40
+  }
+}

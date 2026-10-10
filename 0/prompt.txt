@@ -1,0 +1,115 @@
+I had another chat working in the hackathon folder, but to make entire work well, I need to work in the repo folder, so I re-started it here, but always keep the context also from the higher folder. He's context from the previous chat:
+
+<context>
+
+<pasted_content id="19eb">
+# Context: Agentic AI Hack Zürich (10 Oct 2026), BrickVisionX
+
+## Project
+- Hackathon by {Tech: Europe} with Google DeepMind at J floor Zürich. Demo at 8pm today.
+- Idea: set number → official LEGO PDF manual → interactive step-by-step 3D manual (Three.js).
+- Brief: `/Users/lucacampanella/Documents/hackathon-zurich-jfloor/instructions/` (PDF).
+  Judged on four tests: it acts, helps someone real, people stay in control, works live.
+- Rule: the project must be newly created at the hackathon; boilerplate is allowed.
+- Background research on the event is in `~/Documents/life-os/memories/` (search "agentic-ai-hack").
+
+## Folders (all under /Users/lucacampanella/Documents/hackathon-zurich-jfloor/)
+- `brickguide-3d/`: teammate's (lumensparkxy) existing boilerplate. Do NOT modify.
+- `brickvisionx/`: the hackathon repo. Remote is an `entire://` URL (Entire records agent
+  sessions here, so never paste secrets in chat). Currently on branch
+  `codex/migrate-google-adk`, clean and up to date with origin. The teammate pushed the
+  engine code there ("Checkpoint BrickVisionX Google ADK starter"); nobody has reviewed
+  that code in this chat yet.
+- `gemini-setup/`: my Google setup, outside both repos.
+  - `.env` holds `GEMINI_API_KEY` (already filled in and working).
+  - `smoke_test.py`: run with `uv run smoke_test.py [--only model|agent] [--image page.png]`.
+
+## Google setup: done and verified
+- `gemini-3.8-flash` model call works.
+- `antigravity-preview-09-2026` managed agent call works: sandbox started, ran Python,
+  returned schema-valid JSON in about 18–25 s for about 10.6k tokens.
+- Not yet tested: sending an image to the agent.
+- SDK: `google-genai` 2.29.0 (needs >=2.3.0), Interactions API
+  (`client.interactions.create/get/cancel`).
+
+## Goal still open: replace Codex with the Antigravity agent
+Findings from the boilerplate (same layout expected in brickvisionx; confirm):
+- Codex is called in one place: `apps/api/src/guide2build/engine/provider.py`,
+  `CodexProvider.call(prompt, images, schema, evidence, check)`. Runners (`runner.py`,
+  `alpha_runner.py`) and `tools/engine.py` only construct it with a model name.
+- Antigravity has no structured-output mode. `antigravity_call()` in
+  `gemini-setup/smoke_test.py` puts the JSON schema in the prompt, then parses and
+  validates the reply; it has the same shape as the Codex call and is the seed for the
+  new provider.
+- Images must be inline base64 (`{"type": "image", "data": ..., "mime_type": "image/png"}`).
+- Call pattern: `agent=..., environment="remote", background=True`, poll while
+  `status == "in_progress"`; `agent_config={"type": "antigravity", "max_total_tokens": N,
+  "model": optional}`; status `incomplete` means the token budget ran out.
+- The Codex provider strips API keys from its child environment; the Antigravity call
+  runs in-process and reads `GEMINI_API_KEY` directly.
+- Cost per Google's docs: roughly $0.25–$3.25 per agent task; a booklet run makes many
+  calls, so keep the token cap.
+- brickvisionx needs `google-genai>=2.3.0` as a dependency and `.env` gitignored.
+
+## Demo concept we discussed
+"A build buddy you talk to": Gemini 3.8 Live as the voice front door, Antigravity doing
+the slow reconstruction in its sandbox.
+- Must: Antigravity rebuilds one step live from a real page, shown in the viewer with
+  agent steps streaming; voice commands driving the viewer via function calls.
+- Should: uncertain steps flagged, user approves or corrects them.
+- Stretch: photo of the physical build checked against the rendered step.
+- Pre-run one small set (30669, 12 steps), do one step live, then show the saved result.
+- Tell judges what is boilerplate versus built today, and call output a proposal, not a
+  verified model.
+
+## Loose ends
+- `brickvisionx` has a leftover `stash@{0}`; it only differs from the branch by
+  `telemetry: false` in `.entire/settings.json`. Safe to `git stash drop`.
+- Gemini API skills for coding agents not installed yet:
+  `npx skills add google-gemini/gemini-skills --skill gemini-api-dev` (run in brickvisionx).
+</pasted_content id="19eb">
+
+</context>
+
+
+Now we decided that the demo is going to be:
+
+* user asks by voice for a lego model (e.g. plane). For the demo we'll pick one already ingested
+* the UI will show the visualized model
+* the user will say using voice "I'm stuck at step 5 (or so), give me the instructions to continue the following 3 steps"
+* the visualization will run while the voice explains what to do with the pieces
+* The user will ask to rotate the 3d model using voice
+* Demo will end
+
+
+So let's always keep this in mind as we build
+I am for now tasked with the part of creating a chat in the UI that allows the user to chat with the 3d visualization (so turn it, go to step x, visualise next 3 steps etc). The UI it's a floating UI at the bottom right that in the end will also have a button to talk to it (the voice part is being handled by a team mate).
+I think for this we'll have to create both the UI and add the agent via antigravity that can then call the javascript that acts on the UI.
+
+First of all let's run it locally, then we take a moment to brainstorm.
+
+---
+
+In general for the sessions today we need to work quite fast, let's remember it's a hacathon, so we need to produce code that works and looks good, but doesn't need to be perfect or perfectly engineered, we need to move fast, so don't always double check things and whenever possible work in parallel on stuff
+
+---
+
+1. yes
+2. The team mate will use gradium for the voice, it's part of the hackathon and we also get keys. Does this change anything in our build / ideas?
+3. model rephrase it and make it sounds nice and fun
+
+---
+
+Do we need to download also the other models in case we wanted to make any of that part of the demos?
+
+---
+
+if yes, download them in the background
+
+---
+
+Sounds good, do we need to use gemini live or 3.8 flash? what are the differences?
+
+---
+
+Ok I've put you in ultracode, don't go crazy with spinning agents and always checking what you do, but build the frontend chat part and the backend AI part in parallel

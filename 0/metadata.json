@@ -1,0 +1,97 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4JW38AMAB51V7W7AG3KWP2A",
+  "session_id": "c3bd0682-0d08-43ad-b396-85c38cb0edff",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T12:20:10.960344Z",
+  "branch": "feat/brickbuddy-chat",
+  "checkpoints_count": 2,
+  "save_step_count": 2,
+  "files_touched": [
+    "apps/api/src/guide2build/main.py",
+    "apps/web/src/components/AssemblyViewport.tsx",
+    "apps/web/src/components/ViewerWorkspace.tsx",
+    "apps/web/src/tabler-icons.d.ts",
+    "apps/web/vite.config.ts",
+    "docs/execution/PLAN.md",
+    "docs/execution/PROGRESS.json"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "4edb543b8ed0",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 86,
+    "cache_creation_tokens": 174436,
+    "cache_read_tokens": 5366355,
+    "output_tokens": 66574,
+    "api_call_count": 40
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T12:20:10.917598Z",
+    "agent_lines": 11,
+    "agent_removed": 0,
+    "human_added": 883,
+    "human_modified": 15,
+    "human_removed": 0,
+    "total_committed": 909,
+    "total_lines_changed": 909,
+    "agent_percentage": 1.21012101210121,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 21,
+      "user_lines_removed": 2,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/launch.json": 17,
+        "apps/web/vite.config.ts": 4
+      },
+      "user_removed_per_file": {
+        "apps/web/vite.config.ts": 2
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 514,
+      "user_lines_removed": 10,
+      "agent_lines_added": 4,
+      "agent_lines_removed": 2,
+      "user_added_per_file": {
+        ".claude/launch.json": 17,
+        "apps/api/src/guide2build/chat.py": 130,
+        "apps/api/src/guide2build/main.py": 15,
+        "apps/web/src/agent.ts": 115,
+        "apps/web/src/components/AssemblyViewport.tsx": 23,
+        "apps/web/src/components/ChatPanel.tsx": 89,
+        "apps/web/src/components/ViewerWorkspace.tsx": 45,
+        "apps/web/src/components/chat.css": 44,
+        "apps/web/src/tabler-icons.d.ts": 36
+      },
+      "user_removed_per_file": {
+        "apps/web/src/components/AssemblyViewport.tsx": 5,
+        "apps/web/src/components/ViewerWorkspace.tsx": 5
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 415,
+      "user_lines_removed": 0,
+      "agent_lines_added": 149,
+      "agent_lines_removed": 14,
+      "user_added_per_file": {
+        ".claude/launch.json": 17,
+        "apps/api/src/guide2build/chat.py": 148,
+        "apps/web/src/agent.ts": 115,
+        "apps/web/src/components/ChatPanel.tsx": 89,
+        "apps/web/src/components/chat.css": 46
+      }
+    }
+  ]
+}
