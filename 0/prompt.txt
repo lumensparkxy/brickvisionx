@@ -1,0 +1,3 @@
+<send_user_message_question_reply>
+[{"questionItemId":"[\"request_user_input_async\",\"call_73ce18ae0ed64532acd55b94b54c57e1\",0]","question":"For the live ADK smoke test, can you add GOOGLE_API_KEY to /Users/admin/learn_python/brickvisionx/.env locally? Please keep the key out of this chat. I’ll continue the migration and tests while you configure it.","answer":"I’ll configure the local .env"}]
+</send_user_message_question_reply>
