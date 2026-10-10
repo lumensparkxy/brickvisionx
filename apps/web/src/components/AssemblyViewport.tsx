@@ -218,7 +218,12 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
       element.dataset.animationState=tween?(playbackRef.current.paused?'paused':'playing'):'idle';
     };
     let buildBounds: THREE.Box3 | null = null;
+    let orbitFrame = 0;
+    let viewTouched = false; // The user or the agent moved the camera since the last fit.
+    let backedOff = 1; // Distance factor added for narrower layouts since then.
+    controls.addEventListener('start', () => { viewTouched = true; });
     const fit = () => {
+      cancelAnimationFrame(orbitFrame); viewTouched = false; backedOff = 1;
       stopCameraMotion(camera, controls);
       const siblingFrame = mainStepFrames.get(frameKey(stepRef.current));
       const frameBounds = playbackRef.current.fullBuild && buildBounds ? buildBounds : siblingFrame?.bounds;
@@ -242,7 +247,6 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
       updateStage(box);
     };
     // Chat/voice commands orbit by an angle with easing; toolbar buttons keep their fixed nudge.
-    let orbitFrame = 0;
     const orbit = (radians: number, vertical: boolean) => {
       cancelAnimationFrame(orbitFrame); stopCameraMotion(camera, controls); // Drop drag inertia, or the turn overshoots.
       const started = performance.now(), duration = Math.min(3200, Math.max(600, Math.abs(radians) * 800)); let applied = 0;
@@ -259,12 +263,20 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
     };
     cameraCommand.current = (action, degrees) => {
       clearSourceView();
-      if (action === 'reset') { cancelAnimationFrame(orbitFrame); fit(); }
-      else if (action === 'up' || action === 'down') orbit(THREE.MathUtils.degToRad(degrees ?? 45) * (action === 'up' ? -1 : 1), true);
+      if (action === 'reset') { fit(); return; }
+      viewTouched = true;
+      if (action === 'up' || action === 'down') orbit(THREE.MathUtils.degToRad(degrees ?? 45) * (action === 'up' ? -1 : 1), true);
       else if (degrees !== undefined && (action === 'left' || action === 'right')) orbit(THREE.MathUtils.degToRad(degrees) * (action === 'left' ? -1 : 1), false);
       else moveCamera(camera, controls, action);
     };
-    const resize = new ResizeObserver(() => { const {width,height} = element.getBoundingClientRect(); viewportVisible = width >= 1 && height >= 1; if (!viewportVisible) return; camera.aspect = width/height; camera.updateProjectionMatrix(); renderer.setSize(width,height); fit(); if(sourceView) sourceCameraControl.apply(sourceView.spec,stepRef.current.step_id); }); resize.observe(element);
+    const resize = new ResizeObserver(() => { const {width,height} = element.getBoundingClientRect(); viewportVisible = width >= 1 && height >= 1; if (!viewportVisible) return; const previousAspect = camera.aspect; camera.aspect = width/height; camera.updateProjectionMatrix(); renderer.setSize(width,height);
+      // A layout change (such as the chat panel opening) must not throw away a view the user chose: keep the angle, only adjust the distance.
+      if (!viewTouched) fit(); else {
+        // Back off when the canvas gets narrower so the model stays in frame; when it widens again undo only that back-off, never zoom past the user's view.
+        const ratio = previousAspect/camera.aspect, factor = ratio > 1 ? Math.min(ratio, 2) : 1/Math.min(backedOff, 1/ratio);
+        backedOff *= factor; cancelAnimationFrame(orbitFrame);
+        const offset = camera.position.clone().sub(controls.target).multiplyScalar(factor); camera.position.copy(controls.target).add(offset); controls.update(); dirty = true;
+      } if(sourceView) sourceCameraControl.apply(sourceView.spec,stepRef.current.step_id); }); resize.observe(element);
     let lastFrame=performance.now();
     const draw = () => {
       const now=performance.now();const delta=now-lastFrame;lastFrame=now;

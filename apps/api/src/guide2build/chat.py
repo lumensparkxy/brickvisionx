@@ -34,6 +34,10 @@ class ChatUnavailable(Exception):
     pass
 
 
+class ChatRequestError(Exception):
+    """The browser sent something unusable (422). Everything else that fails is a provider failure (502)."""
+
+
 SCHEMA = {
     "type": "object",
     "properties": {
@@ -119,6 +123,17 @@ def _part_names(viewer: str) -> dict[str, str]:
     return names
 
 
+def _windowed(viewer: dict) -> dict:
+    """Long booklets: keep only the steps near the current one so the context stays bounded."""
+    steps = viewer.get("steps")
+    if not isinstance(steps, list) or len(steps) <= 40:
+        return viewer
+    current = viewer.get("current_step") if isinstance(viewer.get("current_step"), int) else 1
+    near = [step for step in steps if isinstance(step, dict) and isinstance(step.get("step"), int)
+            and current - 5 <= step["step"] <= current + 25]
+    return {**viewer, "steps": near, "steps_note": "Only steps near current_step are listed."}
+
+
 def _gemini():
     global _client
     if _client is None:
@@ -139,15 +154,17 @@ async def reply(request: ChatRequest) -> dict:
     from google.genai import types
 
     load_local_environment()
-    model = (os.environ.get("BRICKVISIONX_CHAT_MODEL") or DEFAULT_MODEL).strip()
-    viewer = json.dumps(request.viewer, ensure_ascii=False)
+    model = (os.environ.get("BRICKVISIONX_CHAT_MODEL") or "").strip()
+    if not re.fullmatch(r"[A-Za-z0-9._-]{1,80}", model):
+        model = DEFAULT_MODEL
+    viewer = json.dumps(_windowed(request.viewer), ensure_ascii=False)
     if len(viewer) > MAX_VIEWER_CHARS:
-        raise ValueError("Viewer state is too large")
+        raise ChatRequestError("Viewer state is too large")
     turns = list(request.messages)
     while turns and turns[0].role != "user":
         turns.pop(0)
     if not turns or turns[-1].role != "user":
-        raise ValueError("The last message must come from the builder")
+        raise ChatRequestError("The last message must come from the builder")
     contents = [types.Content(role="user" if turn.role == "user" else "model",
                               parts=[types.Part.from_text(text=turn.text)]) for turn in turns[:-1]]
     contents.append(types.Content(role="user", parts=[types.Part.from_text(

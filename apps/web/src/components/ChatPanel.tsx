@@ -30,19 +30,22 @@ export default function ChatPanel({ controller }: { controller: RefObject<Viewer
     stopSpeaking(); setOpen(true); setDraft('');
     void controller.current.run({ type: 'stop' }); // A new request ends any walkthrough still playing.
     append({ role: 'user', text });
-    const turns = history.current.filter(m => !m.error).map(({ role, text }) => ({ role, text })).slice(-14);
+    // Only send turns the API accepts (non-empty, bounded), or one odd reply would poison every later request.
+    const turns = history.current.filter(m => !m.error && m.text.trim()).map(({ role, text }) => ({ role, text: text.slice(0, 2000) })).slice(-14);
     thinking.current = true; setBusy(true);
     try {
       const result = await askAgent(turns, controller.current.context());
+      if (turn.current !== mine) return; // Superseded, or the viewer was closed: drop the stale answer.
       thinking.current = false; setBusy(false);
-      append({ role: 'assistant', text: result.reply, actions: result.actions });
+      const reply = result.reply.trim() || (result.actions.length ? 'On it!' : 'Sorry, I did not catch that. Could you say it again?');
+      append({ role: 'assistant', text: reply, actions: result.actions });
       const act = async () => { for (const action of result.actions) { if (turn.current !== mine) return; await controller.current.run(action); } };
       // A narrated walkthrough speaks per step, so the intro line goes first; otherwise talk while acting.
-      if (result.actions.some(action => action.type === 'play_steps')) { await speak(result.reply); await act(); }
-      else await Promise.all([speak(result.reply), act()]);
+      if (result.actions.some(action => action.type === 'play_steps')) { await speak(reply); await act(); }
+      else await Promise.all([speak(reply), act()]);
     } catch (error) {
-      append({ role: 'assistant', text: error instanceof Error ? error.message : 'Something went wrong. Please try again.', error: true });
-    } finally { thinking.current = false; setBusy(false); }
+      if (turn.current === mine) append({ role: 'assistant', text: error instanceof Error ? error.message : 'Something went wrong. Please try again.', error: true });
+    } finally { if (turn.current === mine) { thinking.current = false; setBusy(false); } } // An older turn must not unlock a newer one.
   };
   const sendRef = useRef(send); sendRef.current = send;
   // Mic toggle: tap to talk, tap again (or just stop talking) to send what was heard.
@@ -58,7 +61,8 @@ export default function ChatPanel({ controller }: { controller: RefObject<Viewer
     finally { hearing.current = false; setListening(false); setDraft(''); }
     if (heard) await send(heard);
   };
-  useEffect(() => () => stopListening(), []);
+  // Leaving the viewer: stop the mic and the voice, and invalidate any answer still on its way.
+  useEffect(() => () => { turn.current++; stopListening(); stopSpeaking(); }, []);
   // The mic button swells with the input level, so it is obvious whether sound is arriving.
   const mic = useRef<HTMLButtonElement>(null);
   useEffect(() => {

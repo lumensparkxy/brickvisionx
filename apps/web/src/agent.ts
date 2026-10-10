@@ -29,8 +29,8 @@ export function parseActions(value: unknown): ViewerAction[] {
   for (const raw of value) {
     const item = (raw ?? {}) as Record<string, unknown>;
     switch (item.type) {
-      case 'go_to_step': actions.push({ type: 'go_to_step', step: int(item.step, 1) }); break;
-      case 'play_steps': actions.push({ type: 'play_steps', step: int(item.step, 1), count: Math.max(1, Math.min(12, int(item.count, 1))),
+      case 'go_to_step': actions.push({ type: 'go_to_step', step: Math.max(1, int(item.step, 1)) }); break;
+      case 'play_steps': actions.push({ type: 'play_steps', step: Math.max(1, int(item.step, 1)), count: Math.max(1, Math.min(12, int(item.count, 1))),
         narrations: Array.isArray(item.narrations) ? item.narrations.filter((line): line is string => typeof line === 'string') : [] }); break;
       case 'rotate': if (['left','right','up','down'].includes(item.direction as string)) actions.push({ type: 'rotate',
         direction: item.direction as 'left', degrees: Math.max(5, Math.min(720, Math.abs(Number(item.degrees)) || 90)) }); break;
@@ -89,6 +89,7 @@ const browserVoice: Required<VoiceAdapter> = {
   stopListening: () => recognition?.stop(),
 };
 /** Default voice: Gradium, switching to browser speech for the rest of the session once Gradium proves unavailable. */
+let spoken = 0;
 let gradiumDownUntil = 0; // One network blip must not downgrade the whole session: retry Gradium after a cool-off.
 async function withFallback<T>(run: (voice: Required<VoiceAdapter>) => Promise<T>): Promise<T> {
   let reason: VoiceUnavailable | null = null;
@@ -100,8 +101,9 @@ async function withFallback<T>(run: (voice: Required<VoiceAdapter>) => Promise<T
   try { return await run(browserVoice); } catch (error) { throw reason ?? error; }
 }
 const defaultVoice: Required<VoiceAdapter> = {
-  speak: text => withFallback(voice => voice.speak(text)),
-  stop: () => { gradiumVoice.stop(); browserVoice.stop(); },
+  // A line that was stopped while Gradium was still failing over must not start again on the browser voice.
+  speak: text => { const mine = ++spoken; return withFallback(voice => mine === spoken ? voice.speak(text) : Promise.resolve()); },
+  stop: () => { spoken++; gradiumVoice.stop(); browserVoice.stop(); },
   listen: onPartial => withFallback(voice => voice.listen(onPartial)),
   stopListening: () => { gradiumVoice.stopListening(); browserVoice.stopListening(); },
 };
@@ -147,7 +149,13 @@ export function speak(text: string): Promise<void> {
     if (audible) adapter.speak(text).then(done, done);
   });
 }
-const narrationListeners = new Set<(text: string) => void>();
-export function onNarration(listener: (text: string) => void) { narrationListeners.add(listener); return () => { narrationListeners.delete(listener); }; }
+// Narration lines travel as a window event, not through module state: a dev-server hot update re-creates this module,
+// and a listener registered on the old copy would silently stop receiving lines (bubbles missing while the voice still speaks).
+const NARRATION_EVENT = 'brickvision:narration';
+export function onNarration(listener: (text: string) => void) {
+  const handle = (event: Event) => listener((event as CustomEvent<string>).detail);
+  window.addEventListener(NARRATION_EVENT, handle);
+  return () => window.removeEventListener(NARRATION_EVENT, handle);
+}
 /** A walkthrough line: show it in the chat and speak it. */
-export function narrate(text: string): Promise<void> { narrationListeners.forEach(listener => listener(text)); return speak(text); }
+export function narrate(text: string): Promise<void> { window.dispatchEvent(new CustomEvent<string>(NARRATION_EVENT, { detail: text })); return speak(text); }
