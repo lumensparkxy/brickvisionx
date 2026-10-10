@@ -2611,5 +2611,22 @@
     "source_repository_untouched": true,
     "push": "not_run",
     "deployment": "not_run"
+  },
+  "hackathon_chat_copilot": {
+    "date": "2026-10-10",
+    "status": "working_locally",
+    "endpoint": "POST /api/v1/chat",
+    "model": "gemini-3.8-flash",
+    "thinking_level": "low",
+    "browser_contract": "apps/web/src/agent.ts (window.brickvision)",
+    "manual_browser_run": "walkthrough steps 6-8 with narration, rotate 180, go to step 3 plus underside",
+    "typecheck": "pass",
+    "frontend_tests_passed": 54,
+    "api_tests": "pass (filtered subset)",
+    "full_check_py": "not_run",
+    "playwright": "not_run",
+    "voice_provider_integration": "not_run",
+    "human_review": "not_run",
+    "physical_build": "not_run"
   }
 }

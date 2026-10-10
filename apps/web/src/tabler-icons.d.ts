@@ -94,3 +94,39 @@ declare module '@tabler/icons-react/dist/esm/icons/IconX.mjs' {
   const Icon: typeof IconX;
   export default Icon;
 }
+
+declare module '@tabler/icons-react/dist/esm/icons/IconSparkles.mjs' {
+  import type { IconSparkles } from '@tabler/icons-react';
+  const Icon: typeof IconSparkles;
+  export default Icon;
+}
+
+declare module '@tabler/icons-react/dist/esm/icons/IconMicrophone.mjs' {
+  import type { IconMicrophone } from '@tabler/icons-react';
+  const Icon: typeof IconMicrophone;
+  export default Icon;
+}
+
+declare module '@tabler/icons-react/dist/esm/icons/IconSend2.mjs' {
+  import type { IconSend2 } from '@tabler/icons-react';
+  const Icon: typeof IconSend2;
+  export default Icon;
+}
+
+declare module '@tabler/icons-react/dist/esm/icons/IconVolume.mjs' {
+  import type { IconVolume } from '@tabler/icons-react';
+  const Icon: typeof IconVolume;
+  export default Icon;
+}
+
+declare module '@tabler/icons-react/dist/esm/icons/IconVolumeOff.mjs' {
+  import type { IconVolumeOff } from '@tabler/icons-react';
+  const Icon: typeof IconVolumeOff;
+  export default Icon;
+}
+
+declare module '@tabler/icons-react/dist/esm/icons/IconMessageChatbot.mjs' {
+  import type { IconMessageChatbot } from '@tabler/icons-react';
+  const Icon: typeof IconMessageChatbot;
+  export default Icon;
+}

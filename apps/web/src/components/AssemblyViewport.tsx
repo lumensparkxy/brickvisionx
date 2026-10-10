@@ -62,7 +62,7 @@ function rendererAudit(renderer: THREE.WebGLRenderer, manifest: SceneManifest) {
     audit.disposedAtMs=performance.now();audit.disposedResources={geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures};
   }};
 }
-export interface CameraCommand { action: CameraAction; token: number; }
+export interface CameraCommand { action: CameraAction | 'up' | 'down'; token: number; degrees?: number; }
 export default function AssemblyViewport({ scene: manifest, step, previous, replayToken, command, onThumbnails, onColorNames, fullBuild, paused, onAnimationComplete, onReadyChange }: {
   scene: SceneManifest; step: StepSnapshot; previous?: StepSnapshot; replayToken: number; command: CameraCommand; onThumbnails: (images: Record<string,string>) => void;
   onColorNames?: (names: Record<string,string>) => void;
@@ -73,7 +73,7 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
   const frameKey=(snapshot:StepSnapshot)=>`${snapshot.section_id??''}:${snapshot.printed_step_number===null?snapshot.step_id:snapshot.main_step_number}`;
   const host = useRef<HTMLDivElement>(null); const stepRef = useRef(step);
   const applyStep = useRef<((animate?: boolean) => void) | null>(null);
-  const cameraCommand = useRef<((action: CameraCommand['action']) => void) | null>(null);
+  const cameraCommand = useRef<((action: CameraCommand['action'], degrees?: number) => void) | null>(null);
   const playbackRef = useRef({fullBuild,paused,onAnimationComplete});
   useEffect(()=>{playbackRef.current={fullBuild,paused,onAnimationComplete};});
   const [placementNote,setPlacementNote] = useState('');
@@ -92,7 +92,7 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
     }
   }, [step, previous]);
   useEffect(() => { if (replayToken) applyStep.current?.(true); }, [replayToken]);
-  useEffect(() => { cameraCommand.current?.(command.action); }, [command]);
+  useEffect(() => { cameraCommand.current?.(command.action, command.degrees); }, [command]);
   useEffect(() => {
     if (!host.current) return;
     let cancelled = false; let frame = 0; let dirty = true; let viewportVisible = true;
@@ -241,9 +241,27 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
       camera.position.copy(center).addScaledVector(direction,distance); controls.target.copy(center); controls.update();
       updateStage(box);
     };
-    cameraCommand.current = action => {
+    // Chat/voice commands orbit by an angle with easing; toolbar buttons keep their fixed nudge.
+    let orbitFrame = 0;
+    const orbit = (radians: number, vertical: boolean) => {
+      cancelAnimationFrame(orbitFrame);
+      const started = performance.now(), duration = Math.min(3200, Math.max(600, Math.abs(radians) * 800)); let applied = 0;
+      const tick = (now: number) => {
+        if (cancelled) return;
+        const t = Math.min(1, (now - started) / duration), eased = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+        const delta = eased * radians - applied; applied += delta;
+        const offset = camera.position.clone().sub(controls.target);
+        offset.applyAxisAngle(vertical ? new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0) : camera.up, delta);
+        camera.position.copy(controls.target).add(offset); controls.update(); dirty = true;
+        if (t < 1) orbitFrame = requestAnimationFrame(tick);
+      };
+      orbitFrame = requestAnimationFrame(tick);
+    };
+    cameraCommand.current = (action, degrees) => {
       clearSourceView();
-      if (action === 'reset') fit();
+      if (action === 'reset') { cancelAnimationFrame(orbitFrame); fit(); }
+      else if (action === 'up' || action === 'down') orbit(THREE.MathUtils.degToRad(degrees ?? 45) * (action === 'up' ? -1 : 1), true);
+      else if (degrees !== undefined && (action === 'left' || action === 'right')) orbit(THREE.MathUtils.degToRad(degrees) * (action === 'left' ? -1 : 1), false);
       else moveCamera(camera, controls, action);
     };
     const resize = new ResizeObserver(() => { const {width,height} = element.getBoundingClientRect(); viewportVisible = width >= 1 && height >= 1; if (!viewportVisible) return; camera.aspect = width/height; camera.updateProjectionMatrix(); renderer.setSize(width,height); fit(); if(sourceView) sourceCameraControl.apply(sourceView.spec,stepRef.current.step_id); }); resize.observe(element);

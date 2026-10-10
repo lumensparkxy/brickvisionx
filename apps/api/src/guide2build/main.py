@@ -2,6 +2,7 @@
 from pathlib import Path
 import hashlib
 import json
+import logging
 import os
 import re
 import uuid
@@ -11,6 +12,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 from .catalog import ROOT, find_set, find_guide
+from .chat import ChatRequest, ChatUnavailable, reply as chat_reply
 from .core.models import SceneManifest
 from .core.bom import bill_of_materials
 from .jobs.models import ConversionRequest
@@ -76,6 +78,19 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
     @app.get("/api/v1/config")
     def runtime_config():
         return {"mode": "local", "source_images": True, "requests_enabled": False}
+
+    @app.post("/api/v1/chat")
+    async def chat(payload: ChatRequest):
+        """Chat/voice copilot for the viewer; calls Gemini only for an explicit user message."""
+        try:
+            return await chat_reply(payload)
+        except ChatUnavailable as error:
+            missing("provider_unavailable", str(error), 503)
+        except ValueError as error:
+            missing("invalid_request", str(error), 422)
+        except Exception as error:
+            logging.getLogger("uvicorn.error").warning("chat failed: %s: %s", type(error).__name__, error)
+            missing("chat_failed", "BrickBuddy could not answer just now. Please try again.", 502)
 
     @app.get("/api/v1/health")
     def health():
