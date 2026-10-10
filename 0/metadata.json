@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4JYNMJD75ECHBZFEQED4A7R",
+  "session_id": "01a12572-6c99-7c42-a24b-73bc4f51e05c",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T13:05:15.021218Z",
+  "branch": "codex/migrate-google-adk",
+  "checkpoints_count": 3,
+  "save_step_count": 1,
+  "files_touched": [
+    "docs/execution/SHUTTLE_TERMINAL.md"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6-astra",
+  "turn_id": "3c9885f080d4",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 796071,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 33520640,
+    "output_tokens": 142841,
+    "api_call_count": 354,
+    "subagent_tokens_complete": false
+  },
+  "session_metrics": {
+    "turn_count": 8
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T13:05:14.795355Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 5,
+    "human_modified": 4,
+    "human_removed": 0,
+    "total_committed": 5,
+    "total_lines_changed": 9,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

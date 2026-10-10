@@ -1,0 +1,129 @@
+<send_user_message_question_reply>
+[{"questionItemId":"[\"request_user_input_async\",\"call_73ce18ae0ed64532acd55b94b54c57e1\",0]","question":"For the live ADK smoke test, can you add GOOGLE_API_KEY to /Users/admin/learn_python/brickvisionx/.env locally? Please keep the key out of this chat. I’ll continue the migration and tests while you configure it.","answer":"I’ll configure the local .env"}]
+</send_user_message_question_reply>
+
+---
+
+okay.. i update the .env with real api key..&#x20;
+
+I dont want to disturb iconic red aeroplane..&#x20;
+
+
+
+
+
+we can test our engine and end to end test for&#x20;
+
+## **31134 · Space Shuttle**
+
+---
+
+PLEASE IMPLEMENT THIS PLAN:
+# Isolated Space Shuttle ADK end-to-end test
+
+## Summary
+
+Test **31134 · Space Shuttle, booklet-01** from official PDF through live ADK reconstruction, rendering and browser playback.
+
+Use the selected **300-request ceiling** and **coverage-with-findings** policy. Preserve the Iconic Red Aeroplane demo and its running application.
+
+## Isolation and runtime
+
+- Create a fresh experiment under `/Users/admin/learn_python/brickvisionx/var/experiments/adk-31134-booklet01-20261010/`, with its own database, source cache, geometry, candidates and evidence.
+- Hash the red aeroplane’s assets, candidate and revision records before and after testing. Do not write to them or enqueue jobs in its database.
+- Reuse only the verified official Shuttle PDF and receipt from the source repository, copied without modifying the source. Confirm **60 pages** and SHA-256 `156045d1052fd105d873093918d41239641e96e40484cb35fa0b010587339d66`. [Official booklet](https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6457820.pdf)
+- Start reconstruction fresh. Exclude previous Shuttle scenes, placements, model responses and job checkpoints. Individual verified part geometry may seed the private cache; resolve additional parts through the existing bounded resolver.
+- Freeze `gemini-3.8-flash`, medium thinking, 120-second invocation deadline, one worker, exploration policy, baseline proposals, incremental context and at most two proposal attempts per instruction.
+- Enforce **300 total requests**, including indexing, review, repair and interrupted attempts across resume. Retain disabled SDK retries, tools and provider fallback.
+
+## Execution
+
+- Run the existing engine against the isolated database and a unique experiment revision.
+- Checkpoint and inspect the first four printed main steps and their callouts, then continue through the complete booklet within the same budget.
+- Preserve quality disagreements and rejected instructions as findings. Pause on credential, quota, infrastructure or budget blockers; do not silently increase limits.
+- Render available snapshots and evaluate coverage, quantities, stable physical-instance IDs, attachment history and source agreement.
+- Serve only this candidate through the existing read-only preview on `http://127.0.0.1:4176`. Keep the normal red aeroplane application on port 5173.
+- Keep existing application HTTP interfaces unchanged. No deployment, publication or GitHub push.
+
+## Verification and acceptance
+
+- Add an opt-in real-data browser test enabled by `GUIDE2BUILD_SHUTTLE_PREVIEW_URL`; ordinary CI skips it and never initiates inference.
+- Test Shuttle selection, loading, official source display, early/final available instructions, callouts, Previous/Next, seeking, Replay, full playback and reload on desktop and **390×844** phone viewports.
+- Capture screenshots and unexpected console/network failures. Run relevant backend checks, schemas, frontend tests, typecheck and build.
+- Confirm red aeroplane hashes and revision records remain unchanged.
+- Deliver exact commands, job ID, preview URL, request/token usage, coverage, findings and Entire checkpoint references.
+- Report software E2E, processed instructions and reconstructed instructions separately. Claim complete reconstruction only if all required steps and callouts are represented; otherwise deliver the preserved partial candidate and explicit failed or blocked gates. Human review and physical build remain unperformed.
+
+---
+
+<send_user_message_question_reply>
+[{"questionItemId":"[\"request_user_input_async\",\"call_5628f39841c848d7a748556d82f2bbcc\",0]","question":"Gemini rejected the Shuttle request with HTTP 400. Can you verify that GOOGLE_API_KEY in /Users/admin/learn_python/brickvisionx/.env is a Gemini Developer API key from Google AI Studio? Its format does not match the usual Google API-key prefix. If needed, replace it locally and reply “updated”; please keep the key out of this chat.","answer":"It is already a Google AI Studio key"}]
+</send_user_message_question_reply>
+
+---
+
+can you verify if the key is valid
+
+---
+
+what happens if we reduce this 120 second  limit.. 
+will i hit the rate limit ??
+
+---
+
+okay.. for now.. I want to go faster.. i dont want to have this limit.. 
+
+can you give me  terminal command.. that i can execute.. so that i dont have to use codex here..
+
+---
+
+why  are you taking this long to just give me terminal command
+
+---
+
+can we run with multiple workers ??
+
+---
+
+admin@m3air brickvisionx % bash <<'RUN'
+set -euo pipefail
+DATA=var/experiments/adk-31134-booklet01-20261010/data
+
+JOB="$(
+  .venv/bin/python tools/engine.py --data-dir "$DATA" enqueue \
+    --set 31134 --guide booklet-01 --execution-policy explore \
+    --model gemini-3.8-flash --thinking-level medium \
+    --provider-timeout none --max-model-calls 300 \
+    --max-panel-attempts 2 \
+    --revision adk-31134-booklet01-no-timeout-v1 \
+    --share-budget-with 2573f70cc20e45329bce1656bddf64d9 |
+  .venv/bin/python -c 'import json,sys; print(json.load(sys.stdin)[0]["id"])'
+)"
+
+printf 'Shuttle job: %s\n' "$JOB"
+printf '%s\n' "$JOB" > "$DATA/../no-timeout-job-id.txt"
+
+.venv/bin/python tools/engine.py --data-dir "$DATA" resume "$JOB" \
+  --provider --retry-provider-calls
+
+exec caffeinate -i .venv/bin/python tools/engine.py --data-dir "$DATA" run \
+  --job-id "$JOB" --workers 1
+RUN
+Shuttle job: 09b49f4a727f45db8f35dd30bfc23c57
+Traceback (most recent call last):
+  File "/Users/admin/learn_python/brickvisionx/tools/engine.py", line 372, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/admin/learn_python/brickvisionx/tools/engine.py", line 327, in main
+    store.retry(args.job_id, retry_provider_calls=(args.command == "resume" and args.retry_provider_calls))
+  File "/Users/admin/learn_python/brickvisionx/apps/api/src/guide2build/engine/store.py", line 408, in retry
+    detail["provider_retries"] = authorize_provider_retries(self.root / "jobs" / job_id, checkpoint)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/admin/learn_python/brickvisionx/apps/api/src/guide2build/engine/exploration.py", line 907, in authorize_provider_retries
+    raise ValueError("No failed provider call is eligible for explicit retry")
+ValueError: No failed provider call is eligible for explicit retry
+admin@m3air brickvisionx %
+
+---
+
+okay.. commit and push the code..
