@@ -2589,7 +2589,7 @@
     "linkedin_posted": false
   },
   "brickvisionx_migration": {
-    "status": "software_verified_live_credentials_pending",
+    "status": "complete_starter_verified",
     "source_snapshot": "docs/migration/source-snapshot.json",
     "current_validation": "docs/migration/VALIDATION.md",
     "scope": "local app plus bounded one-page ADK smoke",
@@ -2606,10 +2606,19 @@
     "frontend_tests_passed": 54,
     "software_browser_tests_passed": 20,
     "selected_reference_browser_tests_passed": 2,
-    "live_smoke": "blocked_authentication_required",
-    "live_model_requests": 0,
+    "live_smoke": "passed_schema_valid_and_agent_source_compared",
+    "live_model_requests": 1,
     "source_repository_untouched": true,
     "push": "not_run",
-    "deployment": "not_run"
+    "deployment": "not_run",
+    "smoke_page_index": 1,
+    "smoke_panel_count": 2,
+    "smoke_elapsed_seconds": 17.00809883303009,
+    "smoke_reported_total_tokens": 3212,
+    "smoke_evidence": "var/adk-smoke/96d077fd66057e16efeb3d94f7110f8409d7c2868d038c86dd2770644f31b258",
+    "live_response_reuse": "verified_no_new_request",
+    "secret_audit": "no_key_found_in_generated_evidence_browser_bundle_or_checkpoint",
+    "local_checkpoint_commit": "82f4df3c66086cb99c927d857d96414b0b4c46af",
+    "entire_checkpoint": "01M4JS1XV2ZHK31KBD5928ASG3"
   }
 }

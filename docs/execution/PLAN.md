@@ -4,6 +4,8 @@
 
 Approved scope: import current local code, preserve Entire development hooks, replace the application Codex runtime with Google ADK/Gemini Developer API, and verify one official 30669/alt-02 page with at most three requests. Preserve source history and historical evidence; no cloud publication or GitHub push. Migration inventory and current validation live under docs/migration/.
 
+Checkpoint complete: the local viewer runs, software checks pass, and one live ADK request validates two instruction panels from official printed page 2. The source comparison is agent inspection; full reconstruction, human review and physical build remain unperformed. The completed smoke reuses its response without another request. Current proof: `docs/migration/VALIDATION.md`.
+
 
 ## Publish the project as open source — 6 October 2026
 
