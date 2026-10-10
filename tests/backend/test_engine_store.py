@@ -1,4 +1,6 @@
 import time
+import hashlib
+import json
 import pytest
 from guide2build.engine.store import EngineStore, LeaseLost
 from guide2build.engine.provider import child_environment
@@ -63,6 +65,35 @@ def test_cancel_retry_and_provider_pause(tmp_path):
     with pytest.raises(InterruptedError):
         store.checkpoint(job["id"], "a", {})
     assert store.get(job["id"])["state"] == "cancelled"
+
+
+def test_explicit_provider_retry_is_durable_and_preserves_consumed_attempt(tmp_path):
+    store = EngineStore(tmp_path)
+    job = store.enqueue("30669", "alt-02", {"execution_policy": "explore"})
+    store.claim("owner", job_id=job["id"])
+    target = store.root / "jobs" / job["id"] / "exploration/calls/index-0000"
+    target.mkdir(parents=True)
+    prompt = "Synthetic original request"
+    inputs = {"prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(), "images": []}
+    request = json.dumps({"prompt": prompt, "inputs": inputs}).encode()
+    receipt = json.dumps({"status": "failed", "inputs": inputs,
+                          "error": {"code": "provider_unavailable", "message": "Synthetic blocker"}}).encode()
+    (target / "request.json").write_bytes(request)
+    (target / "receipt.json").write_bytes(receipt)
+    checkpoint = {"model_calls_used": 1, "local_model_calls_used": 1,
+        "exploration_calls": {"index-0000": {"status": "failed", "inputs": inputs,
+            "request_sha256": hashlib.sha256(request).hexdigest(),
+            "receipt_sha256": hashlib.sha256(receipt).hexdigest(), "call_number": 1}}}
+    store.checkpoint(job["id"], "owner", checkpoint, "blocked")
+    store.retry(job["id"], retry_provider_calls=True)
+    resumed = EngineStore(tmp_path).get(job["id"])
+    assert resumed["state"] == "queued"
+    assert resumed["checkpoint"]["model_calls_used"] == store.lineage_model_calls_used(job["id"]) == 1
+    assert resumed["checkpoint"]["exploration_calls"]["index-0000"]["provider_retry_key"].startswith("index-0000-provider-retry-")
+    assert (target / "request.json").read_bytes() == request
+    assert (target / "receipt.json").read_bytes() == receipt
+    with pytest.raises(ValueError, match="No failed provider"):
+        store.retry(job["id"], retry_provider_calls=True)
 
 
 def test_environment_excludes_keys_cloud_and_parent_agent_state():

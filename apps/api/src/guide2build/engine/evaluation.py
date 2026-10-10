@@ -16,7 +16,7 @@ from pydantic import Field, model_validator
 from ..core.models import Pose, SourcePanel, StrictModel
 from ..releases.models import SceneV2, Source, digest
 from .connectors import rotation_matrix
-from .reporting import _counts, _event_usage
+from .reporting import _call_usage
 from .spatial import _same_pose
 
 
@@ -95,52 +95,54 @@ def _number(value):
 def summarize_job_calls(directory):
     """Count actual invocations once across strict, alpha and exploration layouts.
 
-    A timed-out process may have process-result.json but no invocation.json. The
-    shared directory identifies one call; raw token events take precedence over
-    copied usage receipts. Inherited parent calls remain outside this local count.
+    Legacy processes and embedded ADK have different final receipt filenames.
+    Their shared directory identifies one call; raw token events take precedence
+    per field over copied receipts. Inherited calls remain outside this local count.
     """
     directory = Path(directory)
     call_directories = set()
-    for name in ("invocation.json", "process-result.json"):
+    for name in ("invocation.json", "runtime-result.json", "process-result.json"):
         for path in directory.rglob(name):
             if len(call_directories) >= 20000:
                 raise ValueError("Invocation evidence exceeds evaluation bound")
             if path.is_symlink() or not path.resolve().is_relative_to(directory.resolve()):
                 raise ValueError("Invocation evidence escapes its job")
             call_directories.add(path.parent)
-    usage, elapsed, failed, missing_results = {}, 0.0, 0, 0
-    usage_calls = timing_calls = event_calls = receipt_calls = 0
+    usage, elapsed, failed, missing_results, cancelled = {}, 0.0, 0, 0, 0
+    usage_calls = timing_calls = event_calls = receipt_calls = supplement_calls = 0
     for parent in sorted(call_directories):
         records = []
-        for name in ("invocation.json", "process-result.json"):
+        for name in ("invocation.json", "runtime-result.json", "process-result.json"):
             path = parent / name
             try:
                 value = _read(path, 1_000_000, directory) if path.exists() else {}
                 records.append(value if isinstance(value, dict) else {})
             except (ValueError, OSError):
                 records.append({})
-        receipt, process = records
-        duration = receipt.get("elapsed_seconds")
-        if not _number(duration):
-            duration = process.get("elapsed_seconds")
+        duration = next((record.get("elapsed_seconds") for record in records
+                         if _number(record.get("elapsed_seconds"))), None)
         if _number(duration):
             elapsed += duration
             timing_calls += 1
+        # Keep the historical report key while including failed embedded calls.
+        receipt, _, process = records
         code = process.get("returncode", receipt.get("returncode"))
-        if type(code) is int and code != 0:
+        if any(record.get("status") == "failed" for record in records) or (type(code) is int and code != 0):
             failed += 1
-        if process.get("structured_result_present") is False:
+        if any(record.get("status") == "cancelled" for record in records):
+            cancelled += 1
+        if process.get("structured_result_present") is False or any(
+                record.get("status") == "failed" or record.get("status") == "cancelled" for record in records):
             missing_results += 1
         events = parent / "events.jsonl"
         if events.exists() and (events.is_symlink() or events.stat().st_size > 32_000_000):
             raise ValueError("Unsafe or oversized provider event evidence")
-        measured = _event_usage(events)
-        if measured:
+        measured, has_events, supplemented = _call_usage(records, events)
+        if has_events:
             event_calls += 1
-        else:
-            measured = _counts(receipt.get("reported_usage"))
-            if measured:
-                receipt_calls += 1
+        elif measured:
+            receipt_calls += 1
+        supplement_calls += bool(supplemented)
         if measured:
             usage_calls += 1
             for key, value in measured.items():
@@ -148,10 +150,12 @@ def summarize_job_calls(directory):
     total = len(call_directories)
     return {"model_invocations": total, "model_elapsed_seconds": elapsed, "reported_usage": usage,
             "process_failures": failed, "processes_without_structured_result": missing_results,
+            "cancelled_invocations": cancelled,
             "usage_reporting": {"status": "complete" if total and usage_calls == total else
                                 "partial" if usage_calls else "unavailable", "calls_with_usage": usage_calls,
                                 "calls_without_usage": total - usage_calls, "raw_event_calls": event_calls,
-                                "receipt_fallback_calls": receipt_calls},
+                                "receipt_fallback_calls": receipt_calls,
+                                "receipt_supplement_calls": supplement_calls},
             "timing_reporting": {"calls_with_elapsed_time": timing_calls,
                                  "calls_without_elapsed_time": total - timing_calls}}
 

@@ -17,6 +17,13 @@ DEFAULT_INFERENCE_TIMEOUT_SECONDS = 120
 _MAX_RESPONSE_BYTES = 20_000_000
 _MAX_EVENT_BYTES = 32_000_000
 _SECRET_PATTERN = re.compile(r"AIza[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9_-]{12,}")
+_URL_PATTERN = re.compile(r"\b(?:https?|wss?)://\S+", re.IGNORECASE)
+_CREDENTIAL_ASSIGNMENT = re.compile(
+    r"\b(?:api[_-]?key|access[_-]?token|refresh[_-]?token|token|password|secret)\b[\"']?\s*[:=]\s*"
+    r"(?:\"[^\"]*\"|'[^']*'|[^\s,;\]}]+)", re.IGNORECASE)
+_API_STATUSES = {"INVALID_ARGUMENT", "PERMISSION_DENIED", "RESOURCE_EXHAUSTED", "UNAUTHENTICATED",
+    "NOT_FOUND", "UNAVAILABLE", "INTERNAL", "DEADLINE_EXCEEDED", "FAILED_PRECONDITION", "ABORTED",
+    "OUT_OF_RANGE", "CANCELLED", "UNKNOWN", "UNIMPLEMENTED", "DATA_LOSS", "ALREADY_EXISTS"}
 _FAILURE_MESSAGES = {
     "authentication_required": "Configure a valid backend GOOGLE_API_KEY for the Gemini Developer API.",
     "rate_limited": "The Gemini Developer API rate limit was reached; the request was not retried.",
@@ -25,6 +32,7 @@ _FAILURE_MESSAGES = {
     "unsupported_model": "The selected Gemini model is unavailable for this API key or request.",
     "provider_timeout": "The ADK invocation exceeded its bounded time limit.",
     "invalid_output": "ADK did not return valid output matching the engine schema.",
+    "request_rejected": "The Gemini Developer API rejected the request; inspect the sanitized invocation receipt.",
     "provider_unavailable": "The Gemini Developer API request failed; inspect the sanitized invocation receipt.",
 }
 
@@ -67,6 +75,8 @@ def classify_provider_error(error):
         code = "unsupported_model"
     elif any(term in diagnostic for term in ("response_json_schema", "response_schema", "invalid_json_schema")):
         code = "invalid_schema"
+    elif status == "400":
+        code = "request_rejected"
     elif "llmcallslimit" in type(error).__name__.lower():
         code = "invalid_output"
     else:
@@ -86,6 +96,98 @@ def _redact(value, secrets):
     return value
 
 
+def _diagnostic_text(message, secrets, limit=1200):
+    if re.search(r"\b(?:headers?|authorization|proxy-authorization|cookies?|set-cookie|"
+                 r"x-goog-api-key|x-api-key)\b", message, re.IGNORECASE):
+        return "[REDACTED_HEADER_DIAGNOSTIC]"
+    message = _redact(message, secrets)
+    message = _URL_PATTERN.sub("[REDACTED_URL]", message)
+    message = _CREDENTIAL_ASSIGNMENT.sub("credential=[REDACTED]", message)
+    return " ".join(message.split())[:limit]
+
+
+def _rpc_diagnostics(details, secrets):
+    """Extract only bounded, recognized Google RPC detail scalars."""
+    if not isinstance(details, dict):
+        return []
+    payload = details.get("error", details)
+    if not isinstance(payload, dict) or not isinstance(payload.get("details"), list):
+        return []
+    records, violation_count = [], 0
+    for detail in payload["details"][:10]:
+        if not isinstance(detail, dict):
+            continue
+        kind = detail.get("@type")
+        if kind in ("type.googleapis.com/google.rpc.BadRequest", "google.rpc.BadRequest"):
+            violations = []
+            values = detail.get("fieldViolations")
+            for value in values[:20] if isinstance(values, list) else []:
+                if not isinstance(value, dict) or violation_count >= 20:
+                    continue
+                safe = {}
+                field = value.get("field")
+                if isinstance(field, str) and len(field) <= 240:
+                    field = _redact(field, secrets)
+                    if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*(?:\[[0-9]{1,8}\])?"
+                                    r"(?:\.[A-Za-z_][A-Za-z0-9_]*(?:\[[0-9]{1,8}\])?)*", field):
+                        safe["field"] = field
+                description = value.get("description")
+                if isinstance(description, str):
+                    safe["description"] = _diagnostic_text(description, secrets, 600)
+                if safe:
+                    violation_count += 1
+                    violations.append(safe)
+            if violations:
+                records.append({"type": "google.rpc.BadRequest", "field_violations": violations})
+        elif kind in ("type.googleapis.com/google.rpc.ErrorInfo", "google.rpc.ErrorInfo"):
+            safe = {"type": "google.rpc.ErrorInfo"}
+            reason, domain = detail.get("reason"), detail.get("domain")
+            if isinstance(reason, str) and re.fullmatch(r"[A-Z][A-Z0-9_]{0,79}", _redact(reason, secrets)):
+                safe["reason"] = reason
+            if isinstance(domain, str) and len(domain) <= 120:
+                domain = _redact(domain, secrets)
+                if re.fullmatch(r"[a-z0-9]+(?:[.-][a-z0-9]+)*", domain):
+                    safe["domain"] = domain
+            if len(safe) > 1:
+                records.append(safe)
+    return records
+
+
+def safe_provider_diagnostic(error):
+    """Allowlisted private metadata, never a raw exception/HTTP response dump."""
+    from google.genai.errors import APIError
+
+    name = type(error).__name__
+    diagnostic = {"exception_class": name if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,119}", name)
+                  else "Exception", "category": "unexpected"}
+    status = getattr(error, "code", getattr(error, "status_code", None))
+    if type(status) is int and 100 <= status <= 599:
+        diagnostic["http_status"] = status
+    if isinstance(error, APIError):
+        diagnostic["category"] = "api_response"
+        secrets = tuple(value for key in ("GOOGLE_API_KEY", "GEMINI_API_KEY", "OPENAI_API_KEY")
+                        if (value := os.environ.get(key)))
+        if isinstance(error.status, str) and error.status in _API_STATUSES:
+            diagnostic["api_status"] = error.status
+        # APIError.message is the SDK's extracted API message. Its raw str(error)
+        # includes response_json/details and may contain credentials or headers.
+        if isinstance(error.message, str):
+            diagnostic["api_message"] = _diagnostic_text(error.message, secrets)
+        rpc_details = _rpc_diagnostics(error.details, secrets)
+        if rpc_details:
+            diagnostic["rpc_details"] = rpc_details
+    elif isinstance(error, ProviderFailure):
+        diagnostic["category"] = "provider_contract"
+    elif isinstance(error, TimeoutError) or "timeout" in name.lower():
+        diagnostic["category"] = "deadline"
+    elif isinstance(error, (AttributeError, ImportError, TypeError, ValueError)):
+        diagnostic["category"] = "configuration"
+    elif isinstance(error, OSError) or name in {"ConnectError", "ReadError", "WriteError",
+                                               "RemoteProtocolError", "LocalProtocolError"}:
+        diagnostic["category"] = "transport"
+    return diagnostic
+
+
 def _json_bytes(value):
     return json.dumps(value, sort_keys=True, ensure_ascii=False).encode()
 
@@ -97,8 +199,9 @@ class GoogleAdkProvider:
             raise ValueError("Select a Gemini Developer API model name")
         if thinking_level not in {"low", "medium", "high"}:
             raise ValueError("Unsupported provider thinking level")
-        if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0:
-            raise ValueError("Provider timeout must be a finite positive number")
+        if timeout is not None and (isinstance(timeout, bool) or not isinstance(timeout, (int, float))
+                or not math.isfinite(timeout) or timeout <= 0):
+            raise ValueError("Provider timeout must be a finite positive number or None")
         self.model = model
         self.thinking_level = thinking_level
         self.timeout = timeout
@@ -129,6 +232,9 @@ class GoogleAdkProvider:
         def on_request():
             receipt["model_requests_started"] += 1
 
+        def on_diagnostic(diagnostic):
+            receipt["diagnostic"] = diagnostic
+
         def on_event(event):
             safe = _redact(event, secrets)
             line = json.dumps(safe, ensure_ascii=False) + "\n"
@@ -158,6 +264,14 @@ class GoogleAdkProvider:
             write_json("schema.json", schema)
             receipt["prompt_sha256"] = hashlib.sha256(prompt.encode()).hexdigest()
             receipt["schema_sha256"] = hashlib.sha256(_json_bytes(schema)).hexdigest()
+            from .schema_transport import CONVERSION_VERSION, SchemaTransportError, project_schema
+            try:
+                transport_schema = project_schema(schema)
+            except SchemaTransportError:
+                raise ProviderFailure("invalid_schema", _FAILURE_MESSAGES["invalid_schema"]) from None
+            write_json("transport_schema.json", transport_schema)
+            receipt["transport_schema_sha256"] = hashlib.sha256(_json_bytes(transport_schema)).hexdigest()
+            receipt["schema_conversion_version"] = CONVERSION_VERSION
             image_inputs = []
             receipt["images"] = []
             for image in images:
@@ -183,7 +297,8 @@ class GoogleAdkProvider:
             from .adk_runtime import run_adk_request
             raw = asyncio.run(self._bounded_request(run_adk_request(
                 api_key=api_key, model=self.model, thinking_level=self.thinking_level, timeout=self.timeout,
-                prompt=prompt, images=image_inputs, schema=schema, on_request=on_request, on_event=on_event),
+                prompt=prompt, images=image_inputs, schema=transport_schema, on_request=on_request, on_event=on_event,
+                on_diagnostic=on_diagnostic),
                 started=started, check=check))
             if len(raw.encode()) > _MAX_RESPONSE_BYTES:
                 raise ProviderFailure("invalid_output", "ADK response exceeded the 20 MB output limit.")
@@ -206,6 +321,8 @@ class GoogleAdkProvider:
         except Exception as error:
             failure = classify_provider_error(error)
             failure = ProviderFailure(failure.code, _redact(str(failure), secrets))
+            if "diagnostic" not in receipt:
+                receipt["diagnostic"] = safe_provider_diagnostic(error)
             receipt["status"] = "failed"
             receipt["failure"] = {"code": failure.code, "message": str(failure)}
             raise failure from None
@@ -219,10 +336,13 @@ class GoogleAdkProvider:
         try:
             while True:
                 check()
-                remaining = self.timeout - (time.monotonic() - started)
-                if remaining <= 0:
-                    raise ProviderFailure("provider_timeout", _FAILURE_MESSAGES["provider_timeout"])
-                done, _ = await asyncio.wait({task}, timeout=min(.05, remaining))
+                poll_seconds = .05
+                if self.timeout is not None:
+                    remaining = self.timeout - (time.monotonic() - started)
+                    if remaining <= 0:
+                        raise ProviderFailure("provider_timeout", _FAILURE_MESSAGES["provider_timeout"])
+                    poll_seconds = min(poll_seconds, remaining)
+                done, _ = await asyncio.wait({task}, timeout=poll_seconds)
                 if done:
                     check()
                     return task.result()

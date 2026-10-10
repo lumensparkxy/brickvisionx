@@ -1,8 +1,14 @@
 # Execution checkpoints
 
+## Isolated Space Shuttle ADK end-to-end test — 10 October 2026
+
+Approved: fresh 31134/booklet-01 run under var/experiments/adk-31134-booklet01-20261010/, Google ADK/Gemini 3.8 Flash medium, 120-second deadline, one worker, exploration with findings, baseline proposals and incremental context, at most two proposals per instruction, 300 total requests including indexing/review/repair/interruption. Inspect the first four printed main steps and callouts, then continue through the full official booklet. Preserve the red aeroplane files, revision/database records and its running app. Serve only the new candidate on loopback port 4176. Add an opt-in real-data browser test, record source/render comparisons and software checks, and retain all blockers. No publication, push, human approval or physical-build claim.
+
 ## BrickVisionX Google ADK starter migration — 10 October 2026
 
 Approved scope: import current local code, preserve Entire development hooks, replace the application Codex runtime with Google ADK/Gemini Developer API, and verify one official 30669/alt-02 page with at most three requests. Preserve source history and historical evidence; no cloud publication or GitHub push. Migration inventory and current validation live under docs/migration/.
+
+Checkpoint complete: the local viewer runs, software checks pass, and one live ADK request validates two instruction panels from official printed page 2. The source comparison is agent inspection; full reconstruction, human review and physical build remain unperformed. The completed smoke reuses its response without another request. Current proof: `docs/migration/VALIDATION.md`.
 
 
 ## Publish the project as open source — 6 October 2026
@@ -1039,6 +1045,24 @@ Saved Sol prefix testing is complete: structural validation and all 41 fresh Thr
 User explicitly authorizes adding/replacing this 31134/booklet-01 model in production. Preserve the existing release, red aeroplane and all other catalogue entries. Freeze the exact final scene and job rows, inspect current production pointers, package only approved public scene/individual-part assets, and disclose 56/57 reconstructed panels plus the unresolved main 39. Extend alpha transport only if needed to retain truthful exploration provenance; preserve old alpha compatibility and all source/asset fences. Verify the new bundle and preview, stage immutable assets, record publication approval from the existing authenticated release authority, then promote only this booklet using the observed expected head. Inspect real production loading and both service aliases/CORS, verify other release heads unchanged, and retain exact rollback commands. No inference, new reconstruction, cleanup, new infrastructure or historical overwrites.
 
 Publication checkpoint complete: the exact Sol candidate is live as unverified alpha for 31134/booklet-01 only. 57/57 panels processed, 56 reconstructed; 72 snapshots and 148 pieces, with main 39 unresolved. Full release checks passed (1408 backend and 53 frontend tests). Both production aliases, all 240 public assets, CORS, phone panels and the unchanged red aeroplane checked. All other 12 catalogue entries, old shuttle release, raw engine scene and five job rows preserved. No new inference or correction. Evidence: var/evidence/publish-sol-shuttle-20261006T102855Z/REPORT.md; exact rollback commands retained.
+
+### Independent Terminal run without a client deadline — 10 October 2026
+
+The user requests a Terminal command to run ADK without Codex and remove the
+120-second deadline. Add explicit `--provider-timeout none`; retain the ordinary
+120-second default, cancellation checks, model/schema settings and frozen job
+configuration. Prepare a fresh isolated Shuttle revision sharing the original
+300-request lineage ceiling (24 charged, 276 available). Keep the original
+blocked run, source assets and red aeroplane untouched. Do not start new paid
+inference while preparing the user-executed command.
+
+Verify the actual SDK timeout/header behavior, cancellation and secret-safe
+failures, plus CLI root selection and lineage enforcement across resume. Reject
+correction descendants as budget roots. Explicitly use a zero-retry HTTPX
+transport so optional aiohttp installation cannot enable hidden reconnects.
+Record software checks and a read-only real-source/budget preflight. Provide
+start, resume and observation commands in SHUTTLE_TERMINAL.md; Google server
+deadlines and quotas remain outside this client control.
 
 ### Hackathon demo: BrickBuddy chat/voice copilot — 10 October 2026
 

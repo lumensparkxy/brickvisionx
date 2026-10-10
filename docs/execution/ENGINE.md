@@ -6,6 +6,14 @@ Starter integration check: `uv run python tools/adk_smoke.py`. It indexes one ve
 
 Full engine experiments use `enqueue --thinking-level medium --provider-timeout 120 --max-model-calls 3`; model is configurable with `--model`. Use a new revision to change runtime or budget; alpha runtime mutation is no longer available. Historical jobs retain their recorded runtime evidence and cannot be resumed through a different provider.
 
+Explicit `--provider-timeout none` disables the app and SDK invocation deadline
+for a new revision while preserving cancellation and frozen runtime settings.
+Google server deadlines and quotas still apply. A fresh exploration revision can
+use `--share-budget-with ORIGINAL_JOB_ID` to preserve the aggregate ceiling across
+the same verified source, model and thinking level; this starts with fresh model
+evidence. The selected root must be inactive and have budget left. For the
+isolated Shuttle command, see [SHUTTLE_TERMINAL.md](SHUTTLE_TERMINAL.md).
+
 See README.md and docs/migration/VALIDATION.md for current setup and evidence. The following source-era record is historical; its Codex commands, model identifiers, permissions and previous results are not the new ADK runbook.
 
 ---

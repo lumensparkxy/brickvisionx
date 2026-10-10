@@ -145,6 +145,48 @@ def test_counts_actual_calls_once_and_includes_failed_process_receipts(tmp_path)
     assert result["usage_reporting"]["calls_without_usage"] == 1
 
 
+def test_adk_failed_cancelled_and_runtime_only_receipts_are_counted_once(tmp_path):
+    native = {"prompt_token_count": 50, "candidates_token_count": 5, "total_token_count": 55}
+    failed = tmp_path / "calls/proposal/1"
+    write_json(failed / "invocation.json", {"status": "failed", "elapsed_seconds": 4,
+                                          "reported_usage": native})
+    write_json(failed / "runtime-result.json", {"status": "failed", "elapsed_seconds": 4,
+                                              "reported_usage": native})
+    (failed / "events.jsonl").write_text(json.dumps({"partial": False, "final_response": True,
+                                                    "reported_usage": native}) + "\n")
+    cancelled = tmp_path / "exploration/calls/cancelled/provider"
+    write_json(cancelled / "runtime-result.json", {"status": "cancelled", "elapsed_seconds": 2})
+    completed = tmp_path / "alpha-proposals/completed/provider"
+    write_json(completed / "runtime-result.json", {"status": "completed", "elapsed_seconds": 3,
+        "reported_usage": {"prompt_token_count": 10, "candidates_token_count": 2, "total_token_count": 12}})
+    result = summarize_job_calls(tmp_path)
+    assert result["model_invocations"] == 3 and result["model_elapsed_seconds"] == 9
+    assert result["process_failures"] == 1 and result["cancelled_invocations"] == 1
+    assert result["processes_without_structured_result"] == 2
+    assert result["reported_usage"] == {"prompt_token_count": 60, "candidates_token_count": 7,
+                                        "total_token_count": 67}
+    assert result["usage_reporting"]["raw_event_calls"] == result["usage_reporting"]["receipt_fallback_calls"] == 1
+    assert result["usage_reporting"]["calls_without_usage"] == 1
+
+
+def test_evaluation_supplements_incomplete_adk_events_and_rejects_bad_counts(tmp_path):
+    directory = tmp_path / "calls/first/1"
+    write_json(directory / "invocation.json", {"status": "completed", "elapsed_seconds": float("nan"),
+        "reported_usage": {"prompt_token_count": 11, "candidates_token_count": 4,
+                           "total_token_count": 15, "thoughts_token_count": True}})
+    write_json(directory / "runtime-result.json", {"status": "completed", "elapsed_seconds": 2,
+        "reported_usage": {"prompt_token_count": 11, "candidates_token_count": 4, "total_token_count": 15}})
+    (directory / "events.jsonl").write_text("\n".join(json.dumps(event) for event in [
+        {"partial": True, "reported_usage": {"prompt_token_count": 100}},
+        {"partial": False, "reported_usage": {"prompt_token_count": 10, "thoughts_token_count": float("inf"),
+                                               "cached_content_token_count": -2}}]))
+    result = summarize_job_calls(tmp_path)
+    assert result["model_invocations"] == 1 and result["model_elapsed_seconds"] == 2
+    assert result["reported_usage"] == {"prompt_token_count": 10, "candidates_token_count": 4, "total_token_count": 15}
+    assert result["usage_reporting"]["receipt_supplement_calls"] == 1
+    assert result["process_failures"] == result["cancelled_invocations"] == 0
+
+
 def test_alternative_archive_counts_distinct_full_beam_and_actual_rendered_pixels(tmp_path, scene_data):
     from guide2build.engine.evaluation import _alternatives
     _, _, scene, directory = seed_job(tmp_path, scene_data)

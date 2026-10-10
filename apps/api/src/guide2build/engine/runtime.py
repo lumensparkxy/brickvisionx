@@ -9,7 +9,7 @@ DEFAULT_INFERENCE_TIMEOUT_SECONDS = 120
 DEFAULT_MAX_MODEL_CALLS = 3
 PROVIDER = "google_adk"
 FATAL_PROVIDER_CODES = {"auth", "authentication_required", "rate_limited", "quota_exceeded",
-                        "provider_unavailable", "invalid_schema", "unsupported_model",
+                        "provider_unavailable", "invalid_schema", "unsupported_model", "request_rejected",
                         "subscription_limit"}  # Last code is retained for historical receipt inspection.
 PAUSE_PROVIDER_CODES = FATAL_PROVIDER_CODES - {"invalid_schema", "unsupported_model"}
 
@@ -30,8 +30,9 @@ def runtime_choice(config, checkpoint=None):
         raise ValueError("Model must be a nonempty identifier of at most 200 characters")
     if not isinstance(thinking, str) or thinking not in {"low", "medium", "high"}:
         raise ValueError("thinking_level must be low, medium or high")
-    if type(timeout) not in (int, float) or not math.isfinite(timeout) or not 0 < timeout <= 3600:
-        raise ValueError("provider_timeout must be finite and between zero and 3600 seconds")
+    if timeout is not None and (type(timeout) not in (int, float)
+            or not math.isfinite(timeout) or not 0 < timeout <= 3600):
+        raise ValueError("provider_timeout must be null or finite and between zero and 3600 seconds")
     choice = {"provider": provider, "model": model, "thinking_level": thinking, "provider_timeout": timeout}
     if checkpoint is not None:
         if checkpoint.get("runtime_choice", choice) != choice:
