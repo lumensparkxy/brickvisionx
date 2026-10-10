@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4JXTM1EZPXQ0NN6P68XF5HT",
+  "strategy": "manual-commit",
+  "branch": "feat/brickbuddy-chat",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "apps/web/src/agent.ts",
+    "apps/web/src/components/ChatPanel.tsx",
+    "apps/web/src/components/chat.css"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 30,
+    "cache_creation_tokens": 12205,
+    "cache_read_tokens": 3413314,
+    "output_tokens": 10512,
+    "api_call_count": 10
+  }
+}
