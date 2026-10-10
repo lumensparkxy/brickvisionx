@@ -22,8 +22,7 @@ import { partsList, readProgress, saveProgress } from '../state';
 import AssemblyViewport, { type CameraCommand } from './AssemblyViewport';
 import SourcePanel from './SourcePanel';
 import ReviewPanel from './ReviewPanel';
-import ChatPanel from './ChatPanel';
-import { narrate, stopSpeaking, type ViewerAction, type ViewerController } from '../agent';
+import { narrate, registerViewer, stopSpeaking, type ViewerAction, type ViewerController } from '../agent';
 export default function ViewerWorkspace({ scene: initialScene, guide, onClose, onScene, publicMode=false, releaseAlpha, previewMode=false, previewExperiment, previewJobId, previewQuality, previewGenerationMode, previewArtifactKind, previewUncertaintyNotes, previewCoverage, previewSourceCoverage, exploration, sourceImages=!publicMode, releaseLoader }: {publicMode?:boolean; releaseAlpha?:AlphaReleaseMetadata; previewMode?:boolean; previewExperiment?:string; previewJobId?:string; previewQuality?:ImageQuality; previewGenerationMode?:'standard'|'alpha_fast'; previewArtifactKind?:string; previewUncertaintyNotes?:string[]; previewCoverage?:string; previewSourceCoverage?:string; exploration?:ExplorationStatus|null; sourceImages?:boolean; releaseLoader?:ReleaseLoader; scene: SceneManifest; guide: Guide; onClose: () => void; onScene: (scene: SceneManifest) => void}) {
   const [scene,setLoadedScene] = useState(initialScene);
   const [chunkError,setChunkError] = useState('');
@@ -107,6 +106,9 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   const lastMain=Math.max(1,...numbered.map(({s})=>s.main_step_number));
   const mainIndex=(n:number,last=false)=>{const hits=numbered.filter(({s})=>s.main_step_number===n);return hits.length?hits[last?hits.length-1:0].i:-1;};
   const controller=useRef<ViewerController>(null!);
+  useEffect(()=>registerViewer(controller),[]);
+  // Closing the viewer mid-walkthrough must release whoever awaits it (the app-level chat) and silence the narration.
+  useEffect(()=>()=>{whenIdle.current?.();whenIdle.current=null;stopSpeaking();},[]);
   controller.current={
     context:()=>({set_number:scene.set_number,guide:guide.label,current_step:step.main_step_number,total_steps:lastMain,playing:playback!=='idle',
       steps:[...new Set(numbered.map(({s})=>s.main_step_number))].map(n=>{const group=numbered.filter(({s})=>s.main_step_number===n).map(({s})=>s);return{step:n,instructions:group.map(s=>s.instruction),
@@ -170,7 +172,6 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
         {chunkError?<div role="alert" className="viewport-message error"><p>{chunkError}</p><button onClick={()=>setChunkRetry(n=>n+1)}>Retry instruction</button></div>:!snapshotReady?<p role="status" className="viewport-message">Loading this instruction…</p>:<AssemblyViewport scene={scene} step={step} previous={scene.steps[index-1]} replayToken={replay} command={command} onThumbnails={setThumbnails} onColorNames={setColorNames} fullBuild={playback!=='idle'} paused={playback==='paused'} onAnimationComplete={()=>setAnimationDone(true)} onReadyChange={setReady}/>}
         <div className="camera-controls" role="group" aria-label="Camera controls"><div className="camera-pair"><button onClick={()=>camera('left')} aria-label="Rotate left" title="Rotate left"><IconRotate size={21}/></button><button onClick={()=>camera('right')} aria-label="Rotate right" title="Rotate right"><IconRotateClockwise size={21}/></button><span>Rotate</span></div><button onClick={()=>camera('in')} aria-label="Zoom in" title="Zoom in"><IconPlus size={23}/><span>Zoom in</span></button><button onClick={()=>camera('out')} aria-label="Zoom out" title="Zoom out"><IconMinus size={23}/><span>Zoom out</span></button><button onClick={()=>camera('reset')} aria-label="Reset view" title="Reset view"><IconFocus2 size={23}/><span>Reset view</span></button><div className="camera-pair"><button onClick={()=>camera('pan-left')} aria-label="Pan left" title="Pan left"><IconChevronLeft size={21}/></button><button onClick={()=>camera('pan-right')} aria-label="Pan right" title="Pan right"><IconChevronRight size={21}/></button><span><IconArrowsMoveHorizontal size={14}/> Pan</span></div></div>
         <p className="gesture-hint"><span className="desktop-hint">Drag to rotate · Scroll to zoom · Right-drag to pan</span><span className="touch-hint">Drag to rotate · Pinch to zoom</span></p>
-        <ChatPanel controller={controller}/>
       </section>
       {!publicMode&&review&&<dialog ref={reviewDialog} className="review-drawer" aria-label="Review workspace" onCancel={event=>{event.preventDefault();setReview(false);}}><div className="review-drawer-heading"><h2>Reconstruction review</h2><button className="icon-button" aria-label="Dismiss review" onClick={()=>setReview(false)}><IconX size={20}/></button></div><ReviewPanel scene={scene} step={step} onScene={onScene} onNavigate={stepId=>{const next=scene.steps.findIndex(s=>s.step_id===stepId);if(next>=0){change(next);setTab('3D');if(overlayReview)setReview(false);}}}/></dialog>}
     </div>

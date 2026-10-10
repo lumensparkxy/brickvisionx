@@ -20,3 +20,4 @@
 .hero-art figcaption small{display:block;font-size:10px;font-weight:450;letter-spacing:0;margin-top:4px}.landing-footer .artwork-note{border:0;padding-top:8px;font-size:11px}
 
 .booklet-sample-details{margin:0 24px 24px;font-size:14px;color:#456076}.booklet-sample-details summary{cursor:pointer;font-weight:650}.booklet-sample-details .notice{margin:12px 0 0}
+.talk-buddy{display:flex;margin-top:14px;padding:11px 18px;border-radius:999px;background:var(--yellow,#ffe143);border:2px solid #142d4c;color:#142d4c;font-size:16px;font-weight:700;gap:8px;box-shadow:0 3px 0 #142d4c}.talk-buddy:hover:not(:disabled){background:#ffd60a;border-color:#142d4c;transform:translateY(-1px)}

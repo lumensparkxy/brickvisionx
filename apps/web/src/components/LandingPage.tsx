@@ -1,13 +1,14 @@
 import IconArrowRight from '@tabler/icons-react/dist/esm/icons/IconArrowRight.mjs';
+import IconMicrophone from '@tabler/icons-react/dist/esm/icons/IconMicrophone.mjs';
 import type { FormEvent, ReactNode } from 'react';
 import catalogue from '../../../../config/sets.json';
 import './landing.css';
 
 const setOptions = catalogue.sets.map(({set_number,name}) => ({set_number,name}));
 
-export default function LandingPage({setNumber,onSetNumber,onFind,onTry,busy,children,publicMode=false,previewMode=false}: {
+export default function LandingPage({setNumber,onSetNumber,onFind,onTry,onTalk,busy,children,publicMode=false,previewMode=false}: {
   setNumber:string; onSetNumber:(value:string)=>void; onFind:(event:FormEvent)=>void;
-  onTry:()=>void; busy:boolean; publicMode?:boolean; previewMode?:boolean; children:ReactNode;
+  onTry:()=>void; onTalk?:()=>void; busy:boolean; publicMode?:boolean; previewMode?:boolean; children:ReactNode;
 }) {
   return <>
     <header className="landing-header"><a href="/" className="brand">Guide2Build <span>3D</span></a><a className="how-link" href="#how-it-works">How it works</a></header>
@@ -23,6 +24,7 @@ export default function LandingPage({setNumber,onSetNumber,onFind,onTry,busy,chi
             <p id="supported">{previewMode?`${setOptions.length} set choices · Alpha models are unverified.`:publicMode?'Choose a set to see its available booklets.':`Official booklets for ${setOptions.length} sets · 3D candidate: 30669, alternate 02`}</p>
           </form>
           <button className="try-tutorial" disabled={busy} onClick={onTry}>{publicMode?'Find the plane set':'Try the plane tutorial'} <IconArrowRight size={22} aria-hidden="true"/></button>
+          {onTalk&&<button type="button" className="talk-buddy" onClick={onTalk}><IconMicrophone size={22} aria-hidden="true"/> Just ask: “show me the plane”</button>}
           {busy&&<p className="landing-busy" role="status">Working on your request…</p>}
         </div>
         <figure className="hero-art"><figcaption>30669 / Alternate aeroplane<small>Illustrative preview</small></figcaption><img src="/images/landing/hero-plane.webp" width="1322" height="1190" alt="Illustration of a red and white brick plane on a yellow baseplate, surrounded by colourful bricks" fetchPriority="high"/></figure>

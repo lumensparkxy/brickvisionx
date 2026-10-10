@@ -12,7 +12,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 from .catalog import ROOT, find_set, find_guide
-from .chat import ChatRequest, ChatRequestError, ChatUnavailable, reply as chat_reply
+from .chat import (ChatBudgetExhausted, ChatRequest, ChatRequestError, ChatUnavailable, budget_from_environment,
+                   reply as chat_reply)
 from .core.models import SceneManifest
 from .core.bom import bill_of_materials
 from .jobs.models import ConversionRequest
@@ -80,14 +81,32 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
     def runtime_config():
         return {"mode": "local", "source_images": True, "requests_enabled": False}
 
+    app.state.chat_budget = budget_from_environment()
+
+    def ready_guide(set_number: str, guide_id: str | None) -> str | None:
+        """The booklet of this set that has a loadable 3D scene here, if any. BrickBuddy must not claim otherwise."""
+        candidates = [guide_id] if guide_id else [guide["guide_id"] for guide in find_set(set_number)["guides"]]
+        for candidate in candidates:
+            try:
+                load_scene(set_number, candidate, candidate=True)
+                return candidate
+            except HTTPException:
+                continue
+        return None
+
     @app.post("/api/v1/chat")
     async def chat(payload: ChatRequest):
         """Chat/voice copilot for the viewer; calls Gemini only for an explicit user message."""
         try:
-            return await chat_reply(payload)
+            app.state.chat_budget.reserve()
+            return await chat_reply(payload, ready_guide)
+        except ChatBudgetExhausted as error:
+            missing("chat_budget_exhausted", str(error), 429)
         except ChatUnavailable as error:
+            app.state.chat_budget.release()  # No model call was made.
             missing("provider_unavailable", str(error), 503)
         except ChatRequestError as error:
+            app.state.chat_budget.release()
             missing("invalid_request", str(error), 422)
         except Exception as error:
             logging.getLogger("uvicorn.error").warning("chat failed: %s", type(error).__name__)
