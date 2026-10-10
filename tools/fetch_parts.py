@@ -5,9 +5,11 @@ Never accepts or downloads a finished assembly. Original DAT notices are preserv
 from __future__ import annotations
 import argparse
 import hashlib
+import io
 import json
 import re
 import time
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 import httpx
@@ -181,7 +183,38 @@ def stage_individual(part_id, stage, verified_caches, check=lambda: None, *, sta
         return closure(part_id, stage, verified_caches, acquire, references, check, stage_budget=stage_budget)
 
 
-def fetch_materials(directory: Path) -> dict:
+# Official LDraw update archives that carry earlier LDConfig.ldr revisions. The live file changes over time; a
+# reference pinned to an earlier revision is fetched from the update that published it, never re-pinned silently.
+MATERIAL_ARCHIVES = ("https://library.ldraw.org/library/updates/lcad2605.zip",)
+MATERIAL_ARCHIVE_MEMBER = "ldraw/LDConfig.ldr"
+
+
+def pinned_material(pinned_sha256: str) -> tuple[bytes, dict]:
+    """The exact pinned LDConfig.ldr from an official update archive, with where it came from."""
+    with httpx.Client(timeout=60, follow_redirects=False, headers={"Accept-Encoding": "identity"}) as client:
+        for archive_url in MATERIAL_ARCHIVES:
+            response = client.get(archive_url)
+            if response.status_code != 200 or len(response.content) > 20_000_000:
+                continue
+            try:
+                with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+                    info = archive.getinfo(MATERIAL_ARCHIVE_MEMBER)
+                    if info.file_size > 1_000_000:
+                        continue
+                    data = archive.read(info)
+            except (KeyError, zipfile.BadZipFile):
+                continue
+            if hashlib.sha256(data).hexdigest() == pinned_sha256:
+                return data, {"archive_url": archive_url, "member": MATERIAL_ARCHIVE_MEMBER,
+                              "archive_sha256": hashlib.sha256(response.content).hexdigest(),
+                              "reason": "The live LDConfig.ldr no longer matches the reference pin; this official "
+                                        "update archive holds the exact pinned revision."}
+    raise ValueError("Current official LDConfig.ldr differs from the pinned reference and no known official update "
+                     "archive holds the pinned revision; review before use")
+
+
+def fetch_materials(directory: Path, pinned_sha256: str | None = None) -> dict:
+    """Fetch LDConfig.ldr. With `pinned_sha256`, guarantee that exact revision (see MATERIAL_ARCHIVES)."""
     destination = directory / "LDConfig.ldr"
     manifest_path = directory / "provenance.json"
     manifest = json.loads(manifest_path.read_text())
@@ -195,7 +228,9 @@ def fetch_materials(directory: Path) -> dict:
         data = destination.read_bytes()
         if hashlib.sha256(data).hexdigest() != prior["sha256"]:
             raise ValueError("Material configuration hash mismatch")
-        return prior
+        if pinned_sha256 is None or prior["sha256"] == pinned_sha256:
+            return prior
+        # A valid cached copy of a newer live revision: replace it below with the pinned one.
     deadline = time.monotonic() + 45
     with httpx.Client(timeout=30, follow_redirects=False, headers={"Accept-Encoding": "identity"}) as client:
         with client.stream("GET", url) as response:
@@ -209,6 +244,9 @@ def fetch_materials(directory: Path) -> dict:
                     raise ValueError("Material configuration resource limit")
                 chunks.append(chunk)
     data = b"".join(chunks)
+    acquired_from = None
+    if pinned_sha256 is not None and hashlib.sha256(data).hexdigest() != pinned_sha256:
+        data, acquired_from = pinned_material(pinned_sha256)
     content = data.decode("utf-8-sig")
     if "0 !LDRAW_ORG Configuration" not in content or "0 !COLOUR" not in content:
         raise ValueError("Not an LDraw colour configuration")
@@ -227,6 +265,9 @@ def fetch_materials(directory: Path) -> dict:
         "legal_reference": "https://www.ldraw.org/legal-info",
         "fetched_at": datetime.now(timezone.utc).isoformat(),
     }
+    if acquired_from:
+        # `url` stays the canonical official path that other checks expect; this records the actual source.
+        record["acquired_from"] = acquired_from
     temporary = destination.with_suffix(".partial")
     temporary.write_bytes(data)
     temporary.replace(destination)
@@ -242,7 +283,7 @@ def main():
     catalog = json.loads((ROOT / "config/parts-30669-alt-02.json").read_text())
     selected = args.parts or [part["part_id"] for part in catalog["parts"]]
     result = fetch_parts(selected, ROOT / "var/public/ldraw")
-    fetch_materials(ROOT / "var/public/ldraw")
+    fetch_materials(ROOT / "var/public/ldraw", catalog["material_sha256"]["LDConfig.ldr"] if args.parts is None else None)
     if args.parts is None:
         for section in ("resource_sha256", "material_sha256"):
             for relative, digest in catalog[section].items():

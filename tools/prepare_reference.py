@@ -21,7 +21,8 @@ def main():
     candidate, _, _ = build_reference()
     roots = sorted({instance.part_id for instance in candidate.instances})
     fetch_parts(roots, data / "public/ldraw")
-    fetch_materials(data / "public/ldraw")
+    pins = json.loads((ROOT / "config/parts-30669-alt-02.json").read_text())
+    fetch_materials(data / "public/ldraw", pins["material_sha256"]["LDConfig.ldr"])
     report = materialize(ROOT)
     print(json.dumps({"artifact": "PDF-assisted authored candidate; NOT automatic conversion",
                       "revision": report["revision"], "status": "needs_review",
