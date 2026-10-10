@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4JS1XV2ZHK31KBD5928ASG3",
+  "strategy": "manual-commit",
+  "branch": "codex/migrate-google-adk",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/api/src/guide2build/core/environment.py",
+    "apps/api/src/guide2build/engine/adk_runtime.py",
+    "apps/api/src/guide2build/engine/alpha.py",
+    "apps/api/src/guide2build/engine/alpha_runner.py",
+    "apps/api/src/guide2build/engine/corrections.py",
+    "apps/api/src/guide2build/engine/exploration.py",
+    "apps/api/src/guide2build/engine/provider.py",
+    "apps/api/src/guide2build/engine/runner.py",
+    "apps/api/src/guide2build/engine/runtime.py",
+    "apps/api/src/guide2build/engine/store.py",
+    "pyproject.toml",
+    "tests/backend/test_adk_runtime_budget.py",
+    "tests/backend/test_adk_smoke.py",
+    "tests/backend/test_engine_alpha.py",
+    "tests/backend/test_engine_corrections.py",
+    "tests/backend/test_engine_provider.py",
+    "tests/backend/test_engine_runner.py",
+    "tools/adk_smoke.py",
+    "tools/alpha_campaign.py",
+    "tools/dev.py",
+    "tools/doctor.py",
+    "tools/engine.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 227127,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 9033344,
+    "output_tokens": 35245,
+    "api_call_count": 85,
+    "subagent_tokens_complete": false
+  }
+}

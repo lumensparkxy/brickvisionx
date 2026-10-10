@@ -1,0 +1,19 @@
+{
+  "tool_use_id": "01a12581-f4fe-7020-9fa6-edf46ce9dfc1",
+  "agent_id": "01a12581-f4fe-7020-9fa6-edf46ce9dfc1",
+  "subagent_type": "default",
+  "files": [
+    "apps/api/src/guide2build/engine/adk_runtime.py",
+    "apps/api/src/guide2build/engine/provider.py",
+    "tests/backend/test_engine_provider.py"
+  ],
+  "token_usage": {
+    "input_tokens": 143911,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 4359808,
+    "output_tokens": 23000,
+    "api_call_count": 45
+  },
+  "started_at": "2026-10-10T13:10:39.467906+02:00",
+  "completed_at": "2026-10-10T13:27:00.075775+02:00"
+}
