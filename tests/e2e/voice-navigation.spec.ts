@@ -41,7 +41,7 @@ test('typed assistant commands navigate screens and tutorial steps',async({page}
   await expect(page.getByRole('heading',{name:'Step 1 of 3',exact:true})).toBeVisible();
   await expect(page.getByRole('button',{name:'Open build helper'})).toBeVisible();
   await page.getByRole('button',{name:'Open build helper'}).click();
-  await page.getByRole('button',{name:'Hide build helper'}).click();
+  await page.getByRole('button',{name:'Minimize build helper'}).click();
   await expect(page.locator('.voice-command input:visible')).toHaveCount(0);
   await say(page,'step 3');
   await expect(page.locator('.viewport')).toHaveAttribute('data-step-id','s3');
@@ -123,6 +123,43 @@ test('assistant presses viewer controls',async({page})=>{
   await expect(page.getByRole('button',{name:'Full parts list'})).toHaveAttribute('aria-pressed','true');
   await type(page,'review');
   await expect(page.getByRole('dialog',{name:'Review workspace'})).toBeVisible();
+});
+
+test('dock can be dragged by its grip, nudged with keys, minimized, and keeps its place across screens',async({page})=>{
+  await setup(page);
+  await say(page,'open synthetic');
+  await expect(page.getByRole('heading',{name:'Step 1 of 3',exact:true})).toBeVisible();
+  const dock=page.locator('.workspace .voice-dock');
+  const grip=dock.getByRole('button',{name:/Move build helper/});
+  const before=(await dock.boundingBox())!;
+  const handle=(await grip.boundingBox())!;
+  await page.mouse.move(handle.x+handle.width/2,handle.y+handle.height/2);
+  await page.mouse.down();
+  await page.mouse.move(300,200,{steps:8});
+  await page.mouse.up();
+  const moved=(await dock.boundingBox())!;
+  expect(Math.abs(moved.x-(300-(handle.x+handle.width/2-before.x)))).toBeLessThan(3);
+  expect(moved.y).toBeLessThan(before.y-100);
+  await grip.focus();await page.keyboard.press('ArrowRight');
+  expect(Math.round((await dock.boundingBox())!.x-moved.x)).toBe(24);
+  await page.mouse.move(handle.x,handle.y);
+  await grip.hover();await page.mouse.down();await page.mouse.move(5000,5000,{steps:4});await page.mouse.up();
+  const clamped=(await dock.boundingBox())!;const view=page.viewportSize()!;
+  expect(clamped.x+clamped.width).toBeLessThanOrEqual(view.width-7);
+  expect(clamped.y+clamped.height).toBeLessThanOrEqual(view.height-7);
+  await dock.getByRole('button',{name:'Open build helper'}).click();
+  await expect(dock.locator('.voice-command input')).toBeVisible();
+  const expanded=(await dock.boundingBox())!;
+  expect(expanded.y+expanded.height).toBeLessThanOrEqual(view.height-7);
+  await say(page,'home');
+  await say(page,'booklets');
+  const dialogDock=page.locator('dialog.booklet-dialog .voice-dock');
+  await expect(dialogDock.locator('.voice-command input')).toBeVisible();
+  expect(Math.abs((await dialogDock.boundingBox())!.x-expanded.x)).toBeLessThan(3);
+  await dialogDock.getByRole('button',{name:'Minimize build helper'}).click();
+  await expect(dialogDock.getByRole('button',{name:'Open build helper'})).toBeVisible();
+  await page.reload();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('guide2build.voiceDock')!).minimized)).toBe(true);
 });
 
 test('step commands outside a tutorial explain instead of navigating',async({page})=>{

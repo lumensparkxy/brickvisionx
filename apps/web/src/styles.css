@@ -166,6 +166,14 @@ details{font-size:12px;line-height:1.6}summary{cursor:pointer;padding:10px 0;fon
 .booklet-dialog .preparation>h2{margin-top:0;font-size:18px}
 .booklet-dialog .preparation p{font-size:13px}
 .booklet-dialog .button-row button{font-size:13px}
+.prepared-pages{margin:16px 0}
+.prepared-page-frame{display:flex;align-items:center;justify-content:center;min-height:240px;padding:8px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.prepared-page-frame img{display:block;width:100%;max-height:60vh;object-fit:contain}
+.prepared-page-frame img[hidden]{display:none}
+.prepared-page-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px;font-size:13px}
+.prepared-page-controls button{font-size:13px}
+.prepared-page-controls a{margin-left:auto}
+@media(max-width:650px){.prepared-page-controls{justify-content:space-between}.prepared-page-controls a{margin-left:0;flex-basis:100%}}
 @media(max-width:650px){
  .workspace-grid,.workspace-grid.review-open{grid-template-rows:184px 44px minmax(0,1fr)}
  .instruction-context{padding:12px 18px 10px}

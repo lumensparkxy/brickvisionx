@@ -7,6 +7,7 @@ import type { Guide, SceneManifest, SetInfo } from './contracts';
 import LandingPage from './components/LandingPage';
 import BookletDialog from './components/BookletDialog';
 import VoiceChat from './components/VoiceChat';
+import PreparedPages from './components/PreparedPages';
 import { useAssistant } from './voice/useAssistant';
 import { collectControls, usable } from './voice/controls';
 import type { AssistantAction, AssistantContext, StepCommand, StepContext } from './voice/assistant';
@@ -203,12 +204,12 @@ export default function App() {
         {job && <div className="job-state" role="status"><strong>{job.state === 'needs_review' && !job.output_revision ? 'Booklet prepared' : job.state.replaceAll('_', ' ')}</strong><p>Stage: {job.stage.replaceAll('_', ' ')}</p>
           {job.total_units != null && job.total_units > 0 && <><progress aria-label="Booklet preparation progress" value={job.completed_units} max={job.total_units}/><p>{job.completed_units} of {job.total_units} {job.stage === 'rendering' ? 'pages rendered' : ['validating','needs_review','ready'].includes(job.stage) ? 'pages prepared' : 'units'}</p></>}
           {job.error && !(typeof job.error === 'object' && job.error.code === 'assisted_reference_unavailable') && <p>{typeof job.error === 'string' ? job.error : job.error.message ?? job.error.code}</p>}
-          {job.state === 'needs_review' && <p>{job.output_revision ? 'Unresolved part identities and placements require evidence-backed review.' : 'The official pages are prepared. No 3D reconstruction is available for this booklet yet.'}</p>}
-          <div className="button-row">{!terminal.has(job.state) && <button className="secondary" disabled={busy} onClick={() => jobAction('cancel')}>Cancel preparation</button>}
+          {job.state === 'needs_review' && <p>{job.output_revision ? 'Unresolved part identities and placements require evidence-backed review.' : 'The official pages are prepared. No 3D reconstruction is available for this booklet yet.'}</p>}          <div className="button-row">{!terminal.has(job.state) && <button className="secondary" disabled={busy} onClick={() => jobAction('cancel')}>Cancel preparation</button>}
           {['failed','cancelled'].includes(job.state) && <button disabled={busy} onClick={() => jobAction('retry')}>Retry preparation</button>}
           {job.output_revision && <button onClick={() => loadRevision(job.output_revision!).catch(e => setError(e.message))}>Open candidate for review</button>}</div>
         </div>}
-        {(!job || ['failed','cancelled'].includes(job.state)) && <div className="button-row"><button disabled={busy} onClick={() => prepare('assisted')}>Prepare official booklet</button><button className="secondary" disabled={busy} onClick={() => prepare('automated')}>Try automatic conversion</button></div>}
+        {job?.state === 'needs_review' && !job.output_revision && job.source_sha256 && job.total_units ? <PreparedPages key={job.source_sha256} sourceHash={job.source_sha256} pageCount={job.total_units} label={guide.label}/> : null}
+        {(!job || ['failed','cancelled'].includes(job.state)) && <div className="button-row"><button disabled={busy} onClick={() => prepare('assisted')}>Prepare official booklet</button></div>}
         <p><a href={guide.pdf_url} target="_blank" rel="noreferrer">Open the original booklet ↗</a></p>
         {base && <button className="secondary" disabled={busy} onClick={() => openGuide(guide)}>Check for a reconstruction</button>}
       </section>}

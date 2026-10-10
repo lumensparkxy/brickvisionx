@@ -1,4 +1,16 @@
 // Installed @tabler/icons-react 3.48.0 deep defaults; type-only aliases preserve vendor props/ref.
+declare module '@tabler/icons-react/dist/esm/icons/IconGridDots.mjs' {
+  import type { IconGridDots } from '@tabler/icons-react';
+  const Icon: typeof IconGridDots;
+  export default Icon;
+}
+
+declare module '@tabler/icons-react/dist/esm/icons/IconMinus.mjs' {
+  import type { IconMinus } from '@tabler/icons-react';
+  const Icon: typeof IconMinus;
+  export default Icon;
+}
+
 declare module '@tabler/icons-react/dist/esm/icons/IconMicrophoneOff.mjs' {
   import type { IconMicrophoneOff } from '@tabler/icons-react';
   const Icon: typeof IconMicrophoneOff;

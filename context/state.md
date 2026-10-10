@@ -10,6 +10,14 @@
 
 - 15:15: Mic mute button (session.ts setMuted, useAssistant muted/toggleMute, VoiceChat `.voice-mute`). Offline test `tests/e2e/voice-mute.spec.ts` (page.routeWebSocket fakes Gradium; Chromium fake mic = loud audio). Fixed flaky `say()` helper in voice-navigation.spec.ts (collapsed dock hides transcript). Software e2e 25 passed; Vitest 62; build OK.
 
+- 15:25: Prepared-pages viewer in booklet dialog; `tests/e2e/prepared-pages.spec.ts`. Live: 30669/alt-01 shows 9 real pages (1149x817). Software e2e 26 passed; Vitest 62; build OK. Evidence `var/evidence/pages/`.
+- Local prepared jobs: 30669/alt-01 (5f4312d8…, 9 pages), 60400/booklet-01 (5ab7d0fc…, 32 pages); both needs_review, no 3D.
+- 15:30: LDConfig blocker RESOLVED without changing the pin: exact pinned file (sha 0178cd14…) found in official `lcad2605.zip` (member ldraw/LDConfig.ldr); installed to var/public/ldraw, provenance `materials.LDConfig.ldr.acquired_from` records archive URL/sha. Live official file (d3490047…) only adds 11 `!AVATAR` lines. Backups in var/ldraw-archive/.
+- `tools/prepare_reference.py` OK -> revision pdf-assisted-30669-alt02-v3, 12 main steps, 16 microsteps, needs_review. "Try the plane tutorial" opens the 3D viewer (screens var/evidence/pages/plane-*.png). Plain scene route 409 by design; UI loads candidate revision.
+- Warning: re-running `tools/fetch_parts.py` keeps the pinned file (hash matches receipt); deleting var/public/ldraw/LDConfig.ldr would refetch the live (mismatching) file.
+
+- 15:40: Movable/minimizable voice dock with 9-dot grip. New e2e test in voice-navigation.spec.ts. Software e2e 27 passed; Vitest 62; build OK. Screens var/evidence/voice/dock-move-*.png.
+
 ## Running
 - Dev server: `var/.venv-gradium/bin/python tools/dev.py` -> http://127.0.0.1:5173 (API :8000). Restart after backend edits; wait until ports free (old processes linger ~seconds, cause Errno 48).
 
@@ -23,5 +31,5 @@
 - Mobile: open viewer dock covers much of the 3D viewport (collapsed by default).
 
 ## Next
-- Push `francesco-voice` failed 2026-10-10: HTTPS GitHub has no stored username (`osxkeychain` empty, `gh` not installed). Local commits `80c81c9` and `21bc98d` on `francesco-voice`, based on local `82f4df3` (5 commits behind `origin/codex/migrate-google-adk`).
+- 15:33: user asked to push branch `francesco` (not only `francesco-voice`). HTTPS GitHub still has no username.
 - User tries voice with a real mic. Optional: ask-which when labels are ambiguous; confirmation for spending actions; resolve LDConfig pin with explicit approval.
