@@ -199,8 +199,9 @@ class GoogleAdkProvider:
             raise ValueError("Select a Gemini Developer API model name")
         if thinking_level not in {"low", "medium", "high"}:
             raise ValueError("Unsupported provider thinking level")
-        if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0:
-            raise ValueError("Provider timeout must be a finite positive number")
+        if timeout is not None and (isinstance(timeout, bool) or not isinstance(timeout, (int, float))
+                or not math.isfinite(timeout) or timeout <= 0):
+            raise ValueError("Provider timeout must be a finite positive number or None")
         self.model = model
         self.thinking_level = thinking_level
         self.timeout = timeout
@@ -335,10 +336,13 @@ class GoogleAdkProvider:
         try:
             while True:
                 check()
-                remaining = self.timeout - (time.monotonic() - started)
-                if remaining <= 0:
-                    raise ProviderFailure("provider_timeout", _FAILURE_MESSAGES["provider_timeout"])
-                done, _ = await asyncio.wait({task}, timeout=min(.05, remaining))
+                poll_seconds = .05
+                if self.timeout is not None:
+                    remaining = self.timeout - (time.monotonic() - started)
+                    if remaining <= 0:
+                        raise ProviderFailure("provider_timeout", _FAILURE_MESSAGES["provider_timeout"])
+                    poll_seconds = min(poll_seconds, remaining)
+                done, _ = await asyncio.wait({task}, timeout=poll_seconds)
                 if done:
                     check()
                     return task.result()

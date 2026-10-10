@@ -13,6 +13,7 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 from google.genai.client import DebugConfig
+import httpx
 from pydantic import Field
 
 from .provider import ProviderFailure, classify_provider_error, safe_provider_diagnostic
@@ -36,13 +37,18 @@ class _SanitizedGemini(Gemini):
 async def run_adk_request(*, api_key, model, thinking_level, timeout, prompt, images,
                           schema, on_request, on_event, on_diagnostic):
     retry_options = types.HttpRetryOptions(attempts=1)
-    client = genai.Client(vertexai=False, api_key=api_key,
-        debug_config=DebugConfig(client_mode=None, replays_directory=None, replay_id=None),
-        http_options=types.HttpOptions(
-        base_url="https://generativelanguage.googleapis.com", api_version="v1beta",
-        timeout=max(1, int(timeout * 1000)), retry_options=retry_options))
+    timeout_ms = None if timeout is None else max(1, int(timeout * 1000))
+    # The SDK's optional aiohttp path can reconnect outside its retry policy.
+    # A supported injected HTTPX client pins transport retries to zero instead.
+    http_client = httpx.AsyncClient(transport=httpx.AsyncHTTPTransport(retries=0), timeout=timeout)
+    client = None
     runner = None
     try:
+        client = genai.Client(vertexai=False, api_key=api_key,
+            debug_config=DebugConfig(client_mode=None, replays_directory=None, replay_id=None),
+            http_options=types.HttpOptions(
+            base_url="https://generativelanguage.googleapis.com", api_version="v1beta",
+            timeout=timeout_ms, retry_options=retry_options, httpx_async_client=http_client))
         def before_model(callback_context, llm_request):
             on_request()
 
@@ -56,7 +62,7 @@ async def run_adk_request(*, api_key, model, thinking_level, timeout, prompt, im
             before_model_callback=before_model,
             generate_content_config=types.GenerateContentConfig(response_mime_type="application/json",
                 response_json_schema=schema, thinking_config=types.ThinkingConfig(thinking_level=thinking_level),
-                http_options=types.HttpOptions(timeout=max(1, int(timeout * 1000)), retry_options=retry_options),
+                http_options=types.HttpOptions(timeout=timeout_ms, retry_options=retry_options),
                 automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)))
         session_service = InMemorySessionService()
         session_id = uuid.uuid4().hex
@@ -91,7 +97,16 @@ async def run_adk_request(*, api_key, model, thinking_level, timeout, prompt, im
             raise ProviderFailure("invalid_output", "ADK produced no final JSON response.")
         return result
     finally:
-        if runner is not None:
-            await runner.close()
-        await client.aio.aclose()
-        client.close()
+        try:
+            if runner is not None:
+                await runner.close()
+        finally:
+            try:
+                if client is not None:
+                    try:
+                        await client.aio.aclose()
+                    finally:
+                        client.close()
+            finally:
+                # genai intentionally does not close an injected HTTPX client.
+                await http_client.aclose()

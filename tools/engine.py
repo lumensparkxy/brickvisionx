@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import logging
+import math
 import sqlite3
 import sys
 import time
@@ -26,6 +27,43 @@ def configure_activity_logging(level):
     LOGGER.propagate = False
 
 
+def provider_timeout_argument(value):
+    if value == "none":
+        return None
+    try:
+        seconds = float(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("Use 'none' or a positive timeout up to 3600 seconds") from None
+    if not math.isfinite(seconds) or not 0 < seconds <= 3600:
+        raise argparse.ArgumentTypeError("Use 'none' or a positive timeout up to 3600 seconds")
+    return seconds
+
+
+def shared_budget_config(store, root_id, *, set_number, guide_id, source_sha256,
+                         model, thinking_level, maximum, execution_policy):
+    """Link a fresh source-only revision to an existing immutable experiment budget."""
+    root = store.get(root_id)
+    config = root["config"]
+    checkpoint_root = root["checkpoint"].get("budget_root_job_id", root_id)
+    config_root = config.get("budget_root_job_id", root_id)
+    if checkpoint_root != root_id or config_root != root_id:
+        raise ValueError("Share the original budget root, not a descendant job")
+    if execution_policy != "explore" or config.get("execution_policy") != "explore":
+        raise ValueError("Shared experiment budgets require exploration jobs")
+    if (root["set_number"], root["guide_id"]) != (set_number, guide_id):
+        raise ValueError("Shared experiment budgets require the same set and booklet")
+    if not source_sha256 or config.get("source_sha256") != source_sha256:
+        raise ValueError("Shared experiment budgets require the same verified source hash")
+    if (config["model"], config["thinking_level"], config["max_model_calls"]) != (
+            model, thinking_level, maximum):
+        raise ValueError("Shared experiment model, thinking level and request ceiling must stay unchanged")
+    if root["owner"] and (root["lease_until"] or 0) > time.time():
+        raise ValueError("Do not create a runtime revision while the budget root is running")
+    if store.lineage_model_calls_used(root_id) >= maximum:
+        raise ValueError("The shared experiment model-call budget is exhausted")
+    return {"budget_root_job_id": root_id}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=ROOT / "var")
@@ -38,8 +76,10 @@ def main():
     enqueue.add_argument("--guide")
     enqueue.add_argument("--model", default=DEFAULT_MODEL)
     enqueue.add_argument("--thinking-level", choices=("low", "medium", "high"), default=DEFAULT_THINKING_LEVEL)
-    enqueue.add_argument("--provider-timeout", type=float, default=DEFAULT_INFERENCE_TIMEOUT_SECONDS,
-                         help="Per-request deadline in seconds, frozen in this job")
+    enqueue.add_argument("--provider-timeout", type=provider_timeout_argument, default=DEFAULT_INFERENCE_TIMEOUT_SECONDS,
+                         help="Per-request seconds or 'none' for no client deadline; frozen in this job")
+    enqueue.add_argument("--share-budget-with", metavar="JOB_ID",
+                         help="Fresh exploration revision sharing an existing same-source request ceiling")
     enqueue.add_argument("--execution-policy", choices=("strict", "explore"), default="strict",
                          help="Explore retains quality findings and continues through the booklet")
     enqueue.add_argument("--proposal-profile", choices=("baseline", "attachment-reasoning", "event-scoped"), default="baseline",
@@ -136,9 +176,11 @@ def main():
         if not 1 <= args.max_model_calls <= 1000:
             parser.error("Use a model-call ceiling between 1 and 1000")
         if args.all:
-            store.gate_campaign()
             if args.set_number or args.guide:
                 parser.error("--all cannot be combined with --set or --guide")
+            if args.share_budget_with:
+                parser.error("Shared budgets require one selected set and booklet")
+            store.gate_campaign()
             catalogue = json.loads((ROOT / "config/sets.json").read_text())
             pairs = [(s["set_number"], g["guide_id"]) for s in catalogue["sets"] for g in s["guides"]]
         elif args.set_number and args.guide:
@@ -151,6 +193,16 @@ def main():
         for set_number, guide_id in pairs:
             guide = find_guide(set_number, guide_id)
             receipt = cached_receipt(store.data_dir, set_number, guide_id, guide["pdf_url"])
+            shared = {}
+            if args.share_budget_with:
+                try:
+                    shared = shared_budget_config(store, args.share_budget_with,
+                        set_number=set_number, guide_id=guide_id,
+                        source_sha256=receipt["sha256"] if receipt else None,
+                        model=args.model, thinking_level=args.thinking_level,
+                        maximum=args.max_model_calls, execution_policy=args.execution_policy)
+                except (KeyError, ValueError) as error:
+                    parser.error(str(error))
             job = store.enqueue(set_number, guide_id, {"model": args.model, "thinking_level": args.thinking_level,
                 "provider_timeout": args.provider_timeout, "provider": "google_adk",
                 "revision": args.revision, "pipeline": PIPELINE, "parts_revision": library,
@@ -158,6 +210,7 @@ def main():
                 "execution_policy": args.execution_policy, "max_model_calls": args.max_model_calls,
                 "quality_profile": args.quality_profile,
                 "source_sha256": receipt["sha256"] if receipt else None,
+                **shared,
                 **({"new_part_failure_profile": args.new_part_failure_profile} if args.new_part_failure_profile != "legacy" else {}),
                 **({"efficiency_profile": efficiency_profile} if efficiency_profile != "legacy" else {}),
                 **({"proposal_profile": args.proposal_profile} if args.proposal_profile != "baseline" else {}),

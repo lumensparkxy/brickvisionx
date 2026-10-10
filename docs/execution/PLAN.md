@@ -1045,3 +1045,21 @@ Saved Sol prefix testing is complete: structural validation and all 41 fresh Thr
 User explicitly authorizes adding/replacing this 31134/booklet-01 model in production. Preserve the existing release, red aeroplane and all other catalogue entries. Freeze the exact final scene and job rows, inspect current production pointers, package only approved public scene/individual-part assets, and disclose 56/57 reconstructed panels plus the unresolved main 39. Extend alpha transport only if needed to retain truthful exploration provenance; preserve old alpha compatibility and all source/asset fences. Verify the new bundle and preview, stage immutable assets, record publication approval from the existing authenticated release authority, then promote only this booklet using the observed expected head. Inspect real production loading and both service aliases/CORS, verify other release heads unchanged, and retain exact rollback commands. No inference, new reconstruction, cleanup, new infrastructure or historical overwrites.
 
 Publication checkpoint complete: the exact Sol candidate is live as unverified alpha for 31134/booklet-01 only. 57/57 panels processed, 56 reconstructed; 72 snapshots and 148 pieces, with main 39 unresolved. Full release checks passed (1408 backend and 53 frontend tests). Both production aliases, all 240 public assets, CORS, phone panels and the unchanged red aeroplane checked. All other 12 catalogue entries, old shuttle release, raw engine scene and five job rows preserved. No new inference or correction. Evidence: var/evidence/publish-sol-shuttle-20261006T102855Z/REPORT.md; exact rollback commands retained.
+
+### Independent Terminal run without a client deadline — 10 October 2026
+
+The user requests a Terminal command to run ADK without Codex and remove the
+120-second deadline. Add explicit `--provider-timeout none`; retain the ordinary
+120-second default, cancellation checks, model/schema settings and frozen job
+configuration. Prepare a fresh isolated Shuttle revision sharing the original
+300-request lineage ceiling (24 charged, 276 available). Keep the original
+blocked run, source assets and red aeroplane untouched. Do not start new paid
+inference while preparing the user-executed command.
+
+Verify the actual SDK timeout/header behavior, cancellation and secret-safe
+failures, plus CLI root selection and lineage enforcement across resume. Reject
+correction descendants as budget roots. Explicitly use a zero-retry HTTPX
+transport so optional aiohttp installation cannot enable hidden reconnects.
+Record software checks and a read-only real-source/budget preflight. Provide
+start, resume and observation commands in SHUTTLE_TERMINAL.md; Google server
+deadlines and quotas remain outside this client control.

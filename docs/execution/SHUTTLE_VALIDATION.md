@@ -188,3 +188,35 @@ Resume is explicit after service recovery. It keeps the same source, model,
 120-second deadline and 300-request ceiling, preserves failed receipts, and
 charges a fresh request. Full reconstruction remains incomplete until all
 required main steps, callouts and attachment events are represented and inspected.
+
+## User-executed run without a client deadline
+
+The user subsequently requested an independent Terminal command with the
+120-second client deadline removed. `enqueue --provider-timeout none` now freezes
+an explicit null deadline in a fresh job and clears the SDK timeout/header as
+well. Cancellation and lease checks remain active. The original blocked job
+and its measured results above are unchanged. No new paid inference ran while
+preparing this option; no no-deadline reconstruction result is claimed.
+
+The new `--share-budget-with` option binds a fresh same-source exploration
+revision to the original 300-request ceiling. Read-only preflight verified the
+official source hash and 24 charged calls, with 276 remaining. Roots identified
+by either job configuration or checkpoint are checked, including correction
+descendants. Sibling calls and cancelled reservations continue to count. Model,
+thinking level, booklet and ceiling must match; active or exhausted roots reject
+new runtime revisions. Start, resume and observation commands are in
+[SHUTTLE_TERMINAL.md](SHUTTLE_TERMINAL.md). The existing preview still selects
+the original blocked job.
+
+No-deadline software verification passed: 1,558 backend tests, including 62
+provider tests, plus Ruff, unchanged generated schemas and syntax validation of
+all four Terminal command blocks. Offline SDK tests confirm timeout null and
+absence of `X-Server-Timeout`; success, connection failure and rate-limit cases
+use exactly one HTTP request through the explicitly injected zero-retry HTTPX
+transport, including when aiohttp is available. Tests cover cancellation,
+keyboard interruption, lease loss, immutable runtime choices, descendant-root
+rejection and shared budgets. Read-only protection verification again confirmed
+all 160 red aeroplane files and semantic database records unchanged. Evidence is
+under `evidence/no-timeout-*` and `evidence/metrics/provider-httpx-no-retries-pytest.txt`
+in the existing ignored experiment directory. These checks initiate no live
+inference and do not establish assembly accuracy.

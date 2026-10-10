@@ -2693,6 +2693,25 @@
     "entire_implementation_commit": "f9a9dc6730cd5426bcb8800a845a26b5ff0e9fb5",
     "entire_implementation_checkpoint": "01M4JWPFPAWJTKN49C3YP4E6ES",
     "local_env_key_matches_runtime": true,
-    "official_source_unchanged": true
+    "official_source_unchanged": true,
+    "terminal_no_deadline": {
+      "status": "prepared_not_run",
+      "provider_timeout": null,
+      "revision": "adk-31134-booklet01-no-timeout-v1",
+      "shared_budget_root_job_id": "2573f70cc20e45329bce1656bddf64d9",
+      "shared_request_ceiling": 300,
+      "requests_used_at_preflight": 24,
+      "requests_remaining_at_preflight": 276,
+      "fresh_job_created": false,
+      "new_live_requests": 0,
+      "runbook": "docs/execution/SHUTTLE_TERMINAL.md",
+      "original_runtime_unchanged": true,
+      "backend_tests_passed": 1558,
+      "provider_tests_passed": 62,
+      "ruff": "passed",
+      "schema_check": "passed",
+      "shell_blocks_syntax_check": "passed",
+      "red_plane_protection": "unchanged"
+    }
   }
 }

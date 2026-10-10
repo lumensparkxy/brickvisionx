@@ -5,6 +5,7 @@ import json
 import time
 
 from google.genai import errors, types
+import httpx
 from PIL import Image
 import pytest
 
@@ -78,6 +79,8 @@ def test_real_adk_runner_sends_images_schema_and_one_developer_api_request(tmp_p
     assert client_config["http_options"].retry_options.attempts == 1
     assert request["config"].http_options.retry_options.attempts == 1
     assert client_config["debug_config"].client_mode is None
+    assert isinstance(client_config["http_options"].httpx_async_client, httpx.AsyncClient)
+    assert client_config["http_options"].httpx_async_client.is_closed
     receipt = json.loads((evidence / "invocation.json").read_text())
     assert receipt["images"][0]["sha256"] == hashlib.sha256(page.read_bytes()).hexdigest()
     assert receipt["schema_sha256"] == hashlib.sha256(json.dumps(schema, sort_keys=True).encode()).hexdigest()
@@ -408,7 +411,125 @@ def test_timeout_cancels_running_adk_and_retains_actual_receipt(tmp_path, transp
     assert receipt["timeout_seconds"] == .08 and receipt["model_requests_started"] == 1
 
 
-def test_cancellation_check_interrupts_network_and_is_not_provider_failure(tmp_path, transport):
+def test_no_application_deadline_allows_delayed_validated_output_and_omits_sdk_timeout_header(
+        tmp_path, transport, monkeypatch):
+    from types import SimpleNamespace
+    from guide2build.engine import provider
+
+    actual_monotonic = time.monotonic
+    # Cross the former 120-second application deadline without a slow test or
+    # changing the asyncio event loop's clock. The transport remains intercepted.
+    monkeypatch.setattr(provider, "time", SimpleNamespace(monotonic=lambda:
+        actual_monotonic() + (1000 if transport["requests"] else 0)))
+    transport["delay"] = .13
+    transport["text"] = '{"count": 1}'
+    schema = {"type": "object", "properties": {"count": {"type": "integer"}},
+              "required": ["count"], "additionalProperties": False}
+    checks = []
+    assert GoogleAdkProvider(timeout=None).call("Synthetic delayed task", [], schema, tmp_path,
+        lambda: checks.append(actual_monotonic())) == {"count": 1}
+    assert len(checks) >= 5
+    client_options = transport["calls"][0]["http_options"]
+    request_options = transport["requests"][0]["config"].http_options
+    assert client_options.timeout is None and request_options.timeout is None
+    assert client_options.retry_options.attempts == request_options.retry_options.attempts == 1
+    # Exercise the installed SDK's request builder offline, including option
+    # merging and header population; do not serialize or expose API-key headers.
+    request = transport["clients"][0]._api_client._build_request("post",
+        "models/gemini-synthetic:generateContent", {}, request_options)
+    assert request.timeout is None
+    assert not any(name.lower() == "x-server-timeout" for name in request.headers)
+    receipt = json.loads((tmp_path / "invocation.json").read_text())
+    assert receipt["timeout_seconds"] is None and receipt["status"] == "completed"
+    assert receipt["elapsed_seconds"] > 1000 and receipt["model_requests_started"] == 1
+    assert not transport["cancelled"] and len(transport["requests"]) == 1
+
+
+@pytest.mark.parametrize("outcome", ["success", "connect_error", "rate_limit"])
+def test_actual_sdk_httpx_transport_pins_no_retries_even_with_aiohttp_available(tmp_path, monkeypatch, outcome):
+    from google.genai import _api_client
+    from guide2build.core import environment
+    from guide2build.engine import adk_runtime
+
+    secret = "synthetic-unit-test-key"
+    monkeypatch.setattr(environment, "load_local_environment", lambda: None)
+    monkeypatch.setenv("GOOGLE_API_KEY", secret)
+    monkeypatch.setattr(_api_client, "has_aiohttp", True)
+    state = {"requests": [], "retries": [], "http_clients": [], "transports": [], "aiohttp_calls": 0}
+
+    async def forbidden_aiohttp(*args, **kwargs):
+        state["aiohttp_calls"] += 1
+        raise AssertionError("The provider must pin the HTTPX transport")
+
+    monkeypatch.setattr(_api_client.BaseApiClient, "_get_aiohttp_session", forbidden_aiohttp)
+
+    async def handler(request):
+        state["requests"].append(request)
+        assert request.url.host == "generativelanguage.googleapis.com"
+        assert request.extensions["timeout"] == {"connect": None, "read": None, "write": None, "pool": None}
+        assert "x-server-timeout" not in request.headers
+        if outcome == "connect_error":
+            raise httpx.ConnectError(f"Synthetic connection failed {secret} https://untrusted.invalid", request=request)
+        if outcome == "rate_limit":
+            return httpx.Response(429, json={"error": {"code": 429,
+                "status": "RESOURCE_EXHAUSTED", "message": "Synthetic rate limit"}})
+        return httpx.Response(200, json={"candidates": [{"content": {"role": "model",
+            "parts": [{"text": '{"ok": true}'}]}, "finishReason": "STOP"}],
+            "usageMetadata": {"promptTokenCount": 3, "candidatesTokenCount": 4, "totalTokenCount": 7}})
+
+    class OfflineTransport(httpx.MockTransport):
+        closed = False
+
+        async def aclose(self):
+            self.closed = True
+            await super().aclose()
+
+    def make_transport(*, retries):
+        state["retries"].append(retries)
+        value = OfflineTransport(handler)
+        state["transports"].append(value)
+        return value
+
+    original_async_client = httpx.AsyncClient
+
+    def make_async_client(**kwargs):
+        assert kwargs["timeout"] is None
+        client = original_async_client(**kwargs)
+        state["http_clients"].append(client)
+        return client
+
+    monkeypatch.setattr(adk_runtime.httpx, "AsyncHTTPTransport", make_transport)
+    monkeypatch.setattr(adk_runtime.httpx, "AsyncClient", make_async_client)
+    schema = {"type": "object", "properties": {"ok": {"type": "boolean"}},
+        "required": ["ok"], "additionalProperties": False}
+    if outcome == "success":
+        assert GoogleAdkProvider(timeout=None).call("Synthetic HTTPX task", [], schema, tmp_path) == {"ok": True}
+    else:
+        with pytest.raises(ProviderFailure) as failure:
+            GoogleAdkProvider(timeout=None).call("Synthetic HTTPX task", [], schema, tmp_path)
+        assert failure.value.code == ("rate_limited" if outcome == "rate_limit" else "provider_unavailable")
+        assert secret not in str(failure.value)
+    assert len(state["requests"]) == 1 and state["retries"] == [0] and state["aiohttp_calls"] == 0
+    assert all(client.is_closed for client in state["http_clients"])
+    assert all(transport.closed for transport in state["transports"])
+    receipt = json.loads((tmp_path / "invocation.json").read_text())
+    assert receipt["model_requests_started"] == 1 and receipt["timeout_seconds"] is None
+    assert all(secret not in path.read_text() for path in tmp_path.iterdir())
+
+
+def test_no_application_deadline_still_validates_output_without_retry(tmp_path, transport):
+    transport["delay"] = .06
+    transport["text"] = '{"count": "wrong-type"}'
+    schema = {"type": "object", "properties": {"count": {"type": "integer"}}, "required": ["count"]}
+    with pytest.raises(ProviderFailure) as failure:
+        GoogleAdkProvider(timeout=None).call("Synthetic invalid delayed task", [], schema, tmp_path)
+    assert failure.value.code == "invalid_output"
+    assert len(transport["requests"]) == 1
+    assert json.loads((tmp_path / "invocation.json").read_text())["timeout_seconds"] is None
+
+
+@pytest.mark.parametrize("timeout", [30, None])
+def test_cancellation_check_interrupts_network_and_is_not_provider_failure(tmp_path, transport, timeout):
     transport["delay"] = 30
     checks = 0
 
@@ -420,13 +541,14 @@ def test_cancellation_check_interrupts_network_and_is_not_provider_failure(tmp_p
 
     started = time.monotonic()
     with pytest.raises(InterruptedError, match="synthetic job cancellation"):
-        GoogleAdkProvider(timeout=30).call("Synthetic task", [], {"type": "object"}, tmp_path, check)
+        GoogleAdkProvider(timeout=timeout).call("Synthetic task", [], {"type": "object"}, tmp_path, check)
     assert time.monotonic() - started < 2 and transport["cancelled"] is True
     assert json.loads((tmp_path / "invocation.json").read_text())["status"] == "cancelled"
     assert len(transport["requests"]) == 1
 
 
-def test_fenced_lease_loss_cancels_inference_without_pausing_provider(tmp_path, transport):
+@pytest.mark.parametrize("timeout", [30, None])
+def test_fenced_lease_loss_cancels_inference_without_pausing_provider(tmp_path, transport, timeout):
     from guide2build.engine.store import LeaseLost
 
     transport["delay"] = 30
@@ -440,9 +562,30 @@ def test_fenced_lease_loss_cancels_inference_without_pausing_provider(tmp_path, 
             raise lost
 
     with pytest.raises(LeaseLost) as failure:
-        GoogleAdkProvider(timeout=30).call("Synthetic task", [], {"type": "object"}, tmp_path, check)
+        GoogleAdkProvider(timeout=timeout).call("Synthetic task", [], {"type": "object"}, tmp_path, check)
     assert failure.value is lost and transport["cancelled"] is True
     assert json.loads((tmp_path / "invocation.json").read_text())["status"] == "cancelled"
+
+
+@pytest.mark.parametrize("timeout", [30, None])
+def test_keyboard_interrupt_cancels_inference_and_retains_cancelled_receipt(tmp_path, transport, timeout):
+    transport["delay"] = 30
+    checks = 0
+
+    def check():
+        nonlocal checks
+        checks += 1
+        if checks == 3:
+            raise KeyboardInterrupt
+
+    started = time.monotonic()
+    with pytest.raises(KeyboardInterrupt):
+        GoogleAdkProvider(timeout=timeout).call("Synthetic interrupt task", [], {"type": "object"}, tmp_path, check)
+    assert time.monotonic() - started < 2 and transport["cancelled"] is True
+    receipt = json.loads((tmp_path / "invocation.json").read_text())
+    assert receipt["status"] == "cancelled" and receipt["timeout_seconds"] == timeout
+    assert receipt["failure"]["code"] == "cancelled" and receipt["model_requests_started"] == 1
+    assert len(transport["requests"]) == 1
 
 
 def test_secret_values_are_redacted_in_inputs_outputs_and_event_metadata(tmp_path, transport, monkeypatch):
