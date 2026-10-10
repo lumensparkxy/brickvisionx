@@ -99,8 +99,10 @@ def harness(tmp_path, monkeypatch):
     directory.mkdir(parents=True)
     pages = tmp_path / "public" / "pages" / SOURCE
     pages.mkdir(parents=True)
+    # Prompt goldens bind image bytes, so avoid platform-dependent PNG re-encoding.
+    image_fixtures = Path(__file__).resolve().parents[1] / "fixtures"
     for index in range(8):
-        Image.new("RGB", (32, 24), "white").save(pages / f"page-{index:03d}.png")
+        (pages / f"page-{index:03d}.png").write_bytes((image_fixtures / "synthetic-white-page.png").read_bytes())
     cp, events, renders = {}, [], []
     provider = SyntheticProvider()
     job = {"id": "synthetic-job", "set_number": "30669", "guide_id": "alt-02",
@@ -120,7 +122,7 @@ def harness(tmp_path, monkeypatch):
         paths = []
         for name in ("source.png", "part-sheet.png"):
             path = output / name
-            Image.new("RGB", (16, 16), "white").save(path)
+            path.write_bytes((image_fixtures / "synthetic-white-tile.png").read_bytes())
             paths.append(str(path))
         return {"image_paths": paths, "findings": []}
     def render(scene_path, geometry, output, *, source_views, first_step, **kwargs):
@@ -129,7 +131,7 @@ def harness(tmp_path, monkeypatch):
         frames = []
         for index, step in enumerate(scene.steps[first_step - 1:]):
             path = output / f"frame-{index}.png"
-            Image.new("RGB", (16, 16), "red").save(path)
+            path.write_bytes((image_fixtures / "synthetic-red-frame.png").read_bytes())
             frames.append({"step_id": step.step_id, "screenshot": path.name,
                            "png_sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "camera_mode": "overview", "source_camera": None})
         result = {"status": "rendered", "scene_sha256": digest(scene), "steps": frames}

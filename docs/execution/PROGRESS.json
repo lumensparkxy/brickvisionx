@@ -2713,5 +2713,25 @@
       "shell_blocks_syntax_check": "passed",
       "red_plane_protection": "unchanged"
     }
+  },
+  "hackathon_chat_copilot": {
+    "date": "2026-10-10",
+    "status": "working_locally",
+    "endpoint": "POST /api/v1/chat",
+    "model": "gemini-3.8-flash",
+    "thinking_level": "low",
+    "browser_contract": "apps/web/src/agent.ts (window.brickvision)",
+    "manual_browser_run": "walkthrough steps 6-8 with narration, rotate 180, go to step 3 plus underside",
+    "typecheck": "pass",
+    "frontend_tests_passed": 54,
+    "api_tests": "pass (filtered subset)",
+    "full_check_py": "not_run",
+    "playwright": "not_run",
+    "voice_provider_integration": "gradium_default (speech-to-text and text-to-speech); browser speech is the fallback",
+    "human_review": "not_run",
+    "physical_build": "not_run",
+    "voice_endpoint": "POST /api/v1/voice/token (requires backend GRADIUM_API_KEY)",
+    "voice_checks": "fake-microphone browser run and a real microphone run by the user; no automated voice tests",
+    "entire_review": "claude-code reviewer: request changes, 4 medium and 7 low findings; fixes applied, not yet re-reviewed"
   }
 }

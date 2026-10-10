@@ -1063,3 +1063,11 @@ transport so optional aiohttp installation cannot enable hidden reconnects.
 Record software checks and a read-only real-source/budget preflight. Provide
 start, resume and observation commands in SHUTTLE_TERMINAL.md; Google server
 deadlines and quotas remain outside this client control.
+
+### Hackathon demo: BrickBuddy chat/voice copilot — 10 October 2026
+
+Demo script: ask for a model by voice, open the ingested plane (30669/alt-02), "I'm stuck at step 5, walk me through the next 3 steps" (animation plays while each step is narrated), rotate by voice. Slice built: `POST /api/v1/chat` (`chat.py`, one bounded `gemini-3.8-flash` call per explicit user message, JSON reply plus viewer actions), shared browser contract `apps/web/src/agent.ts` (actions, voice adapter, `window.brickvision`), floating `ChatPanel`, ranged narrated playback and eased orbit-by-degrees in the viewer. Voice provider (Gradium) plugs in through `setVoice`; browser speech is only a fallback. The copilot navigates and narrates a labelled candidate; it does not verify or edit assembly data.
+
+Checked on this machine: typecheck, 54 frontend tests, API tests, and a manual browser run (walkthrough of steps 6–8, rotate 180°, jump to step 3 plus underside view). Not run: full `tools/check.py`, Playwright, real voice in and out. Local setup note: upstream `LDConfig.ldr` (2026-05-29) no longer matches the pin in `config/parts-30669-alt-02.json`; the local scene was materialized against the current upstream colour file with the repo pin left unchanged.
+
+Voice update, same day: Gradium is now the default voice (mic capture with end-of-turn detection, streamed spoken replies and narrations) through `POST /api/v1/voice/token`, which needs a backend `GRADIUM_API_KEY`; browser speech is only the fallback. Checked with a fake-microphone browser run and a real microphone run by the user. An Entire review (Claude Code reviewer) returned request-changes with 4 medium and 7 low findings; fixes are applied and await a second review.

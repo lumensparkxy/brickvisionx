@@ -22,6 +22,8 @@ import { partsList, readProgress, saveProgress } from '../state';
 import AssemblyViewport, { type CameraCommand } from './AssemblyViewport';
 import SourcePanel from './SourcePanel';
 import ReviewPanel from './ReviewPanel';
+import ChatPanel from './ChatPanel';
+import { narrate, stopSpeaking, type ViewerAction, type ViewerController } from '../agent';
 export default function ViewerWorkspace({ scene: initialScene, guide, onClose, onScene, publicMode=false, releaseAlpha, previewMode=false, previewExperiment, previewJobId, previewQuality, previewGenerationMode, previewArtifactKind, previewUncertaintyNotes, previewCoverage, previewSourceCoverage, exploration, sourceImages=!publicMode, releaseLoader }: {publicMode?:boolean; releaseAlpha?:AlphaReleaseMetadata; previewMode?:boolean; previewExperiment?:string; previewJobId?:string; previewQuality?:ImageQuality; previewGenerationMode?:'standard'|'alpha_fast'; previewArtifactKind?:string; previewUncertaintyNotes?:string[]; previewCoverage?:string; previewSourceCoverage?:string; exploration?:ExplorationStatus|null; sourceImages?:boolean; releaseLoader?:ReleaseLoader; scene: SceneManifest; guide: Guide; onClose: () => void; onScene: (scene: SceneManifest) => void}) {
   const [scene,setLoadedScene] = useState(initialScene);
   const [chunkError,setChunkError] = useState('');
@@ -35,6 +37,9 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   const [animationDone,setAnimationDone] = useState(false); const [ready,setReady] = useState(false);
   const [needsReplay,setNeedsReplay] = useState(false);
   const [buildFinished,setBuildFinished] = useState(false);
+  // Chat/voice walkthrough: play up to playEnd and hold each step until its narration was spoken.
+  const [playEnd,setPlayEnd] = useState<number|null>(null); const [speaking,setSpeaking] = useState(false);
+  const narrations = useRef<Record<number,string>>({}); const whenIdle = useRef<(()=>void)|null>(null);
   const [command,setCommand] = useState<CameraCommand>({action:'reset',token:0});
   const [tab,setTab] = useState('3D'); const [allParts,setAllParts] = useState(false); const [review,setReview] = useState(false);
   const [overlayReview,setOverlayReview] = useState(()=>matchMedia('(max-width:1200px)').matches);
@@ -44,15 +49,23 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   useEffect(()=>{if(!review)return;const dialog=reviewDialog.current;if(!dialog)return;if(overlayReview)dialog.showModal();else dialog.show();return()=>{dialog.close();reviewButton.current?.focus();};},[review,overlayReview]);
   const step = scene.steps[index]; const rows = partsList(scene,allParts?undefined:step.introduced_instance_ids);
   const change = (next:number) => {setPlayback('idle');setBuildFinished(false);setIndex(Math.max(0,Math.min(scene.steps.length-1,next)));};
-  const startBuild = () => {setReview(false);setTab('3D');setAllParts(false);setBuildFinished(false);setAnimationDone(false);setNeedsReplay(true);setIndex(0);setPlayback('playing');};
+  const startBuild = () => {narrations.current={};setPlayEnd(null);setReview(false);setTab('3D');setAllParts(false);setBuildFinished(false);setAnimationDone(false);setNeedsReplay(true);setIndex(0);setPlayback('playing');};
   useEffect(()=>{
-    if(playback!=='playing'||!animationDone||!ready||!snapshotReady||needsReplay||chunkError)return;
+    if(playback!=='playing'||!animationDone||!ready||!snapshotReady||needsReplay||chunkError||speaking)return;
     const timer=window.setTimeout(()=>{
-      if(index===scene.steps.length-1){setPlayback('idle');setBuildFinished(true);}
+      if(index>=(playEnd??scene.steps.length-1)){setPlayback('idle');setBuildFinished(playEnd===null);}
       else {setAnimationDone(false);setNeedsReplay(true);setIndex(i=>i+1);}
     },1000);
     return()=>window.clearTimeout(timer);
-  },[playback,animationDone,ready,snapshotReady,needsReplay,chunkError,index,scene.steps.length]);
+  },[playback,animationDone,ready,snapshotReady,needsReplay,chunkError,index,scene.steps.length,speaking,playEnd]);
+  useEffect(()=>{
+    if(playback!=='playing')return;const line=narrations.current[index];if(!line)return;
+    delete narrations.current[index];setSpeaking(true);void narrate(line).finally(()=>setSpeaking(false));
+  },[index,playback]);
+  useEffect(()=>{
+    if(playback!=='idle')return;if(speaking)stopSpeaking();
+    narrations.current={};setPlayEnd(null);setSpeaking(false);whenIdle.current?.();whenIdle.current=null;
+  },[playback]);
   // A compact release can temporarily unmount the renderer when changing chunks.
   // Keep playback intent and start this snapshot's replay only after it is ready.
   useEffect(()=>{
@@ -72,7 +85,7 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
       if(event.key==='ArrowLeft'){event.preventDefault();setPlayback('idle');setBuildFinished(false);setIndex(i=>Math.max(0,i-1));}if(event.key==='ArrowRight'){event.preventDefault();setPlayback('idle');setBuildFinished(false);setIndex(i=>Math.min(scene.steps.length-1,i+1));}};
     window.addEventListener('keydown',handler);return()=>window.removeEventListener('keydown',handler);
   },[scene.steps.length]);
-  const camera=(action:CameraCommand['action'])=>setCommand(c=>({action,token:c.token+1}));
+  const camera=(action:CameraCommand['action'],degrees?:number)=>setCommand(c=>({action,degrees,token:c.token+1}));
   const groupKey=(s:typeof step)=>`${s.section_id??''}:${s.printed_step_number===null?s.step_id:s.main_step_number}`;
   const stepLabel=(s:typeof step)=>s.printed_step_number===null?'Unnumbered instruction':`Step ${s.main_step_number}`;
   const mainSteps = new Set(scene.steps.filter(s=>s.printed_step_number!==null&&s.main_step_number!==null).map(groupKey)).size;
@@ -89,6 +102,32 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   const groupName = step.assembly_group_id?.replaceAll('-',' ').replace(/^./,s=>s.toUpperCase());
   const assemblyOverview = step.action === 'inspect' && step.introduced_instance_ids.length === 0;
   const replayStep = () => {setPlayback('idle');setBuildFinished(false);setReplay(n=>n+1);};
+  // What the chat/voice agent can see and do. Steps are printed main step numbers.
+  const numbered=scene.steps.map((s,i)=>({s,i})).filter(({s})=>s.printed_step_number!==null&&s.main_step_number!==null);
+  const lastMain=Math.max(1,...numbered.map(({s})=>s.main_step_number));
+  const mainIndex=(n:number,last=false)=>{const hits=numbered.filter(({s})=>s.main_step_number===n);return hits.length?hits[last?hits.length-1:0].i:-1;};
+  const controller=useRef<ViewerController>(null!);
+  controller.current={
+    context:()=>({set_number:scene.set_number,guide:guide.label,current_step:step.main_step_number,total_steps:lastMain,playing:playback!=='idle',
+      steps:[...new Set(numbered.map(({s})=>s.main_step_number))].map(n=>{const group=numbered.filter(({s})=>s.main_step_number===n).map(({s})=>s);return{step:n,instructions:group.map(s=>s.instruction),
+        pieces:partsList(scene,group.flatMap(s=>s.introduced_instance_ids)).map(row=>`${row.quantity} x ${colorNames[row.color]?.trim()||`colour ${row.color}`} (part ${row.partId})`)};})}),
+    run:(action:ViewerAction)=>new Promise<void>(resolve=>{
+      const clamp=(n:number)=>Math.max(1,Math.min(lastMain,n));
+      if(action.type==='go_to_step'){const target=mainIndex(clamp(action.step));if(target>=0)change(target);window.setTimeout(resolve,700);}
+      else if(action.type==='play_steps'){
+        const first=clamp(action.step),start=mainIndex(first),end=mainIndex(clamp(first+action.count-1),true);
+        if(start<0||end<0){resolve();return;}
+        const lines:Record<number,string>={};action.narrations.forEach((line,k)=>{const at=mainIndex(first+k);if(at>=0&&at<=end)lines[at]=line;});
+        whenIdle.current?.();whenIdle.current=resolve;narrations.current=lines;
+        setReview(false);setTab('3D');setAllParts(false);setBuildFinished(false);setAnimationDone(false);setNeedsReplay(true);setPlayEnd(end);setIndex(start);setPlayback('playing');
+      }
+      else if(action.type==='rotate'){camera(action.direction,action.degrees);window.setTimeout(resolve,Math.min(3200,Math.max(600,action.degrees*14))+150);}
+      else if(action.type==='zoom'){camera(action.direction);window.setTimeout(resolve,300);}
+      else if(action.type==='reset_view'){camera('reset');window.setTimeout(resolve,300);}
+      else if(action.type==='replay_step'){replayStep();window.setTimeout(resolve,1200);}
+      else {setPlayback('idle');setBuildFinished(false);resolve();}
+    }),
+  };
   return <section className="workspace">
     <header className="studio-header">
       <button className="brand studio-brand" onClick={onClose} aria-label="Back to set lookup">Guide2Build <span>3D</span></button>
@@ -131,6 +170,7 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
         {chunkError?<div role="alert" className="viewport-message error"><p>{chunkError}</p><button onClick={()=>setChunkRetry(n=>n+1)}>Retry instruction</button></div>:!snapshotReady?<p role="status" className="viewport-message">Loading this instruction…</p>:<AssemblyViewport scene={scene} step={step} previous={scene.steps[index-1]} replayToken={replay} command={command} onThumbnails={setThumbnails} onColorNames={setColorNames} fullBuild={playback!=='idle'} paused={playback==='paused'} onAnimationComplete={()=>setAnimationDone(true)} onReadyChange={setReady}/>}
         <div className="camera-controls" role="group" aria-label="Camera controls"><div className="camera-pair"><button onClick={()=>camera('left')} aria-label="Rotate left" title="Rotate left"><IconRotate size={21}/></button><button onClick={()=>camera('right')} aria-label="Rotate right" title="Rotate right"><IconRotateClockwise size={21}/></button><span>Rotate</span></div><button onClick={()=>camera('in')} aria-label="Zoom in" title="Zoom in"><IconPlus size={23}/><span>Zoom in</span></button><button onClick={()=>camera('out')} aria-label="Zoom out" title="Zoom out"><IconMinus size={23}/><span>Zoom out</span></button><button onClick={()=>camera('reset')} aria-label="Reset view" title="Reset view"><IconFocus2 size={23}/><span>Reset view</span></button><div className="camera-pair"><button onClick={()=>camera('pan-left')} aria-label="Pan left" title="Pan left"><IconChevronLeft size={21}/></button><button onClick={()=>camera('pan-right')} aria-label="Pan right" title="Pan right"><IconChevronRight size={21}/></button><span><IconArrowsMoveHorizontal size={14}/> Pan</span></div></div>
         <p className="gesture-hint"><span className="desktop-hint">Drag to rotate · Scroll to zoom · Right-drag to pan</span><span className="touch-hint">Drag to rotate · Pinch to zoom</span></p>
+        <ChatPanel controller={controller}/>
       </section>
       {!publicMode&&review&&<dialog ref={reviewDialog} className="review-drawer" aria-label="Review workspace" onCancel={event=>{event.preventDefault();setReview(false);}}><div className="review-drawer-heading"><h2>Reconstruction review</h2><button className="icon-button" aria-label="Dismiss review" onClick={()=>setReview(false)}><IconX size={20}/></button></div><ReviewPanel scene={scene} step={step} onScene={onScene} onNavigate={stepId=>{const next=scene.steps.findIndex(s=>s.step_id===stepId);if(next>=0){change(next);setTab('3D');if(overlayReview)setReview(false);}}}/></dialog>}
     </div>

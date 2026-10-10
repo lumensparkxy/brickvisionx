@@ -62,7 +62,7 @@ function rendererAudit(renderer: THREE.WebGLRenderer, manifest: SceneManifest) {
     audit.disposedAtMs=performance.now();audit.disposedResources={geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures};
   }};
 }
-export interface CameraCommand { action: CameraAction; token: number; }
+export interface CameraCommand { action: CameraAction | 'up' | 'down'; token: number; degrees?: number; }
 export default function AssemblyViewport({ scene: manifest, step, previous, replayToken, command, onThumbnails, onColorNames, fullBuild, paused, onAnimationComplete, onReadyChange }: {
   scene: SceneManifest; step: StepSnapshot; previous?: StepSnapshot; replayToken: number; command: CameraCommand; onThumbnails: (images: Record<string,string>) => void;
   onColorNames?: (names: Record<string,string>) => void;
@@ -73,7 +73,7 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
   const frameKey=(snapshot:StepSnapshot)=>`${snapshot.section_id??''}:${snapshot.printed_step_number===null?snapshot.step_id:snapshot.main_step_number}`;
   const host = useRef<HTMLDivElement>(null); const stepRef = useRef(step);
   const applyStep = useRef<((animate?: boolean) => void) | null>(null);
-  const cameraCommand = useRef<((action: CameraCommand['action']) => void) | null>(null);
+  const cameraCommand = useRef<((action: CameraCommand['action'], degrees?: number) => void) | null>(null);
   const playbackRef = useRef({fullBuild,paused,onAnimationComplete});
   useEffect(()=>{playbackRef.current={fullBuild,paused,onAnimationComplete};});
   const [placementNote,setPlacementNote] = useState('');
@@ -92,7 +92,7 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
     }
   }, [step, previous]);
   useEffect(() => { if (replayToken) applyStep.current?.(true); }, [replayToken]);
-  useEffect(() => { cameraCommand.current?.(command.action); }, [command]);
+  useEffect(() => { cameraCommand.current?.(command.action, command.degrees); }, [command]);
   useEffect(() => {
     if (!host.current) return;
     let cancelled = false; let frame = 0; let dirty = true; let viewportVisible = true;
@@ -218,7 +218,12 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
       element.dataset.animationState=tween?(playbackRef.current.paused?'paused':'playing'):'idle';
     };
     let buildBounds: THREE.Box3 | null = null;
+    let orbitFrame = 0;
+    let viewTouched = false; // The user or the agent moved the camera since the last fit.
+    let backedOff = 1; // Distance factor added for narrower layouts since then.
+    controls.addEventListener('start', () => { viewTouched = true; });
     const fit = () => {
+      cancelAnimationFrame(orbitFrame); viewTouched = false; backedOff = 1;
       stopCameraMotion(camera, controls);
       const siblingFrame = mainStepFrames.get(frameKey(stepRef.current));
       const frameBounds = playbackRef.current.fullBuild && buildBounds ? buildBounds : siblingFrame?.bounds;
@@ -241,12 +246,37 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
       camera.position.copy(center).addScaledVector(direction,distance); controls.target.copy(center); controls.update();
       updateStage(box);
     };
-    cameraCommand.current = action => {
+    // Chat/voice commands orbit by an angle with easing; toolbar buttons keep their fixed nudge.
+    const orbit = (radians: number, vertical: boolean) => {
+      cancelAnimationFrame(orbitFrame); stopCameraMotion(camera, controls); // Drop drag inertia, or the turn overshoots.
+      const started = performance.now(), duration = Math.min(3200, Math.max(600, Math.abs(radians) * 800)); let applied = 0;
+      const tick = (now: number) => {
+        if (cancelled) return;
+        const t = Math.min(1, (now - started) / duration), eased = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+        const delta = eased * radians - applied; applied += delta;
+        const offset = camera.position.clone().sub(controls.target);
+        offset.applyAxisAngle(vertical ? new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0) : camera.up, delta);
+        camera.position.copy(controls.target).add(offset); controls.update(); dirty = true;
+        if (t < 1) orbitFrame = requestAnimationFrame(tick);
+      };
+      orbitFrame = requestAnimationFrame(tick);
+    };
+    cameraCommand.current = (action, degrees) => {
       clearSourceView();
-      if (action === 'reset') fit();
+      if (action === 'reset') { fit(); return; }
+      viewTouched = true;
+      if (action === 'up' || action === 'down') orbit(THREE.MathUtils.degToRad(degrees ?? 45) * (action === 'up' ? -1 : 1), true);
+      else if (degrees !== undefined && (action === 'left' || action === 'right')) orbit(THREE.MathUtils.degToRad(degrees) * (action === 'left' ? -1 : 1), false);
       else moveCamera(camera, controls, action);
     };
-    const resize = new ResizeObserver(() => { const {width,height} = element.getBoundingClientRect(); viewportVisible = width >= 1 && height >= 1; if (!viewportVisible) return; camera.aspect = width/height; camera.updateProjectionMatrix(); renderer.setSize(width,height); fit(); if(sourceView) sourceCameraControl.apply(sourceView.spec,stepRef.current.step_id); }); resize.observe(element);
+    const resize = new ResizeObserver(() => { const {width,height} = element.getBoundingClientRect(); viewportVisible = width >= 1 && height >= 1; if (!viewportVisible) return; const previousAspect = camera.aspect; camera.aspect = width/height; camera.updateProjectionMatrix(); renderer.setSize(width,height);
+      // A layout change (such as the chat panel opening) must not throw away a view the user chose: keep the angle, only adjust the distance.
+      if (!viewTouched) fit(); else {
+        // Back off when the canvas gets narrower so the model stays in frame; when it widens again undo only that back-off, never zoom past the user's view.
+        const ratio = previousAspect/camera.aspect, factor = ratio > 1 ? Math.min(ratio, 2) : 1/Math.min(backedOff, 1/ratio);
+        backedOff *= factor; cancelAnimationFrame(orbitFrame);
+        const offset = camera.position.clone().sub(controls.target).multiplyScalar(factor); camera.position.copy(controls.target).add(offset); controls.update(); dirty = true;
+      } if(sourceView) sourceCameraControl.apply(sourceView.spec,stepRef.current.step_id); }); resize.observe(element);
     let lastFrame=performance.now();
     const draw = () => {
       const now=performance.now();const delta=now-lastFrame;lastFrame=now;
