@@ -1,4 +1,8 @@
-# State (updated 2026-10-10 15:05 UTC+2)
+# State (updated 2026-10-10 15:33 UTC+2)
+
+- 15:33: Entire CLI 0.11.4 (darwin/arm64) installed via https://entire.io/install.sh to `~/.local/bin/entire` and `git-remote-entire`. Checksum verified by the script. Post-install appended Zsh completion to `~/.zshrc` (`source <(entire completion zsh)`). Hooks in `.codex/hooks.json` and `.claude/settings.json` already call `entire` when it is on PATH.
+- 15:39: `entire login` completed via device-code flow (no TTY). `entire auth status`: logged in, expires in 29d, user `github:YodaGitMaster`, jurisdiction eu, token in macOS Keychain.
+- 15:40: `entire enable` in brickvisionx: already enabled. `.entire/settings.json` has `enabled: true`, telemetry true, checkpoints primary `git-refs`. Agents: Antigravity, Claude Code, Codex. Cursor is not in that list. No files changed by this run.
 
 ## Last completed
 - Voice/typed navigation with Gemini: screens + tutorial steps + generic `click` on any visible control.
