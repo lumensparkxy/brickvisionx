@@ -1,0 +1,7 @@
+<environment_context>
+  <cwd>/Users/admin/learn_python/brickvisionx</cwd>
+  <shell>zsh</shell>
+  <current_date>2026-10-10</current_date>
+  <timezone>Europe/Zurich</timezone>
+  <filesystem><workspace_roots><root>/Users/admin/learn_python/brickvisionx</root></workspace_roots><permission_profile type="disabled"><file_system type="unrestricted" /></permission_profile></filesystem>
+</environment_context>
