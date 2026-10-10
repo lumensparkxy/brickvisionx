@@ -8,6 +8,8 @@
 - Tests: Playwright software 24 passed (incl. `tests/e2e/voice-navigation.spec.ts`, 4 tests); Vitest 62 passed; pytest tests/backend exit 0; ruff OK; build OK.
 - Evidence: `var/evidence/voice/` (dock-*.png, dock-layout.mjs, e2e-*.mjs, pytest.log).
 
+- 15:15: Mic mute button (session.ts setMuted, useAssistant muted/toggleMute, VoiceChat `.voice-mute`). Offline test `tests/e2e/voice-mute.spec.ts` (page.routeWebSocket fakes Gradium; Chromium fake mic = loud audio). Fixed flaky `say()` helper in voice-navigation.spec.ts (collapsed dock hides transcript). Software e2e 25 passed; Vitest 62; build OK.
+
 ## Running
 - Dev server: `var/.venv-gradium/bin/python tools/dev.py` -> http://127.0.0.1:5173 (API :8000). Restart after backend edits; wait until ports free (old processes linger ~seconds, cause Errno 48).
 
@@ -21,4 +23,5 @@
 - Mobile: open viewer dock covers much of the 3D viewport (collapsed by default).
 
 ## Next
+- Push `francesco-voice` failed 2026-10-10: HTTPS GitHub has no stored username (`osxkeychain` empty, `gh` not installed). Local commits `80c81c9` and `21bc98d` on `francesco-voice`, based on local `82f4df3` (5 commits behind `origin/codex/migrate-google-adk`).
 - User tries voice with a real mic. Optional: ask-which when labels are ambiguous; confirmation for spending actions; resolve LDConfig pin with explicit approval.

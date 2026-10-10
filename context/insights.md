@@ -13,4 +13,5 @@
 - 2026-10-10: All 10 catalogue sets have tutorial_available=false locally; scene endpoint 409. Synthetic fixture route-mocking (tests/e2e/viewer.spec.ts pattern) is the only way to test in-tutorial UI.
 - 2026-10-10: A fixed overlay dock intercepted clicks on viewer Next and "Advanced corrections" (Playwright "subtree intercepts pointer events"). Run the software e2e suite after any floating UI change.
 - 2026-10-10: "Review candidate" button relabels to "Close review" when open; assert the "Review workspace" dialog instead.
+- 2026-10-10: Playwright 1.63 `page.routeWebSocket(/api\.gradium\.ai\/api\/speech\/asr/)` fakes Gradium offline; `--use-fake-device-for-media-stream` mic gives non-silent PCM (useful to prove mute sends only zeros).
 - 2026-10-10: Programmatic element.click() after an await works for buttons/tabs/summary; popups from target=_blank links may be blocked.
