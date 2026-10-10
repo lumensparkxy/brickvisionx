@@ -2732,6 +2732,11 @@
     "physical_build": "not_run",
     "voice_endpoint": "POST /api/v1/voice/token (requires backend GRADIUM_API_KEY)",
     "voice_checks": "fake-microphone browser run and a real microphone run by the user; no automated voice tests",
-    "entire_review": "claude-code reviewer: request changes, 4 medium and 7 low findings; fixes applied, not yet re-reviewed"
+    "entire_review": "claude-code reviewer: request changes, 4 medium and 7 low findings; fixes applied, not yet re-reviewed",
+    "scope": "app-wide (landing, booklet list, viewer); movable dock; hands-free conversation",
+    "server_checks": "catalogue membership, viewer actions only in a tutorial, open_tutorial falls back to the booklet list when no scene is loadable; reply cap BRICKVISIONX_CHAT_MAX_REPLIES (default 300)",
+    "app_wide_browser_run": "open the plane by command from the landing page, narrated walkthrough, hands-free with a fake microphone, drag and minimize the dock",
+    "real_microphone_hands_free": "not_run",
+    "new_playwright_spec": "not_added"
   }
 }

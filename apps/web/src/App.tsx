@@ -6,6 +6,9 @@ import { readProgress } from './state';
 import type { Guide, SceneManifest, SetInfo } from './contracts';
 import LandingPage from './components/LandingPage';
 import BookletDialog from './components/BookletDialog';
+import ChatPanel from './components/ChatPanel';
+import { registerApp, requestTalk, type AppAction, type AppController } from './agent';
+const FIRST_READY = '*first-ready*';
 const ViewerWorkspace = lazy(() => import('./components/ViewerWorkspace'));
 const terminal = new Set(['ready', 'needs_review', 'failed', 'cancelled']);
 export default function App() {
@@ -58,7 +61,7 @@ export default function App() {
     timer = setTimeout(poll, 500); return () => { stopped = true; clearTimeout(timer); };
   }, [job?.job_id, job?.state]);
   async function findSet(event: FormEvent) { event.preventDefault(); await lookupSet(setNumber); }
-  async function lookupSet(value:string, tryExample=false) {
+  async function lookupSet(value:string, openGuideId?:string) {
     if(!config)return;
     const op = ++operation.current; focusResult.current=true;setRelease(null);setRequested(false);
     setBookletOpen(false); setError(''); setNotice(''); setScene(null); setGuide(null); setSetInfo(null); setJob(null); setViewerPreview(null);
@@ -69,7 +72,11 @@ export default function App() {
       if (op === operation.current) {
         setSetInfo(result); setBookletOpen(true);
         if(publicMode&&!result.guides.some(item=>item.tutorial_available))await requestSet(result.set_number,op);
-        if(tryExample&&!publicMode){const example=result.guides.find(item=>item.guide_id==='alt-02');if(!example)throw new Error('The supported alternate booklet is not available. Choose an available booklet below.');await openGuide(example,result);}
+        if(openGuideId&&!publicMode){
+          const example=openGuideId===FIRST_READY?result.guides.find(item=>item.tutorial_available):result.guides.find(item=>item.guide_id===openGuideId);
+          if(!example)throw new Error(openGuideId==='alt-02'?'The supported alternate booklet is not available. Choose an available booklet below.':'No 3D tutorial is ready for this set yet. Choose a booklet below.');
+          await openGuide(example,result);
+        }
       }
     }
     catch (e) { if(op===operation.current)setError(e instanceof Error ? e.message : 'The set could not be found.'); }
@@ -142,9 +149,26 @@ export default function App() {
   const alphaAvailable=setInfo?.guides.some(item=>item.release_kind==='unverified_alpha')??false;
   const reviewedAvailable=setInfo?.guides.some(item=>item.tutorial_available&&item.release_kind!=='unverified_alpha')??false;
   const previewNotice=previewMode&&setInfo&&<aside className="notice" aria-label="Engine candidate preview"><strong>{enginePreviews.some(value=>value.execution_policy==='explore')?'Exploration candidates · provisional':enginePreviews.some(value=>value.generation_mode==='alpha_fast'||value.image_quality?.profile==='alpha')?'Alpha samples · unverified':'Local engine candidate preview · unpublished'}</strong>{visiblePreviews.map(value=><div key={value.job_id}><p><strong>{value.set_number} / {value.guide_id}</strong> · {value.state} · Stage: {value.stage}</p><p>{previewCoverageText(value)}</p>{value.generation_mode==='alpha_fast'?<p>Approximate alpha model. Colours and placements are unverified; visible gaps or overlaps may remain. Camera alignment has not been checked.</p>:value.image_quality?.profile==='alpha'&&<p>Relaxed image alignment: up to {value.image_quality.max_rms_pixels} px RMS. {value.image_quality.relaxed_steps.length} instructions exceed the strict alignment limit.</p>}{value.uncertainty_notes&&value.uncertainty_notes.length>0&&<ul>{value.uncertainty_notes.map((note,i)=><li key={i}>{note}</li>)}</ul>}{value.repair&&<p>Instruction {value.repair.panel} · Placement attempt {value.repair.attempt} of {value.repair.limit}. Accepted instructions are preserved during repair.</p>}{value.error&&<p role="status">{value.error.code}: {value.error.message}</p>}{value.candidate_message&&<p>{value.candidate_message}</p>}</div>)}<p>Human acceptance and physical testing have not been recorded.</p></aside>;
+  // BrickBuddy (chat + voice) spans the whole local app: it can pick a set from here and drive the viewer once one is open.
+  const buddyEnabled=config?.mode==='local';
+  const goHome=()=>{++operation.current;setBusy(false);setBookletOpen(false);setScene(null);setJob(null);setError('');focusResult.current=false;window.scrollTo(0,0);};
+  const appController=useRef<AppController>(null!);
+  appController.current={
+    context:()=>scene&&guide?{screen:'tutorial',set_number:scene.set_number,guide_id:guide.guide_id}
+      :setInfo&&bookletOpen?{screen:'booklet',set_number:setInfo.set_number,guides:setInfo.guides.map(item=>({guide_id:item.guide_id,label:item.label,tutorial_available:Boolean(item.tutorial_available)}))}
+      :{screen:'landing'},
+    run:async(action:AppAction)=>{
+      if(action.type==='find_set'){setSetNumber(action.set_number);await lookupSet(action.set_number);}
+      else if(action.type==='open_tutorial'){setSetNumber(action.set_number);await lookupSet(action.set_number,action.guide_id??FIRST_READY);}
+      else if(action.type==='close_booklet'){if(bookletOpen)closeBooklet();}
+      else goHome();
+    },
+  };
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- unconditional: this sits after every other hook in the component
+  useEffect(()=>registerApp({context:()=>appController.current.context(),run:action=>appController.current.run(action)}),[]);
   return <>{scene && guide ? <main className="studio-main"><Suspense fallback={<p role="status">Loading the 3D viewer…</p>}>
       <ViewerWorkspace key={scene.revision} publicMode={publicMode} releaseAlpha={release?.release.alpha} previewMode={previewMode} previewExperiment={enginePreview?.experiment_revision??undefined} previewJobId={enginePreview?.job_id} previewQuality={enginePreview?.image_quality} previewGenerationMode={enginePreview?.generation_mode} previewArtifactKind={enginePreview?.artifact_kind} exploration={enginePreview?.exploration} previewUncertaintyNotes={enginePreview?.uncertainty_notes} previewCoverage={enginePreview?previewCoverageText(enginePreview):undefined} previewSourceCoverage={typeof enginePreview?.source_coverage==='string'?enginePreview.source_coverage:undefined} sourceImages={config?.source_images??false} releaseLoader={release??undefined} scene={scene} guide={guide} onScene={setScene} onClose={() => {focusResult.current=true;setBookletOpen(true);setScene(null);}} />
-    </Suspense></main> : <LandingPage setNumber={setNumber} onSetNumber={setSetNumber} onFind={findSet} onTry={()=>{setSetNumber('30669');void lookupSet('30669',true);}} busy={busy||!config} publicMode={publicMode} previewMode={previewMode}>
+    </Suspense></main> : <LandingPage setNumber={setNumber} onSetNumber={setSetNumber} onFind={findSet} onTry={()=>{setSetNumber('30669');void lookupSet('30669','alt-02');}} onTalk={buddyEnabled?requestTalk:undefined} busy={busy||!config} publicMode={publicMode} previewMode={previewMode}>
       {configError&&<div role="alert" className="notice"><p>{configError}</p><button onClick={()=>setConfigAttempt(n=>n+1)}>Retry website connection</button></div>}
       {!setInfo&&error&&<div className="landing-workflow"><div role="alert" className="notice"><h2 ref={errorHeading} tabIndex={-1}>Set lookup</h2><p>{error}</p></div></div>}
       {setInfo&&bookletOpen&&<BookletDialog onClose={closeBooklet}>
@@ -173,5 +197,5 @@ export default function App() {
         {base && <button className="secondary" disabled={busy} onClick={() => openGuide(guide)}>Check for a reconstruction</button>}
       </section>}
       </BookletDialog>}
-    </LandingPage>}</>;
+    </LandingPage>}{buddyEnabled&&<ChatPanel/>}</>;
 }

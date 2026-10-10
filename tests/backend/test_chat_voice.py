@@ -15,7 +15,7 @@ ASK = {"messages": [{"role": "user", "text": "zoom in"}], "viewer": VIEWER}
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
-    for name in ("GOOGLE_API_KEY", "GEMINI_API_KEY", "GRADIUM_API_KEY", "BRICKVISIONX_CHAT_MODEL"):
+    for name in ("GOOGLE_API_KEY", "GEMINI_API_KEY", "GRADIUM_API_KEY", "BRICKVISIONX_CHAT_MODEL", "BRICKVISIONX_CHAT_MAX_REPLIES"):
         monkeypatch.delenv(name, raising=False)
     # Never read a developer's real .env from a test.
     monkeypatch.setattr(chat, "load_local_environment", lambda *args, **kwargs: None)
@@ -104,3 +104,64 @@ def test_voice_token_success_passes_token_and_voice(client, monkeypatch):
     monkeypatch.setattr(voice.httpx, "AsyncClient", lambda **kwargs: real(
         transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"token": "t0k", "expires_at": "soon"})), **kwargs))
     assert client.post("/api/v1/voice/token").json() == {"token": "t0k", "voice_id": "voice-123", "expires_at": "soon"}
+
+
+def ask(client, monkeypatch, actions, app=None, reply="Sure!"):
+    fake_model(monkeypatch, json.dumps({"reply": reply, "actions": actions}))
+    body = {"messages": [{"role": "user", "text": "do it"}], "viewer": VIEWER}
+    if app is not None:
+        body["app"] = app
+    response = client.post("/api/v1/chat", json=body)
+    assert response.status_code == 200
+    return response.json()
+
+
+def test_viewer_actions_are_refused_outside_a_tutorial(client, monkeypatch):
+    result = ask(client, monkeypatch, [{"type": "go_to_step", "step": 3}], app={"screen": "landing"})
+    assert result["actions"] == []
+    assert "Open a 3D tutorial first" in result["reply"]
+
+
+def test_viewer_actions_pass_on_the_tutorial_screen_and_by_default(client, monkeypatch):
+    actions = [{"type": "go_to_step", "step": 3}, {"type": "rotate", "direction": "left", "degrees": 90}]
+    assert ask(client, monkeypatch, actions, app={"screen": "tutorial"})["actions"] == actions
+    assert ask(client, monkeypatch, actions)["actions"] == actions
+
+
+def test_sets_outside_the_catalogue_are_refused(client, monkeypatch):
+    result = ask(client, monkeypatch, [{"type": "open_tutorial", "set_number": "99999"}], app={"screen": "landing"})
+    assert result["actions"] == []
+    assert "catalogue" in result["reply"]
+
+
+def test_open_tutorial_without_a_scene_falls_back_to_the_booklets(client, monkeypatch):
+    # tmp_path has no reconstruction, so no tutorial can open: BrickBuddy must say so and show the booklets.
+    result = ask(client, monkeypatch, [{"type": "open_tutorial", "set_number": "30669"}, {"type": "go_to_step", "step": 5}],
+                 app={"screen": "landing"}, reply="Opening the plane!")
+    assert result["actions"] == [{"type": "find_set", "set_number": "30669"}]
+    assert "No 3D tutorial is ready" in result["reply"] and "Opening" not in result["reply"]
+
+
+def test_open_tutorial_with_a_ready_scene_allows_following_viewer_actions(monkeypatch):
+    app_state = chat.AppState(screen="landing")
+    actions, refusal = chat.check_actions(
+        [{"type": "open_tutorial", "set_number": "30669"}, {"type": "go_to_step", "step": 5}], app_state,
+        ready_guide=lambda set_number, guide_id: "alt-02")
+    assert refusal is None
+    assert actions == [{"type": "open_tutorial", "set_number": "30669", "guide_id": "alt-02"}, {"type": "go_to_step", "step": 5}]
+
+
+def test_close_booklet_only_applies_on_the_booklet_screen():
+    assert chat.check_actions([{"type": "close_booklet"}], chat.AppState(screen="landing")) == ([], None)
+    assert chat.check_actions([{"type": "close_booklet"}], chat.AppState(screen="booklet")) == ([{"type": "close_booklet"}], None)
+
+
+def test_reply_budget_caps_paid_calls(tmp_path, monkeypatch):
+    monkeypatch.setattr(chat, "load_local_environment", lambda *args, **kwargs: None)
+    monkeypatch.setenv("BRICKVISIONX_CHAT_MAX_REPLIES", "1")
+    limited = TestClient(create_app(tmp_path))
+    fake_model(monkeypatch, json.dumps({"reply": "ok", "actions": []}))
+    assert limited.post("/api/v1/chat", json=ASK).status_code == 200
+    second = limited.post("/api/v1/chat", json=ASK)
+    assert second.status_code == 429
+    assert second.json()["detail"]["code"] == "chat_budget_exhausted"

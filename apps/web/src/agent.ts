@@ -18,14 +18,56 @@ export interface ViewerContext {
   steps: { step: number; instructions: string[]; pieces: string[] }[];
 }
 export interface ViewerController { context(): ViewerContext; run(action: ViewerAction): Promise<void>; }
+/** Actions that move between screens; they work everywhere, not only in the 3D viewer. */
+export type AppAction =
+  | { type: 'find_set'; set_number: string }
+  | { type: 'open_tutorial'; set_number: string; guide_id?: string }
+  | { type: 'go_home' } | { type: 'close_booklet' };
+export type BuddyAction = ViewerAction | AppAction;
+export interface AppContext {
+  screen: 'landing' | 'booklet' | 'tutorial'; set_number?: string | null; guide_id?: string | null;
+  guides?: { guide_id: string; label: string; tutorial_available: boolean }[];
+}
+export interface AppController { context(): AppContext; run(action: AppAction): Promise<void>; }
+export interface BuddyContext { app: AppContext; viewer: ViewerContext | null; }
 export interface ChatTurn { role: 'user' | 'assistant'; text: string; }
-export interface AgentReply { reply: string; actions: ViewerAction[]; }
+export interface AgentReply { reply: string; actions: BuddyAction[]; }
+
+// One assistant for the whole app. The app shell and the 3D viewer register here; the registry lives on the global
+// object so a dev-server hot update of this module does not lose who is registered.
+interface Hub { app: AppController | null; viewer: { current: ViewerController } | null; }
+const hub: Hub = ((globalThis as { __brickvisionHub?: Hub }).__brickvisionHub ??= { app: null, viewer: null });
+export function registerApp(controller: AppController) { hub.app = controller; return () => { if (hub.app === controller) hub.app = null; }; }
+export function registerViewer(controller: { current: ViewerController }) { hub.viewer = controller; return () => { if (hub.viewer === controller) hub.viewer = null; }; }
+const APP_ACTIONS = new Set(['find_set', 'open_tutorial', 'go_home', 'close_booklet']);
+export const isAppAction = (action: BuddyAction): action is AppAction => APP_ACTIONS.has(action.type);
+export function buddyContext(): BuddyContext {
+  return { app: hub.app?.context() ?? { screen: hub.viewer ? 'tutorial' : 'landing' }, viewer: hub.viewer?.current.context() ?? null };
+}
+/** The viewer mounts a moment after a tutorial opens, so viewer actions wait briefly for it. */
+async function viewerSoon(patience: number): Promise<ViewerController | null> {
+  for (const until = Date.now() + patience; !hub.viewer && Date.now() < until;) await new Promise(done => setTimeout(done, 100));
+  return hub.viewer?.current ?? null;
+}
+export async function runAction(action: BuddyAction): Promise<void> {
+  if (isAppAction(action)) {
+    if (!hub.app) throw new Error('I cannot move between screens right now.');
+    return hub.app.run(action);
+  }
+  const viewer = await viewerSoon(action.type === 'stop' ? 0 : 8000);
+  if (viewer) return viewer.run(action);
+  if (action.type !== 'stop') throw new Error('Open a 3D tutorial first, then I can move through its steps.');
+}
+/** Ask the chat panel to open and start listening (used by the landing page's talk button). */
+export const TALK_EVENT = 'brickvision:talk';
+export const requestTalk = () => window.dispatchEvent(new Event(TALK_EVENT));
 
 const int = (value: unknown, fallback: number) => Number.isFinite(Number(value)) ? Math.trunc(Number(value)) : fallback;
+const SET_NUMBER = /^\d{4,7}$/;
 /** Model output is untrusted: keep only well-formed actions. */
-export function parseActions(value: unknown): ViewerAction[] {
+export function parseActions(value: unknown): BuddyAction[] {
   if (!Array.isArray(value)) return [];
-  const actions: ViewerAction[] = [];
+  const actions: BuddyAction[] = [];
   for (const raw of value) {
     const item = (raw ?? {}) as Record<string, unknown>;
     switch (item.type) {
@@ -35,17 +77,25 @@ export function parseActions(value: unknown): ViewerAction[] {
       case 'rotate': if (['left','right','up','down'].includes(item.direction as string)) actions.push({ type: 'rotate',
         direction: item.direction as 'left', degrees: Math.max(5, Math.min(720, Math.abs(Number(item.degrees)) || 90)) }); break;
       case 'zoom': if (item.direction === 'in' || item.direction === 'out') actions.push({ type: 'zoom', direction: item.direction }); break;
-      case 'reset_view': case 'replay_step': case 'stop': actions.push({ type: item.type }); break;
+      case 'reset_view': case 'replay_step': case 'stop': case 'go_home': case 'close_booklet': actions.push({ type: item.type }); break;
+      case 'find_set': if (typeof item.set_number === 'string' && SET_NUMBER.test(item.set_number)) actions.push({ type: 'find_set', set_number: item.set_number }); break;
+      case 'open_tutorial': if (typeof item.set_number === 'string' && SET_NUMBER.test(item.set_number)) actions.push(
+        typeof item.guide_id === 'string' && /^[a-z0-9-]{1,64}$/.test(item.guide_id)
+          ? { type: 'open_tutorial', set_number: item.set_number, guide_id: item.guide_id } : { type: 'open_tutorial', set_number: item.set_number }); break;
     }
   }
   return actions;
 }
-export async function askAgent(messages: ChatTurn[], viewer: ViewerContext): Promise<AgentReply> {
-  const body = await post<{ reply?: unknown; actions?: unknown }>('/chat', { messages, viewer });
+export async function askAgent(messages: ChatTurn[], context: BuddyContext): Promise<AgentReply> {
+  const body = await post<{ reply?: unknown; actions?: unknown }>('/chat', { messages, viewer: context.viewer ?? {}, app: context.app });
   return { reply: typeof body.reply === 'string' ? body.reply : '', actions: parseActions(body.actions) };
 }
-export function describeAction(action: ViewerAction): string {
+export function describeAction(action: BuddyAction): string {
   switch (action.type) {
+    case 'find_set': return `⌕ Set ${action.set_number}`;
+    case 'open_tutorial': return `▶ Open ${action.set_number}`;
+    case 'go_home': return '⌂ Home';
+    case 'close_booklet': return '✕ Close list';
     case 'go_to_step': return `→ Step ${action.step}`;
     case 'play_steps': return action.count > 1 ? `▶ Steps ${action.step}–${action.step + action.count - 1}` : `▶ Step ${action.step}`;
     case 'rotate': return `↻ ${action.direction} ${Math.round(action.degrees)}°`;
