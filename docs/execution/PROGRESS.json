@@ -2622,7 +2622,7 @@
     "entire_checkpoint": "01M4JS1XV2ZHK31KBD5928ASG3"
   },
   "adk_shuttle_31134": {
-    "status": "indexing_official_booklet",
+    "status": "blocked_infrastructure",
     "experiment": "var/experiments/adk-31134-booklet01-20261010",
     "set_number": "31134",
     "guide_id": "booklet-01",
@@ -2643,7 +2643,7 @@
     "reconstructed_instructions": 0,
     "model_requests_used": 24,
     "key_metadata_verification": "accepted_without_inference",
-    "provider_blocker": null,
+    "provider_blocker": "HTTP504_DEADLINE_EXCEEDED",
     "candidate_available": false,
     "red_plane_protected_files": 160,
     "red_plane_files_unchanged": true,
@@ -2665,7 +2665,7 @@
     "usage_reporting": {
       "status": "partial",
       "calls_with_usage": 19,
-      "calls_without_usage": 4,
+      "calls_without_usage": 5,
       "raw_event_calls": 19,
       "receipt_fallback_calls": 0,
       "receipt_supplement_calls": 0
@@ -2674,6 +2674,25 @@
     "first_four_source_visual_inspection": "recorded_without_engine_input",
     "first_four_candidate_comparison": "blocked_no_candidate",
     "schema_transport": "gemini-json-subset-v2",
-    "strict_engine_schema_verification": "passed_on_live_page_index"
+    "strict_engine_schema_verification": "passed_on_live_page_index",
+    "validated_page_indexes": 15,
+    "uncertain_failed_page_indexes": 2,
+    "scene_snapshots": 0,
+    "aggregate_model_elapsed_seconds": 318.961337209912,
+    "real_data_browser_tests": {
+      "desktop": "failed_candidate_unavailable",
+      "phone_390x844": "failed_candidate_unavailable",
+      "unexpected_browser_errors": 0,
+      "playback": "not_run"
+    },
+    "independent_source_main_instructions": 48,
+    "independent_source_numbered_callouts": 19,
+    "independent_source_expected_pieces": 144,
+    "source_annotation_kind": "agent_visual_source_observation",
+    "additional_unnumbered_instruction_coverage": "blocked_no_candidate",
+    "entire_implementation_commit": "f9a9dc6730cd5426bcb8800a845a26b5ff0e9fb5",
+    "entire_implementation_checkpoint": "01M4JWPFPAWJTKN49C3YP4E6ES",
+    "local_env_key_matches_runtime": true,
+    "official_source_unchanged": true
   }
 }
