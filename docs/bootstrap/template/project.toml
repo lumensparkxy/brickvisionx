@@ -1,0 +1,46 @@
+# Application/project manifest. This is NOT a Codex-native config file.
+schema_version = 1
+
+[project]
+name = "guide2build-3d"
+version = "0.1.0"
+stage = "scaffold"
+objective = "Official set instructions to interactive 3D tutorials"
+specification = "docs/01_PRODUCT_SPEC.md"
+launch_prompt = "docs/prompts/BUILD_V1.md"
+
+[scope]
+version = "I"
+initial_set = "30669"
+initial_guide = "alt-02"
+checkpoint_main_steps = 4
+expected_main_steps = 12
+expected_main_steps_is_source_metadata = true
+allow_finished_community_models = false
+allow_individual_part_geometry = true
+require_pdf_upload = false
+require_rag = false
+
+[runtime]
+python = ">=3.11"
+node = ">=22.12"
+frontend = "React + TypeScript + Vite + Three.js"
+backend = "FastAPI + Python"
+local_database = "SQLite (to implement for persistent jobs)"
+asset_store = "local filesystem"
+vision_provider = "disabled by default; explicitly configured adapter"
+
+[commands]
+setup_python = "uv sync --extra dev"
+setup_web = "npm install"
+dev = "uv run python tools/dev.py"
+check = "uv run python tools/check.py"
+e2e = "npm run test:e2e"
+
+[agent_execution]
+instructions = "AGENTS.md"
+codex_config = ".codex/config.toml"
+role_directory = ".codex/agents"
+skill_directory = ".agents/skills"
+maximum_parallel_workers = 3
+checkpoint_file = "docs/execution/PROGRESS.json"

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "reported_step_keys": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50000,
+      "minItems": 1,
+      "title": "Reported Step Keys",
+      "type": "array"
+    },
+    "sources": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "verification": {
+      "const": "reported_unverified",
+      "title": "Verification",
+      "type": "string"
+    }
+  },
+  "required": [
+    "verification",
+    "sources",
+    "reported_step_keys"
+  ],
+  "title": "AlphaCoverage",
+  "type": "object"
+}

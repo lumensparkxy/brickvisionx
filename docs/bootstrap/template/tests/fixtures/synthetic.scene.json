@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0",
+  "set_number": "99999",
+  "guide_id": "synthetic",
+  "revision": "fixture-r1",
+  "source_sha256": "79aaafdd8543e003d0e6b94f9eebdd736b0ba094f59814d0c9103af7789df136",
+  "coordinate_system": "right_handed_y_up_ldu",
+  "status": "candidate",
+  "geometry_check": "not_run",
+  "connector_check": "not_run",
+  "physical_build_check": "not_run",
+  "instances": [
+    {
+      "instance_id": "a",
+      "part_id": "synthetic-part",
+      "color_code": "15",
+      "geometry_ref": "parts/synthetic.dat",
+      "source": {
+        "page_index": 0,
+        "bbox": [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "source_sha256": "79aaafdd8543e003d0e6b94f9eebdd736b0ba094f59814d0c9103af7789df136"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "b",
+      "part_id": "synthetic-part",
+      "color_code": "15",
+      "geometry_ref": "parts/synthetic.dat",
+      "source": {
+        "page_index": 0,
+        "bbox": [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "source_sha256": "79aaafdd8543e003d0e6b94f9eebdd736b0ba094f59814d0c9103af7789df136"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    }
+  ],
+  "steps": [
+    {
+      "step_id": "s1",
+      "main_step_number": 1,
+      "substep_label": null,
+      "instruction": "Synthetic fixture: introduce a.",
+      "source": {
+        "page_index": 0,
+        "bbox": [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "source_sha256": "79aaafdd8543e003d0e6b94f9eebdd736b0ba094f59814d0c9103af7789df136"
+      },
+      "introduced_instance_ids": [
+        "a"
+      ],
+      "active_instance_ids": [
+        "a"
+      ],
+      "visible_instance_ids": [
+        "a"
+      ],
+      "poses": {
+        "a": {
+          "position_ldu": [
+            0,
+            0,
+            0
+          ],
+          "quaternion_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "s2",
+      "main_step_number": 2,
+      "substep_label": null,
+      "instruction": "Synthetic fixture: introduce b.",
+      "source": {
+        "page_index": 0,
+        "bbox": [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "source_sha256": "79aaafdd8543e003d0e6b94f9eebdd736b0ba094f59814d0c9103af7789df136"
+      },
+      "introduced_instance_ids": [
+        "b"
+      ],
+      "active_instance_ids": [
+        "b"
+      ],
+      "visible_instance_ids": [
+        "a",
+        "b"
+      ],
+      "poses": {
+        "a": {
+          "position_ldu": [
+            0,
+            0,
+            0
+          ],
+          "quaternion_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "b": {
+          "position_ldu": [
+            0,
+            8,
+            0
+          ],
+          "quaternion_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "action": "build_subassembly",
+      "assembly_group_id": "g1"
+    },
+    {
+      "step_id": "s3",
+      "main_step_number": 3,
+      "substep_label": null,
+      "instruction": "Synthetic fixture: attachment does not add pieces.",
+      "source": {
+        "page_index": 0,
+        "bbox": [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "source_sha256": "79aaafdd8543e003d0e6b94f9eebdd736b0ba094f59814d0c9103af7789df136"
+      },
+      "introduced_instance_ids": [],
+      "active_instance_ids": [
+        "a",
+        "b"
+      ],
+      "visible_instance_ids": [
+        "a",
+        "b"
+      ],
+      "poses": {
+        "a": {
+          "position_ldu": [
+            0,
+            0,
+            0
+          ],
+          "quaternion_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "b": {
+          "position_ldu": [
+            0,
+            8,
+            0
+          ],
+          "quaternion_xyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "action": "attach_subassembly",
+      "assembly_group_id": "g1"
+    }
+  ],
+  "reviews": []
+}

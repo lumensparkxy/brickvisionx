@@ -1,0 +1,415 @@
+{
+  "version": 1,
+  "created_on": "2026-10-01",
+  "purpose": "Frozen source scaffold for docs-only bootstrap",
+  "files": [
+    {
+      "path": ".agents/skills/brick-reconstruction/SKILL.md",
+      "bytes": 1086,
+      "sha256": "be7407a3d1c9f03472d9c8fcbc19b6d2597e2b41b7b282bb799a653c6736c760",
+      "mode": 420
+    },
+    {
+      "path": ".agents/skills/official-guide-ingestion/SKILL.md",
+      "bytes": 961,
+      "sha256": "22d6598b1d70c210bd4dc2736ece0c46931b2e5a49dccc04a1a55e95d4cd70b6",
+      "mode": 420
+    },
+    {
+      "path": ".agents/skills/reconstruction-validation/SKILL.md",
+      "bytes": 996,
+      "sha256": "1a5276e4b4794b38fdfa98d7421f5355a13b83d7a64926a510d0a852943a84da",
+      "mode": 420
+    },
+    {
+      "path": ".agents/skills/ship-guide2build-v1/SKILL.md",
+      "bytes": 884,
+      "sha256": "d453caaacda8db2f127ff36e8c58a23bd13c26fa67d6925627dca27742d2f233",
+      "mode": 420
+    },
+    {
+      "path": ".agents/skills/source-and-asset-safety/SKILL.md",
+      "bytes": 939,
+      "sha256": "5b6589a183fdd02bc5654811c3f138368130789cc9fbe1572bc692cda8f09f6c",
+      "mode": 420
+    },
+    {
+      "path": ".agents/skills/threejs-instruction-viewer/SKILL.md",
+      "bytes": 1115,
+      "sha256": "86286f43805821259da33fa3fa91ea4366fa1632da61c52e8d435cb423ab10c2",
+      "mode": 420
+    },
+    {
+      "path": ".codex/README.md",
+      "bytes": 490,
+      "sha256": "1c4841477a1e76ba48737dc1538e8f989695454ba8f7b772e8a3a59ce4237592",
+      "mode": 420
+    },
+    {
+      "path": ".codex/agents/backend_engineer.toml",
+      "bytes": 661,
+      "sha256": "de5c9a7688d76cb4e2642aa45015f8246a880895bef79d2a32742921d9d2a573",
+      "mode": 420
+    },
+    {
+      "path": ".codex/agents/quality_reviewer.toml",
+      "bytes": 671,
+      "sha256": "ea6cde64e607d6808905cadf42f650bf2ee1bde4deb456fefa39ee95f97e3cdc",
+      "mode": 420
+    },
+    {
+      "path": ".codex/agents/reconstruction_engineer.toml",
+      "bytes": 669,
+      "sha256": "2aad8f07fdd880918196ef859a20f93f3c81408cd5fd668789181e256b930711",
+      "mode": 420
+    },
+    {
+      "path": ".codex/agents/web_engineer.toml",
+      "bytes": 649,
+      "sha256": "7575fce035d7edde041a2c531e6aaca6a75e8a3c1048671d2bbaf78b42f9f4ae",
+      "mode": 420
+    },
+    {
+      "path": ".codex/config.toml",
+      "bytes": 573,
+      "sha256": "99218ec84a559a32edf458702eb3ff0245ab61db33f64486aabb23fcbcd1d0ee",
+      "mode": 420
+    },
+    {
+      "path": ".editorconfig",
+      "bytes": 137,
+      "sha256": "05f9463d683e5957ca2f7cad77a5fec2986298b1ea3c6ca314174805fa1aff44",
+      "mode": 420
+    },
+    {
+      "path": ".env.example",
+      "bytes": 417,
+      "sha256": "73986fa4870921c54b68c05998bf99021abd2cfe4e2d944a9fd169a0d3ed2519",
+      "mode": 420
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/agent_task.yml",
+      "bytes": 594,
+      "sha256": "4601c330347746b48abaedc4f0b80fbc6daca4324e47d34a4b5c3ae3eaf5502c",
+      "mode": 420
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 707,
+      "sha256": "d376eca91d3238fad55a083dc737f1060e7fdf8016924c86e66b01a8417c0f0e",
+      "mode": 420
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 287,
+      "sha256": "74e3e8dd0aaed9e9aaa914af834d9161358226230f6df274088318ca67914608",
+      "mode": 420
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 4862,
+      "sha256": "db91ee3ec6031cf8e30cd2cc41126e94c0a400746ed06b3fef1aef2c5a6dfd10",
+      "mode": 420
+    },
+    {
+      "path": "CLAUDE.md",
+      "bytes": 11,
+      "sha256": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+      "mode": 420
+    },
+    {
+      "path": "README.md",
+      "bytes": 3125,
+      "sha256": "c42655da3cfe6535cbdc569c2031a5632bfb90f038fc5d38de4fc4a9037df668",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/AGENTS.md",
+      "bytes": 435,
+      "sha256": "3b1cf281cb641307b36cbd10fbcb58a8be5365ed20dec298f30c0965aa7d24c1",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/src/guide2build/__init__.py",
+      "bytes": 22,
+      "sha256": "91447944015cec709e8aa7655f7e9d64e1e4508e7023a57fe3746911c0fc6fed",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/src/guide2build/catalog.py",
+      "bytes": 730,
+      "sha256": "e57369d3deb95d19db68dc747a0cec5d57d99ad519358343738222348421892b",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/src/guide2build/core/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/src/guide2build/core/bom.py",
+      "bytes": 449,
+      "sha256": "5b801064942b8a7428fdc15de12322c64e5d4693a9dffff764a2b109397b3e68",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/src/guide2build/core/models.py",
+      "bytes": 6377,
+      "sha256": "7be2d03219115c03d00961c5f74d62baeeae60f49e3f2d47362d1ac939730fff",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/src/guide2build/main.py",
+      "bytes": 3114,
+      "sha256": "e7ddd5d4718545617f466f1eb7824042522994cdfa7ce092db068c77ad4c9599",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/src/guide2build/providers.py",
+      "bytes": 657,
+      "sha256": "34ea10353353db9b2e9bd9149415766b7f27a02f09a85a774e08592265a29d88",
+      "mode": 420
+    },
+    {
+      "path": "apps/api/src/guide2build/source.py",
+      "bytes": 4713,
+      "sha256": "37b583f5eed1b3275d56879bf5cd49e571543b6d9687a8a75484db57f298d114",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/AGENTS.md",
+      "bytes": 522,
+      "sha256": "db4fd1f8a6bf8182ead7385e576294d4efa4085b333ff9dc7557d159a7640a88",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/index.html",
+      "bytes": 266,
+      "sha256": "fd976e7d8a3735d1924272d5f2eb1359d2d97a443af19f622e4970433280dd7b",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/package.json",
+      "bytes": 589,
+      "sha256": "b68d693fd757529904a1663ec9af0f67353f3fd314bdf6d13712efa43a4eef4c",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/App.tsx",
+      "bytes": 3617,
+      "sha256": "96765e8796bef935626554ea23a6723e6e4abcd458507d8ff05e01a04a2761df",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/api.ts",
+      "bytes": 523,
+      "sha256": "722fcf634cd92e978998d6f12a5dbfc16e61883b58c779ffa1d11d7f8608110c",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/components/AssemblyViewport.tsx",
+      "bytes": 5825,
+      "sha256": "bf69185938a2746a244e16286da0d32fc3db692a00b406f2e535552fefeb5663",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/components/ViewerWorkspace.tsx",
+      "bytes": 2909,
+      "sha256": "2b71c7b6b188d982d3d21c069c3bb15db3235adc97d6273e5fdbdb01c7668d93",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/contracts.ts",
+      "bytes": 1928,
+      "sha256": "e05280d27076c86a7a9ddfbe288b2cbb9bd66b58f469ce563b10afc3cb79b8b2",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/main.tsx",
+      "bytes": 224,
+      "sha256": "1bc19ec2f6e0b2f3a0a3febc84b659394812943c83b2364b5e8be91890a00049",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/state.test.ts",
+      "bytes": 667,
+      "sha256": "3b6fcff070624a96e8d919b6dfcb723d764e970796d41f04c3ff4ced782c8092",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/state.ts",
+      "bytes": 752,
+      "sha256": "a2c3b3d4bc5d0be46b0b405648b4fd5f3324e4270fe72e926d7e308e54d636e6",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/src/styles.css",
+      "bytes": 4081,
+      "sha256": "c4e24b6ab44c56b505081f5c4dc1ac12e8aa0a85d8fc3721da1aaa2fd49a1006",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/tsconfig.json",
+      "bytes": 467,
+      "sha256": "54e2f45a10ddd7a5fa9e2738a6f932ba3f569f769c583954c54412dc92961458",
+      "mode": 420
+    },
+    {
+      "path": "apps/web/vite.config.ts",
+      "bytes": 246,
+      "sha256": "6c3ee8c871e9062b431db0038dba15988ed0fa3211affd4f08ac701ba3468d48",
+      "mode": 420
+    },
+    {
+      "path": "assets/README.md",
+      "bytes": 460,
+      "sha256": "7a17a44fb69ef8c969400bb12a4007055555c60d5eeeaad367a17aab5316ea19",
+      "mode": 420
+    },
+    {
+      "path": "config/sets.json",
+      "bytes": 669,
+      "sha256": "ed653f563fdf6702806c6cf2765a4d7fd3957d3e2229382657142728f105c0e4",
+      "mode": 420
+    },
+    {
+      "path": "package.json",
+      "bytes": 546,
+      "sha256": "89d9a6247fd2b0635d3543a9fb0eaed4ca7fca753a49e208485fb3df603fe534",
+      "mode": 420
+    },
+    {
+      "path": "packages/contracts/scene.schema.json",
+      "bytes": 9100,
+      "sha256": "7fd1b44397433f03ba34ba3ecff60e765aec4fdab63985def2e423fb5815d0b4",
+      "mode": 420
+    },
+    {
+      "path": "playwright.config.ts",
+      "bytes": 291,
+      "sha256": "088e8d875620639dc8cec64aee78a97556289343aeec631209bbb6edbfbec718",
+      "mode": 420
+    },
+    {
+      "path": "project.toml",
+      "bytes": 1300,
+      "sha256": "ea587ee5d4a12ae4222138fa774e776e41820c43741a2388d821094f6fc7b9af",
+      "mode": 420
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 795,
+      "sha256": "81cc78680a3489049a28d1a6af62aeeedf9fcb425b9f63a774e56fabba4f7e2f",
+      "mode": 420
+    },
+    {
+      "path": "tests/backend/conftest.py",
+      "bytes": 215,
+      "sha256": "63f3ccad239ede7c6a997a42a9c78286c33a238fb2039c9e0feae5852913ac8e",
+      "mode": 420
+    },
+    {
+      "path": "tests/backend/test_api.py",
+      "bytes": 1693,
+      "sha256": "c217f125e890dace757a8dffc84415d7779d4c1a3c607a9075478d1dc744551c",
+      "mode": 420
+    },
+    {
+      "path": "tests/backend/test_bootstrap.py",
+      "bytes": 2804,
+      "sha256": "622885ad070d6751c8df7b4e3486eddb76f17e3f46156c6c447d965f3f304d2d",
+      "mode": 420
+    },
+    {
+      "path": "tests/backend/test_contracts.py",
+      "bytes": 3543,
+      "sha256": "8910f77b05a3375d8a12ca5e3550772c550dd19197e875b3439b5baddf10305c",
+      "mode": 420
+    },
+    {
+      "path": "tests/backend/test_source.py",
+      "bytes": 2308,
+      "sha256": "918bdf980c6a3f510bb30616288bc591abd6b89a759805dc9301311a43a6e0ce",
+      "mode": 420
+    },
+    {
+      "path": "tests/e2e/starter.spec.ts",
+      "bytes": 1709,
+      "sha256": "cec8d156bfe35f6afb5d7eaf3126c350d9765977209775ab338193b5ab893ff8",
+      "mode": 420
+    },
+    {
+      "path": "tests/fixtures/README.md",
+      "bytes": 342,
+      "sha256": "5201f736a8a8b8e42838bbdaaa2e7547b18a84d56c7d194e6873b0f0552fc331",
+      "mode": 420
+    },
+    {
+      "path": "tests/fixtures/synthetic.scene.json",
+      "bytes": 4343,
+      "sha256": "90c710648a494e92babeb10e759fa216bf4f4a3e071e2e46eac7cd70f7768b5a",
+      "mode": 420
+    },
+    {
+      "path": "tools/_paths.py",
+      "bytes": 126,
+      "sha256": "363d10d97ba6c7268d6f70e1ec0d13122aafa12c6f23953c35904eb879cfd9a3",
+      "mode": 420
+    },
+    {
+      "path": "tools/check.py",
+      "bytes": 1443,
+      "sha256": "a7486c9c5489aba86dcedc1f7c31744a5b9f55e6ae4f722a0728ae8be5cd94d7",
+      "mode": 420
+    },
+    {
+      "path": "tools/check_ts_syntax.cjs",
+      "bytes": 1446,
+      "sha256": "9b0085bf869178a39aaf7ca0c561b66a6adb7048aff20bd133c24beeafbad5e4",
+      "mode": 420
+    },
+    {
+      "path": "tools/dev.py",
+      "bytes": 1747,
+      "sha256": "1d7e6a95cead077196578543ad0fe364d30ceeed1876a62f5f004a4ba079043a",
+      "mode": 420
+    },
+    {
+      "path": "tools/doctor.py",
+      "bytes": 1384,
+      "sha256": "b09f7cb6d046e99be9e2671937a221d601de23b9f9c1f812ad492601188008c9",
+      "mode": 420
+    },
+    {
+      "path": "tools/export_schema.py",
+      "bytes": 955,
+      "sha256": "b592e17af8794e6429488900489fd411a972666491340501c0cf9df12b38d1c8",
+      "mode": 420
+    },
+    {
+      "path": "tools/fetch_guide.py",
+      "bytes": 1172,
+      "sha256": "1cb1c3da6561e53eba9e80a5cd932365eb470628515cf6fbe110874a6ffb11f3",
+      "mode": 420
+    },
+    {
+      "path": "tools/validate_scaffold.py",
+      "bytes": 2747,
+      "sha256": "ca19eee23eddc463529f6e0d74c08ec5c11e74afc46b1b75004783128d060be7",
+      "mode": 420
+    },
+    {
+      "path": "tools/validate_scene.py",
+      "bytes": 1026,
+      "sha256": "399bff0297b96757573aa2ce9acde97cec3741011ab0bf423622c30a8615a346",
+      "mode": 420
+    },
+    {
+      "path": "var/.gitkeep",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 420
+    }
+  ]
+}

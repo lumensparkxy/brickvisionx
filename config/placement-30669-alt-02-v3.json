@@ -1,0 +1,325 @@
+{
+  "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6",
+  "revision": "pdf-assisted-30669-alt02-v3",
+  "author_type": "agent",
+  "status": "source_assisted_presentation_not_physical_validation",
+  "distance_ldu": 60,
+  "notes": [
+    "Based on visual inspection of the official booklet pages 2\u20137 on 2026-10-03.",
+    "Arrows from callout boxes identify destinations; they are not physical travel paths.",
+    "The renderer checks conservative swept bounds and falls back to in-place highlighting when blocked.",
+    "These annotations do not validate final connector engagement, collision-free meshes, assembly strength or human review."
+  ],
+  "steps": [
+    {
+      "step_id": "main-01",
+      "instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right"
+      ],
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.17,
+          0.64,
+          0.48
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "highlight",
+      "basis": "Starting pieces have no existing assembly to attach to; show in place."
+    },
+    {
+      "step_id": "main-02",
+      "instance_ids": [
+        "wing-left",
+        "wing-right"
+      ],
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.54,
+          0.64,
+          0.95
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-03-callout-1",
+      "instance_ids": [
+        "left-wing-base"
+      ],
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "highlight",
+      "basis": "Starting pieces have no existing assembly to attach to; show in place."
+    },
+    {
+      "step_id": "main-03-callout-2",
+      "instance_ids": [
+        "left-wing-strip",
+        "left-wing-tip"
+      ],
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-03-attach",
+      "instance_ids": [
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip"
+      ],
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "below",
+      "basis": "Official panel shows these pieces under the existing wing; approach upward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-04-callout-1",
+      "instance_ids": [
+        "right-wing-base"
+      ],
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "highlight",
+      "basis": "Starting pieces have no existing assembly to attach to; show in place."
+    },
+    {
+      "step_id": "main-04-callout-2",
+      "instance_ids": [
+        "right-wing-strip",
+        "right-wing-tip"
+      ],
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-04-attach",
+      "instance_ids": [
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip"
+      ],
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "below",
+      "basis": "Official panel shows these pieces under the existing wing; approach upward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-05",
+      "instance_ids": [
+        "belly-left",
+        "belly-right"
+      ],
+      "source": {
+        "page_index": 3,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "below",
+      "basis": "Official panel shows these pieces under the existing wing; approach upward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-06",
+      "instance_ids": [
+        "nose-square",
+        "nose-end"
+      ],
+      "source": {
+        "page_index": 3,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-07",
+      "instance_ids": [
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield"
+      ],
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-08",
+      "instance_ids": [
+        "spine-red",
+        "canopy-base",
+        "rear-tile",
+        "rear-rail-left",
+        "rear-rail-right"
+      ],
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-09",
+      "instance_ids": [
+        "long-tile-left",
+        "tail-jumper-left",
+        "long-tile-right",
+        "tail-jumper-right"
+      ],
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-10",
+      "instance_ids": [
+        "canopy-left",
+        "canopy-right"
+      ],
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-11",
+      "instance_ids": [
+        "tail-slope"
+      ],
+      "source": {
+        "page_index": 6,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    },
+    {
+      "step_id": "main-12",
+      "instance_ids": [
+        "tailplane"
+      ],
+      "source": {
+        "page_index": 6,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "approach": "above",
+      "basis": "Official panel shows these pieces on the upper studded surface; approach downward in canonical Y-up coordinates."
+    }
+  ]
+}

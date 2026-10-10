@@ -1,0 +1,283 @@
+{
+  "from_revision": "pdf-assisted-30669-alt02-v2",
+  "to_revision": "pdf-assisted-30669-alt02-v3",
+  "recorded_at": "2026-10-02T19:40:41.640269+00:00",
+  "corrections": [
+    {
+      "instance_id": "left-wing-base",
+      "actor_type": "agent",
+      "origin": "pdf_assisted_authoring",
+      "before": {
+        "position_ldu": [
+          -60.0,
+          0.0,
+          -10.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "after": {
+        "position_ldu": [
+          60.0,
+          0.0,
+          -10.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "reason": "Correct main3/main4 source-relative group assignment: main3 adds the far wing at positive canonical X in the source-like camera, main4 adds near wing at negative X. Physical IDs remain unchanged through each attachment.",
+      "evidence_paths": [
+        "var/evidence/browser/steps/05-main-03-attach.png",
+        "var/public/pages/6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6/page-002.png"
+      ]
+    },
+    {
+      "instance_id": "left-wing-strip",
+      "actor_type": "agent",
+      "origin": "pdf_assisted_authoring",
+      "before": {
+        "position_ldu": [
+          -60.0,
+          8.0,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "after": {
+        "position_ldu": [
+          60.0,
+          8.0,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "reason": "Correct main3/main4 source-relative group assignment: main3 adds the far wing at positive canonical X in the source-like camera, main4 adds near wing at negative X. Physical IDs remain unchanged through each attachment.",
+      "evidence_paths": [
+        "var/evidence/browser/steps/05-main-03-attach.png",
+        "var/public/pages/6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6/page-002.png"
+      ]
+    },
+    {
+      "instance_id": "left-wing-tip",
+      "actor_type": "agent",
+      "origin": "pdf_assisted_authoring",
+      "before": {
+        "position_ldu": [
+          -90.0,
+          8.0,
+          -20.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.7071067811865475,
+          0.0,
+          0.7071067811865476
+        ]
+      },
+      "after": {
+        "position_ldu": [
+          90.0,
+          8.0,
+          -20.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          1.0,
+          0.0,
+          6.123233995736766e-17
+        ]
+      },
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "reason": "Correct main3/main4 source-relative group assignment: main3 adds the far wing at positive canonical X in the source-like camera, main4 adds near wing at negative X. Physical IDs remain unchanged through each attachment.",
+      "evidence_paths": [
+        "var/evidence/browser/steps/05-main-03-attach.png",
+        "var/public/pages/6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6/page-002.png"
+      ]
+    },
+    {
+      "instance_id": "right-wing-base",
+      "actor_type": "agent",
+      "origin": "pdf_assisted_authoring",
+      "before": {
+        "position_ldu": [
+          60.0,
+          0.0,
+          -10.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "after": {
+        "position_ldu": [
+          -60.0,
+          0.0,
+          -10.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "reason": "Correct main3/main4 source-relative group assignment: main3 adds the far wing at positive canonical X in the source-like camera, main4 adds near wing at negative X. Physical IDs remain unchanged through each attachment.",
+      "evidence_paths": [
+        "var/evidence/browser/steps/05-main-03-attach.png",
+        "var/public/pages/6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6/page-002.png"
+      ]
+    },
+    {
+      "instance_id": "right-wing-strip",
+      "actor_type": "agent",
+      "origin": "pdf_assisted_authoring",
+      "before": {
+        "position_ldu": [
+          60.0,
+          8.0,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "after": {
+        "position_ldu": [
+          -60.0,
+          8.0,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "reason": "Correct main3/main4 source-relative group assignment: main3 adds the far wing at positive canonical X in the source-like camera, main4 adds near wing at negative X. Physical IDs remain unchanged through each attachment.",
+      "evidence_paths": [
+        "var/evidence/browser/steps/05-main-03-attach.png",
+        "var/public/pages/6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6/page-002.png"
+      ]
+    },
+    {
+      "instance_id": "right-wing-tip",
+      "actor_type": "agent",
+      "origin": "pdf_assisted_authoring",
+      "before": {
+        "position_ldu": [
+          90.0,
+          8.0,
+          -20.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          1.0,
+          0.0,
+          6.123233995736766e-17
+        ]
+      },
+      "after": {
+        "position_ldu": [
+          -90.0,
+          8.0,
+          -20.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.7071067811865475,
+          0.0,
+          0.7071067811865476
+        ]
+      },
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "reason": "Correct main3/main4 source-relative group assignment: main3 adds the far wing at positive canonical X in the source-like camera, main4 adds near wing at negative X. Physical IDs remain unchanged through each attachment.",
+      "evidence_paths": [
+        "var/evidence/browser/steps/05-main-03-attach.png",
+        "var/public/pages/6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6/page-002.png"
+      ]
+    }
+  ]
+}

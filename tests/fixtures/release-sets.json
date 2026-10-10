@@ -1,0 +1,62 @@
+[
+  {
+    "set_number": "30669",
+    "name": "Iconic Red Plane",
+    "tier": "simple",
+    "advertised_pieces": 51
+  },
+  {
+    "set_number": "60400",
+    "name": "Go-Karts and Race Drivers",
+    "tier": "simple",
+    "advertised_pieces": 99
+  },
+  {
+    "set_number": "31134",
+    "name": "Space Shuttle",
+    "tier": "simple",
+    "advertised_pieces": 144
+  },
+  {
+    "set_number": "31129",
+    "name": "Majestic Tiger",
+    "tier": "medium",
+    "advertised_pieces": 755
+  },
+  {
+    "set_number": "42163",
+    "name": "Heavy-Duty Bulldozer",
+    "tier": "medium",
+    "advertised_pieces": 195
+  },
+  {
+    "set_number": "76920",
+    "name": "Ford Mustang Dark Horse Sports Car",
+    "tier": "medium",
+    "advertised_pieces": 344
+  },
+  {
+    "set_number": "42171",
+    "name": "Mercedes-AMG F1 W14 E Performance",
+    "tier": "complex",
+    "advertised_pieces": 1643
+  },
+  {
+    "set_number": "21343",
+    "name": "Viking Village",
+    "tier": "complex",
+    "advertised_pieces": 2103
+  },
+  {
+    "set_number": "21061",
+    "name": "Notre-Dame de Paris",
+    "tier": "complex",
+    "advertised_pieces": 4383
+  },
+  {
+    "set_number": "10316",
+    "name": "THE LORD OF THE RINGS: RIVENDELL",
+    "tier": "complex",
+    "advertised_pieces": 6167
+  }
+]
