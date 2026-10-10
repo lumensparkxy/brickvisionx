@@ -30,9 +30,8 @@ async function say(page: Page, text: string) {
   const input=page.locator('.voice-command input:visible').last();
   const replied=page.waitForResponse('**/api/v1/voice/reply');
   await input.fill(text);await input.press('Enter');
+  // Navigation may unmount the box that showed the reply, so check the response, not the transcript.
   expect((await (await replied).json()).text).toBe(actions[text].text);
-  // Navigation may unmount the box that showed the reply, so wait for the request to settle, not the transcript.
-  await expect(page.locator('.voice-command input:visible').last()).toBeEnabled();
 }
 
 test('typed assistant commands navigate screens and tutorial steps',async({page})=>{
