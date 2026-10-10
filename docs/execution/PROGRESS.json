@@ -2625,8 +2625,11 @@
     "api_tests": "pass (filtered subset)",
     "full_check_py": "not_run",
     "playwright": "not_run",
-    "voice_provider_integration": "not_run",
+    "voice_provider_integration": "gradium_default (speech-to-text and text-to-speech); browser speech is the fallback",
     "human_review": "not_run",
-    "physical_build": "not_run"
+    "physical_build": "not_run",
+    "voice_endpoint": "POST /api/v1/voice/token (requires backend GRADIUM_API_KEY)",
+    "voice_checks": "fake-microphone browser run and a real microphone run by the user; no automated voice tests",
+    "entire_review": "claude-code reviewer: request changes, 4 medium and 7 low findings; fixes applied, not yet re-reviewed"
   }
 }

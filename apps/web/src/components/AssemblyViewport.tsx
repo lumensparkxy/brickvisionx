@@ -244,7 +244,7 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
     // Chat/voice commands orbit by an angle with easing; toolbar buttons keep their fixed nudge.
     let orbitFrame = 0;
     const orbit = (radians: number, vertical: boolean) => {
-      cancelAnimationFrame(orbitFrame);
+      cancelAnimationFrame(orbitFrame); stopCameraMotion(camera, controls); // Drop drag inertia, or the turn overshoots.
       const started = performance.now(), duration = Math.min(3200, Math.max(600, Math.abs(radians) * 800)); let applied = 0;
       const tick = (now: number) => {
         if (cancelled) return;

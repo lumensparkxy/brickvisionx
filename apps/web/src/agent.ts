@@ -91,11 +91,13 @@ const browserVoice: Required<VoiceAdapter> = {
 /** Default voice: Gradium, switching to browser speech for the rest of the session once Gradium proves unavailable. */
 let gradiumDownUntil = 0; // One network blip must not downgrade the whole session: retry Gradium after a cool-off.
 async function withFallback<T>(run: (voice: Required<VoiceAdapter>) => Promise<T>): Promise<T> {
+  let reason: VoiceUnavailable | null = null;
   if (Date.now() >= gradiumDownUntil) {
     try { return await run(gradiumVoice); }
-    catch (error) { if (!(error instanceof VoiceUnavailable)) throw error; gradiumDownUntil = Date.now() + 20000; }
+    catch (error) { if (!(error instanceof VoiceUnavailable)) throw error; reason = error; gradiumDownUntil = Date.now() + 20000; }
   }
-  return run(browserVoice);
+  // If the browser cannot do it either, report why Gradium was unavailable: that is the cause worth fixing.
+  try { return await run(browserVoice); } catch (error) { throw reason ?? error; }
 }
 const defaultVoice: Required<VoiceAdapter> = {
   speak: text => withFallback(voice => voice.speak(text)),

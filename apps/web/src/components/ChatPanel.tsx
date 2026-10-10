@@ -28,6 +28,7 @@ export default function ChatPanel({ controller }: { controller: RefObject<Viewer
     if (!text || thinking.current) return;
     const mine = ++turn.current;
     stopSpeaking(); setOpen(true); setDraft('');
+    void controller.current.run({ type: 'stop' }); // A new request ends any walkthrough still playing.
     append({ role: 'user', text });
     const turns = history.current.filter(m => !m.error).map(({ role, text }) => ({ role, text })).slice(-14);
     thinking.current = true; setBusy(true);

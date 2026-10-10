@@ -109,7 +109,7 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   const controller=useRef<ViewerController>(null!);
   controller.current={
     context:()=>({set_number:scene.set_number,guide:guide.label,current_step:step.main_step_number,total_steps:lastMain,playing:playback!=='idle',
-      steps:mainEntries.map(entry=>{const group=scene.steps.filter(s=>groupKey(s)===groupKey(entry));return{step:entry.main_step_number,instructions:group.map(s=>s.instruction),
+      steps:[...new Set(numbered.map(({s})=>s.main_step_number))].map(n=>{const group=numbered.filter(({s})=>s.main_step_number===n).map(({s})=>s);return{step:n,instructions:group.map(s=>s.instruction),
         pieces:partsList(scene,group.flatMap(s=>s.introduced_instance_ids)).map(row=>`${row.quantity} x ${colorNames[row.color]?.trim()||`colour ${row.color}`} (part ${row.partId})`)};})}),
     run:(action:ViewerAction)=>new Promise<void>(resolve=>{
       const clamp=(n:number)=>Math.max(1,Math.min(lastMain,n));
