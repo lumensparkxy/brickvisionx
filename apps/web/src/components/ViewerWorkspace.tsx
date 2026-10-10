@@ -39,7 +39,7 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   const [buildFinished,setBuildFinished] = useState(false);
   // Chat/voice walkthrough: play up to playEnd and hold each step until its narration was spoken.
   const [playEnd,setPlayEnd] = useState<number|null>(null); const [speaking,setSpeaking] = useState(false);
-  const narrations = useRef<Record<number,string>>({}); const whenIdle = useRef<(()=>void)|null>(null);
+  const narrations = useRef<Record<number,string>>({}); const whenIdle = useRef<(()=>void)|null>(null); const narrating = useRef(false);
   const [command,setCommand] = useState<CameraCommand>({action:'reset',token:0});
   const [tab,setTab] = useState('3D'); const [allParts,setAllParts] = useState(false); const [review,setReview] = useState(false);
   const [overlayReview,setOverlayReview] = useState(()=>matchMedia('(max-width:1200px)').matches);
@@ -60,7 +60,7 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   },[playback,animationDone,ready,snapshotReady,needsReplay,chunkError,index,scene.steps.length,speaking,playEnd]);
   useEffect(()=>{
     if(playback!=='playing')return;const line=narrations.current[index];if(!line)return;
-    delete narrations.current[index];setSpeaking(true);void narrate(line).finally(()=>setSpeaking(false));
+    delete narrations.current[index];setSpeaking(true);narrating.current=true;void narrate(line).finally(()=>{narrating.current=false;setSpeaking(false);});
   },[index,playback]);
   useEffect(()=>{
     if(playback!=='idle')return;if(speaking)stopSpeaking();
@@ -109,7 +109,8 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   const controller=useRef<ViewerController>(null!);
   useEffect(()=>registerViewer(controller),[]);
   // Closing the viewer mid-walkthrough must release whoever awaits it (the app-level chat) and silence the narration.
-  useEffect(()=>()=>{whenIdle.current?.();whenIdle.current=null;stopSpeaking();},[]);
+  // Only a walkthrough's own narration is silenced: a reply spoken while a tutorial opens or closes must finish.
+  useEffect(()=>()=>{whenIdle.current?.();whenIdle.current=null;if(narrating.current)stopSpeaking();},[]);
   controller.current={
     context:()=>({set_number:scene.set_number,guide:guide.label,current_step:step.main_step_number,total_steps:lastMain,playing:playback!=='idle',
       steps:[...new Set(numbered.map(({s})=>s.main_step_number))].map(n=>{const group=numbered.filter(({s})=>s.main_step_number===n).map(({s})=>s);return{step:n,instructions:group.map(s=>s.instruction),
