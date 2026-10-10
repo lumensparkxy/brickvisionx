@@ -62,7 +62,9 @@ function rendererAudit(renderer: THREE.WebGLRenderer, manifest: SceneManifest) {
     audit.disposedAtMs=performance.now();audit.disposedResources={geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures};
   }};
 }
-export interface CameraCommand { action: CameraAction | 'up' | 'down'; token: number; degrees?: number; }
+export interface CameraCommand { action: CameraAction | 'up' | 'down' | 'fly' | 'reassemble'; token: number; degrees?: number; }
+/** Window event with the stunt phase ('takeoff' | 'dive' | 'impact' | 'settled'), for sound effects. */
+export const STUNT_EVENT = 'brickvision:stunt';
 export default function AssemblyViewport({ scene: manifest, step, previous, replayToken, command, onThumbnails, onColorNames, fullBuild, paused, onAnimationComplete, onReadyChange }: {
   scene: SceneManifest; step: StepSnapshot; previous?: StepSnapshot; replayToken: number; command: CameraCommand; onThumbnails: (images: Record<string,string>) => void;
   onColorNames?: (names: Record<string,string>) => void;
@@ -170,6 +172,7 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
     manager.onError = url => { failures.add(url); };
     const loader = new LDrawLoader(manager); loader.setConditionalLineMaterial(LDrawConditionalLineMaterial); loader.setPartsLibraryPath(geometryBase);
     applyStep.current = (animate = false) => {
+      resetStunt();
       if (sourceViewStepId !== stepRef.current.step_id) clearSourceView();
       mainStepFrames.clear();
       for(const snapshot of manifestRef.current.steps) {
@@ -220,6 +223,18 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
     let buildBounds: THREE.Box3 | null = null;
     let orbitFrame = 0;
     let viewTouched = false; // The user or the agent moved the camera since the last fit.
+    // Showpiece only ("make it fly and explode"): a presentation animation over the visible pieces. It never changes
+    // scene data; any step change or "reassemble" puts every piece back on its recorded pose.
+    let stunt: ((seconds: number) => void) | null = null;
+    let exploded: { group: THREE.Group; home: THREE.Vector3; homeQ: THREE.Quaternion }[] | null = null;
+    const STAGE = new THREE.Color('#edf2f7'), FLASH = new THREE.Color('#fff3c4'), UP = new THREE.Vector3(0,1,0);
+    const fireball = new THREE.Mesh(new THREE.SphereGeometry(1,20,14), new THREE.MeshBasicMaterial({color:0xff9a1f,transparent:true,opacity:0,depthWrite:false}));
+    fireball.visible = false; world.add(fireball); register(fireball);
+    const resetStunt = () => {
+      if (!stunt && !exploded) return;
+      stunt = null; exploded = null; controls.autoRotate = false; fireball.visible = false;
+      assembly.position.set(0,0,0); assembly.quaternion.identity(); (world.background as THREE.Color).copy(STAGE); dirty = true;
+    };
     let backedOff = 1; // Distance factor added for narrower layouts since then.
     controls.addEventListener('start', () => { viewTouched = true; });
     const fit = () => {
@@ -261,8 +276,109 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
       };
       orbitFrame = requestAnimationFrame(tick);
     };
+    const announce = (phase: string) => window.dispatchEvent(new CustomEvent<string>(STUNT_EVENT, {detail: phase}));
+    const ease = (t: number) => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+    const flyAndExplode = () => {
+      applyStep.current?.(false); // Start from the real poses of the current step (this also ends any earlier stunt).
+      const flyers = [...groups.values()].filter(group => group.visible).map(group => ({group, home: group.position.clone(), homeQ: group.quaternion.clone(),
+        velocity: new THREE.Vector3(), axis: new THREE.Vector3(), spin: 0, from: new THREE.Vector3(), fromQ: new THREE.Quaternion(), target: new THREE.Vector3()}));
+      if (!flyers.length) return;
+      cancelAnimationFrame(orbitFrame); stopCameraMotion(camera, controls); viewTouched = true; setPlacementNote('');
+      outlines.forEach(outline => { outline.visible = false; }); emphasis.forEach(overlay => { overlay.visible = false; });
+      const box = new THREE.Box3(); flyers.forEach(flyer => box.expandByObject(flyer.group));
+      const center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+      const ground = box.min.y, span = Math.max(size.x, size.z, 60);
+      // Which way is forward? Use the pieces the booklet calls the nose and the tail; fall back to the long axis.
+      const centroid = (pattern: RegExp) => {
+        const points = manifestRef.current.steps.filter(item => pattern.test(item.instruction)).flatMap(item => item.introduced_instance_ids)
+          .map(id => groups.get(id)).filter((group): group is THREE.Group => !!group?.visible).map(group => group.position);
+        return points.length ? points.reduce((sum, point) => sum.add(point), new THREE.Vector3()).divideScalar(points.length) : null;
+      };
+      const nose = centroid(/\bnose\b/i), tail = centroid(/\btail/i);
+      const forward = nose && tail ? nose.clone().sub(tail) : nose ? nose.clone().sub(center) : new THREE.Vector3(size.x >= size.z ? 1 : 0, 0, size.x >= size.z ? 0 : 1);
+      forward.y = 0; if (forward.lengthSq() < 1e-6) forward.set(1,0,0); forward.normalize();
+      const left = new THREE.Vector3().crossVectors(UP, forward).normalize();
+      const radius = span * 1.2, height = span * .8, circle = center.clone().addScaledVector(left, radius);
+      const reach = (extent: number) => extent / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * Math.min(1, camera.aspect));
+      const view = camera.position.clone().sub(controls.target).normalize(); view.y = Math.max(view.y, .5); view.normalize();
+      const cameraFrom = camera.position.clone(), targetFrom = controls.target.clone();
+      const flightTarget = circle.clone().addScaledVector(UP, height * .45), flightCamera = flightTarget.clone().addScaledVector(view, reach(radius + span * .75) * 1.05);
+      const lift = span * .35, explodedTarget = center.clone().addScaledVector(UP, lift + size.y);
+      let widest = span;
+      for (const flyer of flyers) {
+        const offset = flyer.home.clone().sub(center);
+        flyer.target.set(center.x + offset.x * 2.3, center.y + lift + (flyer.home.y - ground) * 3.4, center.z + offset.z * 2.3);
+        widest = Math.max(widest, flyer.target.distanceTo(explodedTarget) + 40);
+      }
+      const explodedCamera = explodedTarget.clone().addScaledVector(view, reach(widest) * 1.15);
+      const crash = center.clone().addScaledVector(forward, span * .9); crash.y = ground + size.y * .45;
+      const impact = crash.clone().addScaledVector(forward, span * .3); impact.y = ground;
+      controls.maxDistance = Math.max(controls.maxDistance, reach(radius + span) * 3, reach(widest) * 3);
+      const pose = (position: THREE.Vector3, yaw: number, pitch: number, roll: number) => {
+        const q = new THREE.Quaternion().setFromAxisAngle(UP, yaw).multiply(new THREE.Quaternion().setFromAxisAngle(left, pitch)).multiply(new THREE.Quaternion().setFromAxisAngle(forward, roll));
+        assembly.quaternion.copy(q); assembly.position.copy(position).sub(center.clone().applyQuaternion(q));
+      };
+      const FLY = 4.6, DIVE = 1, BURST = 1.3, SETTLE = 1.8; let time = 0, burst = false, settling = false;
+      const jitter = new THREE.Vector3(), burstCamera = new THREE.Vector3(), burstTarget = new THREE.Vector3();
+      announce('takeoff');
+      stunt = seconds => {
+        time += seconds; camera.position.sub(jitter); jitter.set(0,0,0);
+        if (time < FLY) {
+          const u = time / FLY, angle = Math.PI * 2 * ease(u), climb = ease(Math.min(1, u / .3));
+          const position = circle.clone().addScaledVector(left, -Math.cos(angle) * radius).addScaledVector(forward, Math.sin(angle) * radius).addScaledVector(UP, height * climb);
+          pose(position, angle, -.3 * Math.sin(Math.PI * Math.min(1, u / .3)), -.5 * Math.sin(Math.PI * u));
+          const k = ease(Math.min(1, time / .9)); camera.position.lerpVectors(cameraFrom, flightCamera, k); controls.target.lerpVectors(targetFrom, flightTarget, k);
+        } else if (time < FLY + DIVE) {
+          if (!settling) { settling = true; announce('dive'); }
+          const k = Math.pow((time - FLY) / DIVE, 2);
+          pose(center.clone().addScaledVector(UP, height).lerp(crash, k), 0, k * 1.05, Math.sin(k * 9) * .12);
+          controls.target.lerpVectors(flightTarget, impact, k * .6);
+        } else if (!burst) {
+          burst = true; settling = false; announce('impact');
+          // The rigid plane becomes loose pieces, each starting exactly where the crash left it.
+          const q = assembly.quaternion.clone(), shift = assembly.position.clone();
+          for (const flyer of flyers) {
+            flyer.group.position.applyQuaternion(q).add(shift); flyer.group.quaternion.premultiply(q);
+            const away = flyer.group.position.clone().sub(impact); away.y = 0; if (away.lengthSq() < 1) away.set(Math.random() - .5, 0, Math.random() - .5); away.normalize();
+            flyer.velocity.copy(away).multiplyScalar(span * (1.2 + Math.random() * 1.8)).addScaledVector(UP, span * (2.4 + Math.random() * 2.2));
+            flyer.axis.set(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize(); flyer.spin = 4 + Math.random() * 8;
+          }
+          assembly.position.set(0,0,0); assembly.quaternion.identity();
+          fireball.position.copy(impact); fireball.visible = true; burstCamera.copy(camera.position); burstTarget.copy(controls.target);
+        } else if (time < FLY + DIVE + BURST) {
+          const t = (time - FLY - DIVE) / BURST, gravity = span * 9;
+          for (const flyer of flyers) {
+            flyer.velocity.y -= gravity * seconds; flyer.group.position.addScaledVector(flyer.velocity, seconds);
+            if (flyer.group.position.y < ground + 6) { flyer.group.position.y = ground + 6; flyer.velocity.y *= -.4; flyer.velocity.x *= .6; flyer.velocity.z *= .6; flyer.spin *= .6; }
+            flyer.group.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(flyer.axis, flyer.spin * seconds));
+          }
+          fireball.scale.setScalar(span * (.3 + 1.6 * Math.sqrt(t))); (fireball.material as THREE.MeshBasicMaterial).opacity = Math.max(0, .85 * (1 - t * 1.6));
+          (world.background as THREE.Color).lerpColors(FLASH, STAGE, Math.min(1, t * 2.5));
+          if (t < .45) { jitter.set(Math.random() - .5, Math.random() - .5, Math.random() - .5).multiplyScalar(span * .12 * (1 - t / .45)); camera.position.add(jitter); }
+        } else if (time < FLY + DIVE + BURST + SETTLE) {
+          if (!settling) { settling = true; fireball.visible = false; (world.background as THREE.Color).copy(STAGE); for (const flyer of flyers) { flyer.from.copy(flyer.group.position); flyer.fromQ.copy(flyer.group.quaternion); } }
+          const k = ease((time - FLY - DIVE - BURST) / SETTLE);
+          for (const flyer of flyers) { flyer.group.position.lerpVectors(flyer.from, flyer.target, k); flyer.group.quaternion.slerpQuaternions(flyer.fromQ, flyer.homeQ, k); }
+          camera.position.lerpVectors(burstCamera, explodedCamera, k); controls.target.lerpVectors(burstTarget, explodedTarget, k);
+        } else {
+          for (const flyer of flyers) { flyer.group.position.copy(flyer.target); flyer.group.quaternion.copy(flyer.homeQ); }
+          stunt = null; exploded = flyers; controls.autoRotate = true; controls.autoRotateSpeed = 1.6; announce('settled');
+        }
+      };
+    };
+    const reassemble = () => {
+      const pieces = exploded; if (!pieces) { applyStep.current?.(false); return; }
+      controls.autoRotate = false; const starts = pieces.map(piece => ({position: piece.group.position.clone(), q: piece.group.quaternion.clone()})); let time = 0;
+      stunt = seconds => {
+        time += seconds; const k = ease(Math.min(1, time / 1.4));
+        pieces.forEach((piece, i) => { piece.group.position.lerpVectors(starts[i].position, piece.home, k); piece.group.quaternion.slerpQuaternions(starts[i].q, piece.homeQ, k); });
+        if (k === 1) { applyStep.current?.(false); fit(); }
+      };
+    };
     cameraCommand.current = (action, degrees) => {
       clearSourceView();
+      if (action === 'fly') { flyAndExplode(); return; }
+      if (action === 'reassemble') { reassemble(); return; }
       if (action === 'reset') { fit(); return; }
       viewTouched = true;
       if (action === 'up' || action === 'down') orbit(THREE.MathUtils.degToRad(degrees ?? 45) * (action === 'up' ? -1 : 1), true);
@@ -280,6 +396,7 @@ export default function AssemblyViewport({ scene: manifest, step, previous, repl
     let lastFrame=performance.now();
     const draw = () => {
       const now=performance.now();const delta=now-lastFrame;lastFrame=now;
+      if (stunt && !document.hidden) { dirty = true; renderer.shadowMap.needsUpdate = true; stunt(Math.min(delta, 50) / 1000); }
       if (tween && !playbackRef.current.paused) {
         dirty = true;
         if (tween.plan.mode !== 'highlight') renderer.shadowMap.needsUpdate = true;

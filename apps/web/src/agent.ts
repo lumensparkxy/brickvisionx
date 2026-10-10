@@ -11,7 +11,8 @@ export type ViewerAction =
   | { type: 'play_steps'; step: number; count: number; narrations: string[] }
   | { type: 'rotate'; direction: 'left' | 'right' | 'up' | 'down'; degrees: number }
   | { type: 'zoom'; direction: 'in' | 'out' }
-  | { type: 'reset_view' } | { type: 'replay_step' } | { type: 'stop' };
+  | { type: 'reset_view' } | { type: 'replay_step' } | { type: 'stop' }
+  | { type: 'fly_and_explode' } | { type: 'reassemble' };
 
 export interface ViewerContext {
   set_number: string; guide: string; current_step: number; total_steps: number; playing: boolean;
@@ -82,7 +83,7 @@ export function parseActions(value: unknown): BuddyAction[] {
       case 'rotate': if (['left','right','up','down'].includes(item.direction as string)) actions.push({ type: 'rotate',
         direction: item.direction as 'left', degrees: Math.max(5, Math.min(720, Math.abs(Number(item.degrees)) || 90)) }); break;
       case 'zoom': if (item.direction === 'in' || item.direction === 'out') actions.push({ type: 'zoom', direction: item.direction }); break;
-      case 'reset_view': case 'replay_step': case 'stop': case 'go_home': case 'close_booklet': actions.push({ type: item.type }); break;
+      case 'reset_view': case 'replay_step': case 'stop': case 'go_home': case 'close_booklet': case 'fly_and_explode': case 'reassemble': actions.push({ type: item.type }); break;
       case 'find_set': if (typeof item.set_number === 'string' && SET_NUMBER.test(item.set_number)) actions.push({ type: 'find_set', set_number: item.set_number }); break;
       case 'open_tutorial': if (typeof item.set_number === 'string' && SET_NUMBER.test(item.set_number)) actions.push(
         typeof item.guide_id === 'string' && /^[a-z0-9-]{1,64}$/.test(item.guide_id)
@@ -108,6 +109,8 @@ export function describeAction(action: BuddyAction): string {
     case 'reset_view': return '⌖ Reset view';
     case 'replay_step': return '↺ Replay';
     case 'stop': return '■ Stop';
+    case 'fly_and_explode': return '✈ Fly, crash, explode';
+    case 'reassemble': return '⟲ Reassemble';
   }
 }
 

@@ -22,6 +22,7 @@ import { partsList, readProgress, saveProgress } from '../state';
 import AssemblyViewport, { type CameraCommand } from './AssemblyViewport';
 import SourcePanel from './SourcePanel';
 import ReviewPanel from './ReviewPanel';
+import '../stuntSound';
 import { narrate, registerViewer, stopSpeaking, type ViewerAction, type ViewerController } from '../agent';
 export default function ViewerWorkspace({ scene: initialScene, guide, onClose, onScene, publicMode=false, releaseAlpha, previewMode=false, previewExperiment, previewJobId, previewQuality, previewGenerationMode, previewArtifactKind, previewUncertaintyNotes, previewCoverage, previewSourceCoverage, exploration, sourceImages=!publicMode, releaseLoader }: {publicMode?:boolean; releaseAlpha?:AlphaReleaseMetadata; previewMode?:boolean; previewExperiment?:string; previewJobId?:string; previewQuality?:ImageQuality; previewGenerationMode?:'standard'|'alpha_fast'; previewArtifactKind?:string; previewUncertaintyNotes?:string[]; previewCoverage?:string; previewSourceCoverage?:string; exploration?:ExplorationStatus|null; sourceImages?:boolean; releaseLoader?:ReleaseLoader; scene: SceneManifest; guide: Guide; onClose: () => void; onScene: (scene: SceneManifest) => void}) {
   const [scene,setLoadedScene] = useState(initialScene);
@@ -127,6 +128,9 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
       else if(action.type==='zoom'){camera(action.direction);window.setTimeout(resolve,300);}
       else if(action.type==='reset_view'){camera('reset');window.setTimeout(resolve,300);}
       else if(action.type==='replay_step'){replayStep();window.setTimeout(resolve,1200);}
+      // Showpiece: show the finished model, then let it fly, crash and settle into an exploded view.
+      else if(action.type==='fly_and_explode'){change(scene.steps.length-1);window.setTimeout(()=>camera('fly'),900);window.setTimeout(resolve,900+9300);}
+      else if(action.type==='reassemble'){camera('reassemble');window.setTimeout(resolve,1800);}
       else {setPlayback('idle');setBuildFinished(false);resolve();}
     }),
   };

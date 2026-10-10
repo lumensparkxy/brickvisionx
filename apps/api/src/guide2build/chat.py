@@ -91,7 +91,8 @@ SCHEMA = {
             "properties": {
                 "type": {"type": "string", "enum": ["find_set", "open_tutorial", "go_home", "close_booklet",
                                                     "go_to_step", "play_steps", "rotate", "zoom",
-                                                    "reset_view", "replay_step", "stop"]},
+                                                    "reset_view", "replay_step", "stop",
+                                                    "fly_and_explode", "reassemble"]},
                 "set_number": {"type": "string", "description": "find_set / open_tutorial: catalogue set number."},
                 "guide_id": {"type": "string", "description": "open_tutorial: optional booklet id from the catalogue."},
                 "step": {"type": "integer", "description": "Main step number; first step for play_steps."},
@@ -143,6 +144,12 @@ numbers, 1..total_steps; clamp to that range)
   underneath. "turn it around" = 180, "spin it" or "all the way" = 360, "a bit" = 30, otherwise 90.
   "show me the bottom/underside" = down 110. "from the top" = up 60.
 - zoom {direction: in|out}; reset_view; replay_step (re-animate the current step); stop (halt a walkthrough).
+- fly_and_explode: the showpiece. The finished model takes off, flies a lap, crashes and bursts into an exploded
+  view where every single piece floats apart and can be seen. Use it whenever the builder asks to make it fly,
+  crash it, blow it up, explode it, or show an exploded view; one action covers the whole sequence, so never
+  combine it with play_steps or rotate. Make the reply a short, gleeful one-liner (for example "Cleared for
+  take-off... and brace for impact!"). It is only an animation: no real pieces are harmed.
+- reassemble: puts the exploded model back together. Use it for "put it back", "rebuild it", "fix it".
 - Several actions run in order. Use an empty list when nothing should move.
 
 Honesty

@@ -1,5 +1,6 @@
-/* BrickBuddy: app-wide chat and voice dock. Fixed to the window, movable, anchored by its bottom-right corner. */
-.buddy{position:fixed;right:var(--dock-right,24px);bottom:var(--dock-bottom,124px);z-index:30;display:flex;align-items:flex-end;gap:14px;pointer-events:none}
+/* BrickBuddy: app-wide chat and voice. Open, it is a full-height pane on the right and the page makes room for it;
+   minimized, it is a launcher button in the bottom-right corner. */
+.buddy{position:fixed;right:24px;bottom:124px;z-index:30;pointer-events:none}
 .buddy>*{pointer-events:auto}
 .buddy .buddy-launcher{width:56px;height:56px;padding:0;border-radius:50%;background:var(--yellow);border:2px solid #142d4c;color:#142d4c;box-shadow:0 4px 0 #142d4c,0 14px 30px #14305233;transition:transform .15s,box-shadow .15s}
 .buddy .buddy-launcher:hover:not(:disabled){background:#ffd60a;border-color:#142d4c;transform:translateY(-2px);box-shadow:0 6px 0 #142d4c,0 18px 34px #14305240}
@@ -40,17 +41,24 @@
 .buddy .buddy-mic:hover:not(:disabled){background:var(--yellow);border-color:#142d4c}
 .buddy .buddy-mic.live,.buddy .buddy-mic.live:hover:not(:disabled){background:#e5383b;border-color:#e5383b;color:#fff;animation:buddy-pulse 1.1s infinite}
 @keyframes buddy-pulse{0%{box-shadow:0 0 0 0 #e5383b80}100%{box-shadow:0 0 0 12px #e5383b00}}
-@media(max-width:1000px){.buddy{flex-direction:column;gap:10px}.buddy-panel{width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 300px)}}
 @media(prefers-reduced-motion:reduce){.buddy-panel,.buddy-msg,.buddy-msg.typing span,.buddy .buddy-mic.live{animation:none}}
 /* Live mic: a ring that grows with the input level. */
 .buddy .buddy-mic.live{animation:none;box-shadow:0 0 0 calc(2px + var(--level,0) * 14px) #e5383b55;transition:box-shadow .08s linear}
 /* Muted voice must be impossible to miss. */
 .buddy .buddy-icon.voice-off{background:#e5383b;color:#fff;width:auto;padding:0 9px;gap:5px;font-size:11.5px;font-weight:700}
 .buddy .buddy-icon.voice-off:hover:not(:disabled){background:#c92a2d}
-/* Movable dock, hands-free states, and the mic icon for typings. */
-.buddy-header{cursor:grab;touch-action:none;user-select:none}.buddy-header:active{cursor:grabbing}
-.buddy .buddy-launcher{touch-action:none}
+/* The right-hand pane. The app content gives up exactly this strip, so the 3D model is never covered. */
+:root{--buddy-width:400px}
+html.buddy-open #root{margin-right:var(--buddy-width)}
+.buddy.open{top:0;right:0;bottom:0;width:var(--buddy-width)}
+.buddy.open .buddy-panel{width:100%;height:100%;max-height:none;border:0;border-left:2px solid #142d4c;border-radius:0;box-shadow:-10px 0 34px #14305214;animation:buddy-slide .22s ease-out}
+@keyframes buddy-slide{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.buddy.open .buddy-header{padding:16px 14px 16px 18px}
+.buddy.open .buddy-messages{padding:18px}
+.buddy.open .buddy-form{padding:14px}
+/* Hands-free states. */
 .buddy .buddy-launcher.live{background:#e5383b;border-color:#8f1d1f;color:#fff}
 .buddy .buddy-mic.waiting{background:var(--yellow);border-color:#142d4c}
-.buddy.hands-free .buddy-panel{border-color:#e5383b;box-shadow:0 6px 0 #8f1d1f,0 24px 60px #1430523d}
-.buddy-panel{max-height:calc(100dvh - var(--dock-bottom,124px) - 16px)}
+.buddy.hands-free .buddy-header{box-shadow:inset 0 -4px 0 #e5383b}
+@media(max-width:900px){:root{--buddy-width:min(400px,100vw)}html.buddy-open #root{margin-right:0}}
+@media(prefers-reduced-motion:reduce){.buddy.open .buddy-panel{animation:none}}

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type FormEvent, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import IconSparkles from '@tabler/icons-react/dist/esm/icons/IconSparkles.mjs';
 import IconMicrophone from '@tabler/icons-react/dist/esm/icons/IconMicrophone.mjs';
 import IconSend2 from '@tabler/icons-react/dist/esm/icons/IconSend2.mjs';
@@ -17,20 +17,8 @@ const ELSEWHERE = ['Show me the plane', 'Which sets do you have?'];
 /** Hands-free mode turns itself off after this long without hearing anything. */
 const IDLE_OFF_MS = 120_000;
 
-// The dock is anchored by its bottom-right corner, so the launcher and the open panel share one position.
-interface Anchor { right: number; bottom: number; }
-const DOCK_KEY = 'brickvisionx:dock', DEFAULT_ANCHOR: Anchor = { right: 24, bottom: 124 }, MARGIN = 8;
-function savedAnchor(): Anchor {
-  try { const value = JSON.parse(localStorage.getItem(DOCK_KEY) ?? 'null') as Anchor | null;
-    if (value && Number.isFinite(value.right) && Number.isFinite(value.bottom)) return { right: value.right, bottom: value.bottom }; } catch { /* Fall back to the default corner. */ }
-  return DEFAULT_ANCHOR;
-}
-const clampAnchor = (anchor: Anchor, width: number, height: number): Anchor => ({
-  right: Math.round(Math.min(Math.max(MARGIN, anchor.right), Math.max(MARGIN, window.innerWidth - width - MARGIN))),
-  bottom: Math.round(Math.min(Math.max(MARGIN, anchor.bottom), Math.max(MARGIN, window.innerHeight - height - MARGIN))),
-});
-
-/** BrickBuddy: one chat + voice assistant for the whole app, in a dock that can be moved and minimized. */
+/** BrickBuddy: one chat + voice assistant for the whole app. It opens as a pane on the right that the page makes room for,
+ * so it never covers the 3D model; minimized, it is a small launcher button. */
 export default function ChatPanel() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -38,8 +26,7 @@ export default function ChatPanel() {
   const [busy, setBusy] = useState(false); const [listening, setListening] = useState(false);
   const [handsFree, setHandsFree] = useState(false);
   const [silent, setSilent] = useState(isMuted);
-  const [anchor, setAnchor] = useState(savedAnchor);
-  const list = useRef<HTMLDivElement>(null); const input = useRef<HTMLInputElement>(null); const dock = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLDivElement>(null); const input = useRef<HTMLInputElement>(null);
   const history = useRef<Message[]>([]); const turn = useRef(0); const thinking = useRef(false);
   const append = (message: Message) => { history.current = [...history.current, message]; setMessages(history.current); };
   const send = async (raw: string) => {
@@ -126,30 +113,8 @@ export default function ChatPanel() {
     return () => { delete scope.brickvision; };
   }, []);
 
-  // Moving the dock: drag the header (or the launcher); it stays inside the window and remembers its place.
-  const drag = useRef<{ x: number; y: number; from: Anchor; moved: boolean } | null>(null);
-  const fit = (next: Anchor) => { const box = dock.current?.getBoundingClientRect(); return box ? clampAnchor(next, box.width, box.height) : next; };
-  const startDrag = (event: PointerEvent<HTMLElement>) => {
-    if (event.button !== 0 || (event.currentTarget.tagName !== 'BUTTON' && (event.target as HTMLElement).closest('button'))) return;
-    drag.current = { x: event.clientX, y: event.clientY, from: anchor, moved: false };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-  const moveDrag = (event: PointerEvent<HTMLElement>) => {
-    const start = drag.current; if (!start) return;
-    const dx = event.clientX - start.x, dy = event.clientY - start.y;
-    if (!start.moved && Math.hypot(dx, dy) < 5) return;
-    start.moved = true; setAnchor(fit({ right: start.from.right - dx, bottom: start.from.bottom - dy }));
-  };
-  const endDrag = (event: PointerEvent<HTMLElement>): boolean => {
-    const start = drag.current; drag.current = null;
-    if (!start) return false;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    if (start.moved) { try { localStorage.setItem(DOCK_KEY, JSON.stringify(anchor)); } catch { /* Position is kept for this visit only. */ } }
-    return start.moved;
-  };
-  const dragged = useRef(false); // A drag that ends on the launcher must not also toggle it.
-  useLayoutEffect(() => { const next = fit(anchor); if (next.right !== anchor.right || next.bottom !== anchor.bottom) setAnchor(next); });
-  useEffect(() => { const refit = () => setAnchor(current => fit(current)); window.addEventListener('resize', refit); return () => window.removeEventListener('resize', refit); }, []);
+  // The page gives up a strip on the right while the pane is open (see chat.css), so nothing is covered.
+  useEffect(() => { document.documentElement.classList.toggle('buddy-open', open); return () => document.documentElement.classList.remove('buddy-open'); }, [open]);
 
   // While listening the draft is the live transcript: Enter ends the turn, which sends it once.
   const submit = (event: FormEvent) => { event.preventDefault(); if (hearing.current) stopListening(); else void send(draft); };
@@ -157,10 +122,9 @@ export default function ChatPanel() {
   const status = listening ? 'Listening… just talk' : busy ? 'Thinking…' : handsFree ? 'Speaking… tap the mic to interrupt'
     : inTutorial ? 'Ask me to move, explain or spin the model' : 'Tell me what you want to build';
   const micLabel = !handsFree ? 'Talk to BrickBuddy' : listening ? 'Stop listening' : 'Interrupt BrickBuddy';
-  const place = { '--dock-right': `${anchor.right}px`, '--dock-bottom': `${anchor.bottom}px` } as CSSProperties;
-  return <div ref={dock} style={place} className={`buddy${open ? ' open' : ''}${handsFree ? ' hands-free' : ''}`}>
+  return <div className={`buddy${open ? ' open' : ''}${handsFree ? ' hands-free' : ''}`}>
     {open && <section className="buddy-panel" aria-label="Build buddy chat">
-      <header className="buddy-header" title="Drag to move" onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}>
+      <header className="buddy-header">
         <span className="buddy-avatar" aria-hidden="true"><IconSparkles size={20}/></span>
         <div className="buddy-title"><strong>BrickBuddy</strong><small role="status">{status}</small></div>
         <button type="button" className={`buddy-icon${silent ? ' voice-off' : ''}`} aria-pressed={!silent} aria-label={silent ? 'Turn voice on' : 'Turn voice off'} title={silent ? 'Turn voice on' : 'Turn voice off'} onClick={() => setMuted(!silent)}>{silent ? <><IconVolumeOff size={17}/>Voice off</> : <IconVolume size={19}/>}</button>
@@ -180,8 +144,6 @@ export default function ChatPanel() {
         <button type="submit" className="buddy-send" aria-label="Send" disabled={busy || !draft.trim()}><IconSend2 size={19}/></button>
       </form>
     </section>}
-    <button type="button" className={`buddy-launcher${listening ? ' live' : ''}`} aria-expanded={open} aria-label={open ? 'Minimize build buddy' : 'Chat with your build buddy'} title="BrickBuddy · drag to move"
-      onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={event => { dragged.current = endDrag(event); }} onPointerCancel={endDrag}
-      onClick={() => { if (dragged.current) { dragged.current = false; return; } setOpen(value => !value); }}>{open ? <IconMinus size={26}/> : <IconMessageChatbot size={28}/>}</button>
+    {!open && <button type="button" className={`buddy-launcher${listening ? ' live' : ''}`} aria-expanded={false} aria-label="Chat with your build buddy" title="BrickBuddy" onClick={() => setOpen(true)}><IconMessageChatbot size={28}/></button>}
   </div>;
 }

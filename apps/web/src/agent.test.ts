@@ -32,6 +32,10 @@ describe('viewer actions from model output', () => {
       { type: 'find_set', set_number: '60400' }, { type: 'go_home' }, { type: 'close_booklet' },
     ]);
   });
+  it('accepts the showpiece actions', () => {
+    expect(parseActions([{ type: 'fly_and_explode', extra: 1 }, { type: 'reassemble' }])).toEqual([{ type: 'fly_and_explode' }, { type: 'reassemble' }]);
+    expect(describeAction({ type: 'fly_and_explode' })).toBe('✈ Fly, crash, explode');
+  });
   it('labels actions for the chat chips', () => {
     expect(describeAction({ type: 'open_tutorial', set_number: '30669' })).toBe('▶ Open 30669');
     expect(describeAction({ type: 'play_steps', step: 6, count: 3, narrations: [] })).toBe('▶ Steps 6–8');
