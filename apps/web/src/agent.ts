@@ -1,9 +1,10 @@
 /**
  * Shared contract between the chat panel, the voice front end and the 3D viewer.
  * The backend proposes a spoken reply plus viewer actions; the browser executes them.
- * Voice (speech-to-text / text-to-speech) plugs in through setVoice(); see window.brickvision.
+ * Voice (speech-to-text / text-to-speech) is Gradium by default and can be replaced through setVoice(); see window.brickvision.
  */
 import { post } from './api';
+import { gradiumVoice, VoiceUnavailable } from './gradiumVoice';
 
 export type ViewerAction =
   | { type: 'go_to_step'; step: number }
@@ -56,11 +57,17 @@ export function describeAction(action: ViewerAction): string {
 }
 
 /** Voice plug-in point. speak() must resolve when the audio has finished (or was stopped). */
-export interface VoiceAdapter { speak(text: string): Promise<void>; stop(): void; listen?(): Promise<string>; }
-type Recognition = { lang: string; interimResults: boolean; start(): void;
+export interface VoiceAdapter {
+  speak(text: string): Promise<void>; stop(): void;
+  /** Tap-to-talk: resolves with the transcript once the speaker is done; onPartial receives the text heard so far. */
+  listen?(onPartial?: (text: string) => void): Promise<string>;
+  stopListening?(): void;
+}
+type Recognition = { lang: string; interimResults: boolean; start(): void; stop(): void;
   onresult: ((event: { results: { 0: { transcript: string } }[] }) => void) | null; onerror: ((event: { error: string }) => void) | null; onend: (() => void) | null };
-/** Browser fallback so the flow works before a real voice provider is registered. */
-const browserVoice: VoiceAdapter = {
+let recognition: Recognition | null = null;
+/** Browser speech: the fallback when Gradium is not available. */
+const browserVoice: Required<VoiceAdapter> = {
   speak: text => new Promise(resolve => {
     if (!('speechSynthesis' in window)) { resolve(); return; }
     const utterance = new SpeechSynthesisUtterance(text); utterance.rate = 1.05;
@@ -68,20 +75,39 @@ const browserVoice: VoiceAdapter = {
     speechSynthesis.cancel(); speechSynthesis.speak(utterance);
   }),
   stop: () => { if ('speechSynthesis' in window) speechSynthesis.cancel(); },
+  // Browser recognition only reports the final result here, so onPartial is ignored.
   listen: () => new Promise((resolve, reject) => {
     const scope = window as unknown as Record<string, (new () => Recognition) | undefined>;
     const Ctor = scope.SpeechRecognition ?? scope.webkitSpeechRecognition;
     if (!Ctor) { reject(new Error('Voice input is not available in this browser yet. Type instead!')); return; }
-    const recognition = new Ctor(); recognition.lang = 'en-US'; recognition.interimResults = false;
-    recognition.onresult = event => resolve(event.results[0][0].transcript);
-    recognition.onerror = event => reject(new Error(`I could not hear that (${event.error}).`));
-    recognition.onend = () => resolve('');
-    recognition.start();
+    const current = new Ctor(); current.lang = 'en-US'; current.interimResults = false;
+    current.onresult = event => resolve(event.results[0][0].transcript);
+    current.onerror = event => reject(new Error(`I could not hear that (${event.error}).`));
+    current.onend = () => { if (recognition === current) recognition = null; resolve(''); };
+    recognition = current; current.start();
   }),
+  stopListening: () => recognition?.stop(),
+};
+/** Default voice: Gradium, switching to browser speech for the rest of the session once Gradium proves unavailable. */
+let gradiumDownUntil = 0; // One network blip must not downgrade the whole session: retry Gradium after a cool-off.
+async function withFallback<T>(run: (voice: Required<VoiceAdapter>) => Promise<T>): Promise<T> {
+  if (Date.now() >= gradiumDownUntil) {
+    try { return await run(gradiumVoice); }
+    catch (error) { if (!(error instanceof VoiceUnavailable)) throw error; gradiumDownUntil = Date.now() + 20000; }
+  }
+  return run(browserVoice);
+}
+const defaultVoice: Required<VoiceAdapter> = {
+  speak: text => withFallback(voice => voice.speak(text)),
+  stop: () => { gradiumVoice.stop(); browserVoice.stop(); },
+  listen: onPartial => withFallback(voice => voice.listen(onPartial)),
+  stopListening: () => { gradiumVoice.stopListening(); browserVoice.stopListening(); },
 };
 const VOICE_KEY = 'brickvisionx:voice', VOICE_EVENT = 'brickvision:voice';
-let adapter = browserVoice;
-let muted = (() => { try { return localStorage.getItem(VOICE_KEY) !== 'on'; } catch { return true; } })();
+let adapter: VoiceAdapter = defaultVoice;
+// Voice is on unless the user turned it off.
+let muted = (() => { try { return localStorage.getItem(VOICE_KEY) === 'off'; } catch { return false; } })();
+let openMics = 0;
 let cancel: (() => void) | null = null;
 export const isMuted = () => muted;
 export function setMuted(value: boolean) {
@@ -92,15 +118,25 @@ export function setMuted(value: boolean) {
 }
 export function onVoiceChange(listener: () => void) { window.addEventListener(VOICE_EVENT, listener); return () => window.removeEventListener(VOICE_EVENT, listener); }
 /** Register a real voice provider (speech out, optionally speech in) and turn sound on. */
-export function setVoice(next: VoiceAdapter | null) { stopSpeaking(); adapter = next ?? browserVoice; setMuted(false); }
-export const listen = () => (adapter.listen ?? browserVoice.listen!)();
+export function setVoice(next: VoiceAdapter | null) { stopSpeaking(); stopListening(); adapter = next ?? defaultVoice; setMuted(false); }
+/**
+ * Tap-to-talk; resolves with the transcript ('' when nothing was heard). A registered adapter that cannot listen
+ * leaves the microphone to the default voice. Nothing is spoken aloud while the microphone is open.
+ */
+export async function listen(onPartial?: (text: string) => void): Promise<string> {
+  openMics++;
+  try { return await (adapter.listen ? adapter.listen(onPartial) : defaultVoice.listen(onPartial)); }
+  finally { openMics--; }
+}
+/** End the current listen(); its promise then resolves with what was heard. */
+export function stopListening() { if (adapter.listen) adapter.stopListening?.(); else defaultVoice.stopListening(); }
 export function stopSpeaking() { cancel?.(); }
-/** Resolves when the line has been spoken; when muted it waits a short reading pause instead. */
+/** Resolves when the line has been spoken; when muted (or while the microphone is open) it waits a short reading pause instead. */
 export function speak(text: string): Promise<void> {
   stopSpeaking();
   if (!text.trim()) return Promise.resolve();
   return new Promise<void>(resolve => {
-    const audible = !muted; let settled = false;
+    const audible = !muted && openMics === 0; let settled = false;
     const done = () => { if (settled) return; settled = true; window.clearTimeout(timer); if (cancel === abort) cancel = null; resolve(); };
     const abort = () => { if (audible) adapter.stop(); done(); };
     // Safety net: never let a stuck audio backend freeze a walkthrough.

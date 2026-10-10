@@ -20,6 +20,7 @@ from .jobs.store import Conflict, Store
 from .jobs.source_cache import cached_receipt
 from .review.models import CorrectionRequest, ReviewRequest
 from .review.service import ReviewService
+from .voice import VoiceUnavailable, mint_token
 
 
 def create_app(data_dir: Path | None = None) -> FastAPI:
@@ -91,6 +92,17 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         except Exception as error:
             logging.getLogger("uvicorn.error").warning("chat failed: %s: %s", type(error).__name__, error)
             missing("chat_failed", "BrickBuddy could not answer just now. Please try again.", 502)
+
+    @app.post("/api/v1/voice/token")
+    async def voice_token():
+        """Single-use Gradium token for one browser speech WebSocket; the API key stays here."""
+        try:
+            return await mint_token()
+        except VoiceUnavailable as error:
+            missing("voice_unavailable", str(error), 503)
+        except Exception as error:
+            logging.getLogger("uvicorn.error").warning("voice token failed: %s", type(error).__name__)
+            missing("voice_failed", "Voice is not available just now. Please try again.", 502)
 
     @app.get("/api/v1/health")
     def health():

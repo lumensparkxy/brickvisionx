@@ -38,9 +38,11 @@
 .buddy .buddy-mic,.buddy .buddy-send{width:42px;height:42px;padding:0;border-radius:50%;flex:none}
 .buddy .buddy-mic{background:#fff;border:1.5px solid #142d4c;color:#142d4c}
 .buddy .buddy-mic:hover:not(:disabled){background:var(--yellow);border-color:#142d4c}
-.buddy .buddy-mic.live{background:#e5383b;border-color:#e5383b;color:#fff;animation:buddy-pulse 1.1s infinite}
+.buddy .buddy-mic.live,.buddy .buddy-mic.live:hover:not(:disabled){background:#e5383b;border-color:#e5383b;color:#fff;animation:buddy-pulse 1.1s infinite}
 @keyframes buddy-pulse{0%{box-shadow:0 0 0 0 #e5383b80}100%{box-shadow:0 0 0 12px #e5383b00}}
 @media(max-width:1000px){.buddy{right:12px;bottom:12px;flex-direction:column;gap:10px}.buddy-panel{width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 300px)}}
 @media(prefers-reduced-motion:reduce){.buddy-panel,.buddy-msg,.buddy-msg.typing span,.buddy .buddy-mic.live{animation:none}}
 /* Keep the model clear of the open panel: the canvas gives up the right-hand strip and refits. */
 @media(min-width:1001px){.model-pane:has(.buddy.open) .viewport-wrap{right:400px}.model-pane:has(.buddy.open) .gesture-hint{right:424px}}
+/* Live mic: a ring that grows with the input level. */
+.buddy .buddy-mic.live{animation:none;box-shadow:0 0 0 calc(2px + var(--level,0) * 14px) #e5383b55;transition:box-shadow .08s linear}

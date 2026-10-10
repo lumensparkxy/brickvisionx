@@ -6,8 +6,9 @@ import IconVolume from '@tabler/icons-react/dist/esm/icons/IconVolume.mjs';
 import IconVolumeOff from '@tabler/icons-react/dist/esm/icons/IconVolumeOff.mjs';
 import IconMessageChatbot from '@tabler/icons-react/dist/esm/icons/IconMessageChatbot.mjs';
 import IconX from '@tabler/icons-react/dist/esm/icons/IconX.mjs';
-import { askAgent, describeAction, isMuted, listen, onNarration, onVoiceChange, setMuted, setVoice, speak, stopSpeaking,
+import { askAgent, describeAction, isMuted, listen, onNarration, onVoiceChange, setMuted, setVoice, speak, stopListening, stopSpeaking,
   type ChatTurn, type ViewerAction, type ViewerController } from '../agent';
+import { MIC_LEVEL_EVENT } from '../gradiumVoice';
 import './chat.css';
 
 interface Message extends ChatTurn { actions?: ViewerAction[]; narration?: boolean; error?: boolean; }
@@ -43,13 +44,26 @@ export default function ChatPanel({ controller }: { controller: RefObject<Viewer
     } finally { thinking.current = false; setBusy(false); }
   };
   const sendRef = useRef(send); sendRef.current = send;
+  // Mic toggle: tap to talk, tap again (or just stop talking) to send what was heard.
+  const hearing = useRef(false);
   const talk = async () => {
-    if (listening || busy) return;
-    stopSpeaking(); setListening(true);
-    try { const heard = await listen(); if (heard) await send(heard); }
+    if (hearing.current) { stopListening(); return; }
+    if (thinking.current) return;
+    stopSpeaking(); // BrickBuddy's own voice must not be transcribed.
+    hearing.current = true; setListening(true);
+    let heard = '';
+    try { heard = (await listen(setDraft)).trim(); }
     catch (error) { append({ role: 'assistant', text: error instanceof Error ? error.message : 'Voice input failed.', error: true }); }
-    finally { setListening(false); }
+    finally { hearing.current = false; setListening(false); setDraft(''); }
+    if (heard) await send(heard);
   };
+  useEffect(() => () => stopListening(), []);
+  // The mic button swells with the input level, so it is obvious whether sound is arriving.
+  const mic = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const show = (event: Event) => mic.current?.style.setProperty('--level', String(Math.min(1, (event as CustomEvent<number>).detail * 4)));
+    window.addEventListener(MIC_LEVEL_EVENT, show); return () => window.removeEventListener(MIC_LEVEL_EVENT, show);
+  }, []);
   useEffect(() => onNarration(text => append({ role: 'assistant', text, narration: true })), []);
   useEffect(() => onVoiceChange(() => setSilent(isMuted())), []);
   useEffect(() => { list.current?.scrollTo({ top: list.current.scrollHeight, behavior: 'smooth' }); }, [messages, busy, open]);
@@ -58,17 +72,18 @@ export default function ChatPanel({ controller }: { controller: RefObject<Viewer
   useEffect(() => {
     const scope = window as unknown as { brickvision?: unknown };
     scope.brickvision = { send: (text: string) => sendRef.current(text), run: (action: ViewerAction) => controller.current.run(action),
-      context: () => controller.current.context(), setVoice, speak, stop: stopSpeaking, open: () => setOpen(true) };
+      context: () => controller.current.context(), setVoice, speak, stop: stopSpeaking, listen, stopListening, open: () => setOpen(true) };
     return () => { delete scope.brickvision; };
   }, [controller]);
-  const submit = (event: FormEvent) => { event.preventDefault(); void send(draft); };
+  // While listening the draft is the live transcript: Enter ends the turn, which sends it once.
+  const submit = (event: FormEvent) => { event.preventDefault(); if (hearing.current) stopListening(); else void send(draft); };
   return <div className={`buddy${open ? ' open' : ''}`}>
     {open && <section className="buddy-panel" aria-label="Build buddy chat">
       <header className="buddy-header">
         <span className="buddy-avatar" aria-hidden="true"><IconSparkles size={20}/></span>
-        <div className="buddy-title"><strong>BrickBuddy</strong><small role="status">{busy ? 'Thinking…' : listening ? 'Listening…' : 'Ask me to move, explain or spin the model'}</small></div>
+        <div className="buddy-title"><strong>BrickBuddy</strong><small role="status">{listening ? 'Listening… tap mic to send' : busy ? 'Thinking…' : 'Ask me to move, explain or spin the model'}</small></div>
         <button type="button" className="buddy-icon" aria-pressed={!silent} aria-label={silent ? 'Turn voice on' : 'Turn voice off'} title={silent ? 'Turn voice on' : 'Turn voice off'} onClick={() => setMuted(!silent)}>{silent ? <IconVolumeOff size={19}/> : <IconVolume size={19}/>}</button>
-        <button type="button" className="buddy-icon" aria-label="Close chat" title="Close chat" onClick={() => setOpen(false)}><IconX size={19}/></button>
+        <button type="button" className="buddy-icon" aria-label="Close chat" title="Close chat" onClick={() => { stopListening(); setOpen(false); }}><IconX size={19}/></button>
       </header>
       <div className="buddy-messages" ref={list} aria-live="polite">
         {messages.length === 0 && <div className="buddy-empty"><p>Hi! I can drive the 3D model while your hands are busy. Try:</p>{SUGGESTIONS.map(text => <button type="button" key={text} onClick={() => void send(text)}>{text}</button>)}</div>}
@@ -79,11 +94,11 @@ export default function ChatPanel({ controller }: { controller: RefObject<Viewer
         {busy && <div className="buddy-msg assistant typing" aria-label="BrickBuddy is thinking"><span/><span/><span/></div>}
       </div>
       <form className="buddy-form" onSubmit={submit}>
-        <button type="button" className={`buddy-mic${listening ? ' live' : ''}`} aria-label={listening ? 'Listening' : 'Talk to BrickBuddy'} title="Talk to BrickBuddy" disabled={busy} onClick={() => void talk()}><IconMicrophone size={20}/></button>
-        <input ref={input} value={draft} onChange={event => setDraft(event.target.value)} placeholder="Ask BrickBuddy…" aria-label="Message BrickBuddy" autoComplete="off"/>
+        <button ref={mic} type="button" className={`buddy-mic${listening ? ' live' : ''}`} aria-pressed={listening} aria-label={listening ? 'Stop listening and send' : 'Talk to BrickBuddy'} title={listening ? 'Stop listening and send' : 'Talk to BrickBuddy'} disabled={busy && !listening} onClick={() => void talk()}><IconMicrophone size={20}/></button>
+        <input ref={input} value={draft} readOnly={listening} onChange={event => setDraft(event.target.value)} placeholder={listening ? 'Listening…' : 'Ask BrickBuddy…'} aria-label="Message BrickBuddy" autoComplete="off"/>
         <button type="submit" className="buddy-send" aria-label="Send" disabled={busy || !draft.trim()}><IconSend2 size={19}/></button>
       </form>
     </section>}
-    <button type="button" className="buddy-launcher" aria-expanded={open} aria-label={open ? 'Hide build buddy' : 'Chat with your build buddy'} title="BrickBuddy" onClick={() => setOpen(value => !value)}>{open ? <IconX size={26}/> : <IconMessageChatbot size={28}/>}</button>
+    <button type="button" className="buddy-launcher" aria-expanded={open} aria-label={open ? 'Hide build buddy' : 'Chat with your build buddy'} title="BrickBuddy" onClick={() => { if (open) stopListening(); setOpen(value => !value); }}>{open ? <IconX size={26}/> : <IconMessageChatbot size={28}/>}</button>
   </div>;
 }
