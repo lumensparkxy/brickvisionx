@@ -31,9 +31,9 @@ def _page_pixels(page):
     return stream.getvalue()
 
 
-def _provider_receipt(directory, page, value, *, error=None):
+def _provider_receipt(directory, page, value, *, error=None, key=None):
     """Original synthetic receipts, not claims of actual model invocations."""
-    target = directory / f"exploration/calls/index-{page:04d}"
+    target = directory / "exploration/calls" / (key or f"index-{page:04d}")
     target.mkdir(parents=True, exist_ok=True)
     prompt = f"Synthetic index-only test page {page}; no assembly context."
     inputs = {"prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
@@ -100,6 +100,74 @@ def _restart(tmp_path, scene, number):
     value["commands"] = []
     write_json(request, value)
     return request
+
+
+def _retried_v2_seed(tmp_path, scene_data, *, attempts=1):
+    """Retain synthetic failed attempts before an authenticated successful retry."""
+    from guide2build.engine.exploration import provider_retry_key
+
+    store, identity, scene, directory = _v2_seed(tmp_path, scene_data)
+    checkpoint = store.get(identity)["checkpoint"]
+    value = checkpoint["page_indexes"][0]
+    key = "index-0000"
+    (directory / f"exploration/calls/{key}/result.json").unlink()
+    for _ in range(attempts):
+        state = _provider_receipt(directory, 0, value, key=key,
+            error={"code": "provider_unavailable", "message": "Synthetic temporary provider failure."})
+        state["provider_retry_key"] = provider_retry_key(key, state)
+        checkpoint["exploration_calls"][key] = state
+        key = state["provider_retry_key"]
+    checkpoint["exploration_calls"][key] = _provider_receipt(directory, 0, value, key=key)
+    checkpoint["model_calls_used"] += attempts
+    checkpoint["local_model_calls_used"] += attempts
+    _save(store, identity, checkpoint)
+    return store, identity, scene, directory, key
+
+
+@pytest.mark.parametrize("restart", [False, True])
+@pytest.mark.parametrize("attempts", [1, 2])
+def test_completed_provider_retry_is_authenticated_for_immutable_index_seed(tmp_path, scene_data, restart, attempts):
+    store, identity, scene, directory, key = _retried_v2_seed(tmp_path, scene_data, attempts=attempts)
+    parent, before = store.get(identity), _bytes(directory)
+    request = _restart(tmp_path, scene, 2) if restart else correction_request(tmp_path, scene)
+    child = fork_correction(store, identity, request, "retried-index-seed")
+    cp = child["checkpoint"]
+    assert cp["page_indexes"] == parent["checkpoint"]["page_indexes"]
+    assert cp["model_calls_used"] == cp["inherited_model_calls_used"] == 8 + attempts
+    assert cp["local_model_calls_used"] == 0 and cp["exploration_calls"] == {}
+    seed = store.root / "jobs" / child["id"] / "source-index-seed.json"
+    assert seed.read_bytes() == canonical(parent["checkpoint"]["page_indexes"])
+    assert key != "index-0000" and (directory / f"exploration/calls/{key}/result.json").is_file()
+    assert store.get(identity) == parent and _bytes(directory) == before
+
+
+@pytest.mark.parametrize("mutation", ["alias", "inputs", "receipt"])
+def test_provider_retry_correction_rejects_changed_link_inputs_or_receipt(tmp_path, scene_data, mutation):
+    store, identity, scene, directory, key = _retried_v2_seed(tmp_path, scene_data)
+    checkpoint = store.get(identity)["checkpoint"]
+    if mutation == "alias":
+        checkpoint["exploration_calls"]["index-0000"]["provider_retry_key"] = "index-0001"
+    elif mutation == "inputs":
+        state = checkpoint["exploration_calls"][key]
+        state["inputs"]["model"] = "changed-model"
+        target = directory / f"exploration/calls/{key}"
+        request = json.loads((target / "request.json").read_bytes())
+        receipt = json.loads((target / "receipt.json").read_bytes())
+        request["inputs"] = receipt["inputs"] = state["inputs"]
+        (target / "request.json").write_bytes(canonical(request))
+        (target / "receipt.json").write_bytes(canonical(receipt))
+        state["request_sha256"] = digest(request)
+        state["receipt_sha256"] = digest(receipt)
+    else:
+        target = directory / f"exploration/calls/{key}/receipt.json"
+        receipt = json.loads(target.read_bytes())
+        receipt["result_sha256"] = "f" * 64
+        target.write_bytes(canonical(receipt))
+    _save(store, identity, checkpoint)
+    parent, before = store.get(identity), _bytes(directory)
+    with pytest.raises(ValueError):
+        fork_correction(store, identity, correction_request(tmp_path, scene), "changed-retry")
+    assert len(store.list()) == 1 and store.get(identity) == parent and _bytes(directory) == before
 
 
 def test_legacy_index_is_canonical_immutable_seed_without_source_pngs(tmp_path, scene_data):

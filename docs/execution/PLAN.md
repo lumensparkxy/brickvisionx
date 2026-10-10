@@ -1,5 +1,9 @@
 # Execution checkpoints
 
+## Isolated Space Shuttle ADK end-to-end test — 10 October 2026
+
+Approved: fresh 31134/booklet-01 run under var/experiments/adk-31134-booklet01-20261010/, Google ADK/Gemini 3.8 Flash medium, 120-second deadline, one worker, exploration with findings, baseline proposals and incremental context, at most two proposals per instruction, 300 total requests including indexing/review/repair/interruption. Inspect the first four printed main steps and callouts, then continue through the full official booklet. Preserve the red aeroplane files, revision/database records and its running app. Serve only the new candidate on loopback port 4176. Add an opt-in real-data browser test, record source/render comparisons and software checks, and retain all blockers. No publication, push, human approval or physical-build claim.
+
 ## BrickVisionX Google ADK starter migration — 10 October 2026
 
 Approved scope: import current local code, preserve Entire development hooks, replace the application Codex runtime with Google ADK/Gemini Developer API, and verify one official 30669/alt-02 page with at most three requests. Preserve source history and historical evidence; no cloud publication or GitHub push. Migration inventory and current validation live under docs/migration/.

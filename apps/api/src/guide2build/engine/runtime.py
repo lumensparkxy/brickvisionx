@@ -9,7 +9,7 @@ DEFAULT_INFERENCE_TIMEOUT_SECONDS = 120
 DEFAULT_MAX_MODEL_CALLS = 3
 PROVIDER = "google_adk"
 FATAL_PROVIDER_CODES = {"auth", "authentication_required", "rate_limited", "quota_exceeded",
-                        "provider_unavailable", "invalid_schema", "unsupported_model",
+                        "provider_unavailable", "invalid_schema", "unsupported_model", "request_rejected",
                         "subscription_limit"}  # Last code is retained for historical receipt inspection.
 PAUSE_PROVIDER_CODES = FATAL_PROVIDER_CODES - {"invalid_schema", "unsupported_model"}
 

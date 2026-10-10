@@ -507,7 +507,7 @@ def _authenticate_index_seed(checkpoint, indexes, directory):
 def _authenticate_v2_indexes(checkpoint, indexes, scene, directory, source_only_reviews=()):
     """Authenticate raw index responses before enrolling them in a new seed."""
     from .contracts import strict_schema
-    from .exploration import FATAL_PROVIDER_CODES, _read, _verify_call_receipts
+    from .exploration import FATAL_PROVIDER_CODES, _read, _verify_call_receipts, resolve_provider_call_key
     from .panel_index import PageIndexV2
 
     if directory is None:
@@ -516,8 +516,9 @@ def _authenticate_v2_indexes(checkpoint, indexes, scene, directory, source_only_
     reviews = {review.page_index: review for review in source_only_reviews}
     acknowledged = set()
     for page, value in enumerate(indexes):
-        state = checkpoint.get("exploration_calls", {}).get(f"index-{page:04d}")
-        prefix = f"exploration/calls/index-{page:04d}"
+        key = resolve_provider_call_key(checkpoint, f"index-{page:04d}")
+        state = checkpoint.get("exploration_calls", {}).get(key)
+        prefix = f"exploration/calls/{key}"
         if "schema_version" not in value:
             v2_call = state and state.get("inputs", {}).get("schema_sha256") == digest(strict_schema(PageIndexV2))
             if state and state.get("receipt_sha256"):

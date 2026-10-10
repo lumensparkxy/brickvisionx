@@ -636,6 +636,12 @@ def _verify_call_receipts(directory, checkpoint, *, check_cancel=None):
         receipt = json.loads(raw)
         if receipt["inputs"] != state["inputs"]:
             raise ValueError("Exploration provider inputs changed before recovery")
+        if state.get("provider_retry_key"):
+            from .runtime import PAUSE_PROVIDER_CODES
+            if (state.get("status") != "failed" or receipt["status"] != "failed"
+                    or receipt["error"]["code"] not in PAUSE_PROVIDER_CODES):
+                raise ValueError("Provider retry requires an authenticated fatal provider failure")
+            resolve_provider_call_key(checkpoint, key)
         if receipt["status"] == "completed" and _hash(directory, f"exploration/calls/{key}/result.json", 20_000_000) != receipt["result_sha256"]:
             raise ValueError("Exploration provider result changed before recovery")
     if check_cancel is not None:
@@ -857,6 +863,51 @@ def _policy(config, checkpoint, source_hash, page_count):
     return value
 
 
+def provider_retry_key(key, state):
+    """Bind an explicitly authorized retry to its immutable failed request/receipt."""
+    base = key.split("-provider-retry-", 1)[0]
+    return base + "-provider-retry-" + digest({"failed_key": key,
+        "request_sha256": state["request_sha256"], "receipt_sha256": state["receipt_sha256"]})[:24]
+
+
+def resolve_provider_call_key(checkpoint, key):
+    """Resolve bound retry links for replay and downstream source authentication."""
+    states = checkpoint.get("exploration_calls", {})
+    visited = set()
+    while state := states.get(key):
+        retry_key = state.get("provider_retry_key")
+        if not retry_key:
+            break
+        if (key in visited or state.get("status") != "failed"
+                or retry_key != provider_retry_key(key, state)
+                or states.get(retry_key, {}).get("inputs", state["inputs"]) != state["inputs"]):
+            raise ValueError("Provider retry authorization differs from its failed request")
+        visited.add(key)
+        key = retry_key
+    return key
+
+
+def authorize_provider_retries(directory, checkpoint):
+    """Authorize fresh attempts only on explicit resume; never erase failed evidence."""
+    from .runtime import PAUSE_PROVIDER_CODES
+    _verify_call_receipts(directory, checkpoint)
+    authorized = []
+    for key, state in checkpoint.get("exploration_calls", {}).items():
+        if state.get("status") != "failed" or state.get("provider_retry_key"):
+            continue
+        receipt = json.loads(_read(directory, f"exploration/calls/{key}/receipt.json"))
+        if receipt.get("error", {}).get("code") not in PAUSE_PROVIDER_CODES:
+            continue
+        retry_key = provider_retry_key(key, state)
+        if retry_key in checkpoint["exploration_calls"]:
+            raise ValueError("Provider retry key already exists without authorization")
+        state["provider_retry_key"] = retry_key
+        authorized.append({"failed_key": key, "retry_key": retry_key})
+    if not authorized:
+        raise ValueError("No failed provider call is eligible for explicit retry")
+    return authorized
+
+
 class ExplorationCalls:
     """Reserve before execution; terminal receipts replay without another model call."""
 
@@ -978,9 +1029,18 @@ class ExplorationCalls:
                         from .source_reference import validate_bound_response
                         validate_bound_response(json.loads(result), schema)
                     return model.model_validate_json(result)
+                if retry_key := state.get("provider_retry_key"):
+                    if (receipt["error"]["code"] not in FATAL_PROVIDER_CODES
+                            or retry_key != provider_retry_key(key, state)
+                            or states.get(retry_key, {}).get("inputs", inputs) != inputs):
+                        raise ValueError("Provider retry authorization differs from its failed request")
+                    request = json.loads(_read(target, "request.json", 1_200_000))
+                    return self.call(retry_key, request["prompt"], images, model, schema_override=schema_override)
                 if receipt["error"]["code"] in {"invalid_output", "invalid_response"}:
                     raise _InvalidResponse(receipt["error"]["message"])
-                if receipt["error"]["code"] in {"invalid_schema", "unsupported_model", "integrity_failure"}:
+                if receipt["error"]["code"] in FATAL_PROVIDER_CODES:
+                    raise ProviderFailure(receipt["error"]["code"], receipt["error"]["message"])
+                if receipt["error"]["code"] == "integrity_failure":
                     raise ValueError("A persisted exploration call failed its schema or integrity boundary")
                 raise _InterruptedCall(receipt["error"]["message"])
             raise _InterruptedCall("A previously reserved provider call was interrupted; it is not repeated.")

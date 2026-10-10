@@ -389,7 +389,7 @@ class EngineStore:
                 (inactive, inactive, inactive, now, job_id))
             self.event(con, job_id, "cancel_requested", {})
 
-    def retry(self, job_id):
+    def retry(self, job_id, *, retry_provider_calls=False):
         with self.connect() as con:
             con.execute("BEGIN IMMEDIATE")
             row = con.execute("SELECT * FROM engine_jobs WHERE id=?", (job_id,)).fetchone()
@@ -399,9 +399,18 @@ class EngineStore:
                 raise ValueError("Cannot retry an actively leased job")
             if row["state"] == "awaiting_approval":
                 raise ValueError("A staged candidate needs review, not inference retry")
+            detail = {}
+            if retry_provider_calls:
+                if json.loads(row["config"]).get("execution_policy") != "explore":
+                    raise ValueError("Explicit provider-call retry requires an exploration job")
+                from .exploration import authorize_provider_retries
+                checkpoint = hydrate_checkpoint(self.root, job_id, row["checkpoint"])
+                detail["provider_retries"] = authorize_provider_retries(self.root / "jobs" / job_id, checkpoint)
+                con.execute("UPDATE engine_jobs SET checkpoint=? WHERE id=?",
+                            (serialize_checkpoint(self.root, job_id, checkpoint), job_id))
             con.execute("UPDATE engine_jobs SET state='queued',cancel=0,owner=NULL,lease_until=NULL,error=NULL WHERE id=?",
                         (job_id,))
-            self.event(con, job_id, "resumed", {})
+            self.event(con, job_id, "resumed", detail)
 
     def pause_provider(self, reason):
         with self.connect() as con:

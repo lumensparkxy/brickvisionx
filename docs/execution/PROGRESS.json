@@ -1,7 +1,7 @@
 {
   "current_workspace": {
     "name": "BrickVisionX",
-    "authoritative_current_status": "brickvisionx_migration",
+    "authoritative_current_status": "adk_shuttle_31134",
     "historical_fields": "All earlier Guide2Build results below are retained source provenance; they do not establish migrated runtime, release or accuracy results."
   },
   "engine_activity_logging_followup": {
@@ -2620,5 +2620,60 @@
     "secret_audit": "no_key_found_in_generated_evidence_browser_bundle_or_checkpoint",
     "local_checkpoint_commit": "82f4df3c66086cb99c927d857d96414b0b4c46af",
     "entire_checkpoint": "01M4JS1XV2ZHK31KBD5928ASG3"
+  },
+  "adk_shuttle_31134": {
+    "status": "indexing_official_booklet",
+    "experiment": "var/experiments/adk-31134-booklet01-20261010",
+    "set_number": "31134",
+    "guide_id": "booklet-01",
+    "model": "gemini-3.8-flash",
+    "thinking_level": "medium",
+    "provider_timeout": 120,
+    "max_model_calls": 300,
+    "execution_policy": "explore",
+    "max_panel_attempts": 2,
+    "human_review": "not_run",
+    "physical_build": "not_run",
+    "publication": "not_run",
+    "job_id": "2573f70cc20e45329bce1656bddf64d9",
+    "official_pages": 60,
+    "rendered_official_pages": 60,
+    "indexed_pages": 17,
+    "processed_instructions": 0,
+    "reconstructed_instructions": 0,
+    "model_requests_used": 24,
+    "key_metadata_verification": "accepted_without_inference",
+    "provider_blocker": null,
+    "candidate_available": false,
+    "red_plane_protected_files": 160,
+    "red_plane_files_unchanged": true,
+    "red_plane_database_rows_unchanged": true,
+    "preview_url": "http://127.0.0.1:4176",
+    "software_browser_regressions_passed": 9,
+    "frontend_tests_passed": 54,
+    "typecheck": "passed",
+    "build": "passed",
+    "validation_report": "docs/execution/SHUTTLE_VALIDATION.md",
+    "credential_generation_verification": "passed",
+    "image_transport_verification": "passed",
+    "reported_token_usage": {
+      "candidates_token_count": 5376,
+      "prompt_token_count": 63776,
+      "thoughts_token_count": 14338,
+      "total_token_count": 83490
+    },
+    "usage_reporting": {
+      "status": "partial",
+      "calls_with_usage": 19,
+      "calls_without_usage": 4,
+      "raw_event_calls": 19,
+      "receipt_fallback_calls": 0,
+      "receipt_supplement_calls": 0
+    },
+    "backend_tests_passed": 1533,
+    "first_four_source_visual_inspection": "recorded_without_engine_input",
+    "first_four_candidate_comparison": "blocked_no_candidate",
+    "schema_transport": "gemini-json-subset-v2",
+    "strict_engine_schema_verification": "passed_on_live_page_index"
   }
 }

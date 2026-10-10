@@ -1252,6 +1252,67 @@ def test_partial_index_resume_binds_checkpoint_to_completed_call(harness, monkey
         assert len(h.provider.calls) == 1 and not h.cp.get("candidate")
 
 
+@pytest.mark.parametrize("code", ["provider_unavailable", "authentication_required", "quota_exceeded"])
+def test_fatal_index_failure_stays_blocked_on_resume_without_new_requests(harness, code):
+    h = harness
+    h.provider.failure = ProviderFailure(code, "Synthetic provider blocker")
+    with pytest.raises(ProviderFailure):
+        exploration.run_exploration(**h.args)
+    h.provider.failure = None
+    with pytest.raises(ProviderFailure) as error:
+        exploration.run_exploration(**h.args)
+    assert error.value.code == code
+    assert h.cp["page_indexes"] == []
+    assert h.cp["model_calls_used"] == len(h.provider.calls) == 1
+
+
+def test_explicit_provider_retry_preserves_failure_and_charges_fresh_request(harness):
+    h = harness
+    h.provider.failure = ProviderFailure("provider_unavailable", "Synthetic temporary blocker")
+    with pytest.raises(ProviderFailure):
+        exploration.run_exploration(**h.args)
+    failed = h.directory / "exploration/calls/index-0000"
+    original = {p.name: p.read_bytes() for p in failed.iterdir() if p.is_file()}
+    authorized = exploration.authorize_provider_retries(h.directory, h.cp)
+    assert len(authorized) == 1 and h.cp["model_calls_used"] == 1
+    h.provider.failure = None
+    exploration.run_exploration(**h.args, max_panels=1)
+    assert h.cp["model_calls_used"] == len(h.provider.calls)
+    assert h.cp["page_indexes"][0]["panels"]
+    assert sum(c["key"].startswith("index-0000") for c in h.provider.calls) == 2
+    assert {p.name: p.read_bytes() for p in failed.iterdir() if p.is_file()} == original
+    exploration.run_exploration(**h.args)
+    count = len(h.provider.calls)
+    exploration.run_exploration(**h.args)
+    assert len(h.provider.calls) == count
+
+
+def test_explicit_retry_cannot_bypass_frozen_budget(harness):
+    h = harness
+    h.job["config"]["max_model_calls"] = 1
+    h.provider.failure = ProviderFailure("provider_unavailable", "Synthetic blocker")
+    with pytest.raises(ProviderFailure):
+        exploration.run_exploration(**h.args)
+    exploration.authorize_provider_retries(h.directory, h.cp)
+    h.provider.failure = None
+    exploration.run_exploration(**h.args)
+    assert h.cp["stage"] == "exploration_budget_exhausted"
+    assert len(h.provider.calls) == h.cp["model_calls_used"] == 1
+    assert h.cp["page_indexes"] == []
+
+
+def test_explicit_retry_rejects_changed_authorization_or_failed_evidence(harness):
+    h = harness
+    h.provider.failure = ProviderFailure("provider_unavailable", "Synthetic blocker")
+    with pytest.raises(ProviderFailure):
+        exploration.run_exploration(**h.args)
+    exploration.authorize_provider_retries(h.directory, h.cp)
+    h.cp["exploration_calls"]["index-0000"]["provider_retry_key"] = "index-0001"
+    with pytest.raises(ValueError, match="authorization differs"):
+        exploration.run_exploration(**h.args)
+    assert len(h.provider.calls) == 1
+
+
 @pytest.mark.parametrize("rebind_scene_hash", [False, True])
 def test_promoted_scene_is_bound_to_authenticated_selected_trial(harness, rebind_scene_hash):
     h = harness

@@ -85,6 +85,8 @@ def main():
     resume = commands.add_parser("resume")
     resume.add_argument("job_id", nargs="?")
     resume.add_argument("--provider", action="store_true", help="Clear global pause after authentication/quota recovery")
+    resume.add_argument("--retry-provider-calls", action="store_true",
+                        help="Explicit explore-only retry in fresh evidence slots; failed attempts stay charged")
     render = commands.add_parser("render")
     render.add_argument("job_id")
     render.add_argument("--output", type=Path, required=True)
@@ -264,14 +266,16 @@ def main():
         store.cancel(args.job_id)
         print(json.dumps({"job_id": args.job_id, "cancel_requested": True}))
     elif args.command in {"retry", "resume"}:
-        if args.command == "resume" and args.provider:
-            store.resume_provider()
+        if args.command == "resume" and args.retry_provider_calls and not args.job_id:
+            parser.error("--retry-provider-calls requires a job ID")
         if args.job_id:
             if args.command == "retry" and args.reset_candidate:
                 store.reset_candidate(args.job_id)
-            store.retry(args.job_id)
+            store.retry(args.job_id, retry_provider_calls=(args.command == "resume" and args.retry_provider_calls))
         elif not args.provider:
             parser.error("Provide a job ID or --provider")
+        if args.command == "resume" and args.provider:
+            store.resume_provider()
         print(json.dumps({"job_id": args.job_id, "provider_pause": store.provider_pause()}))
     elif args.command == "render":
         from guide2build.engine.rendering import render_candidate
