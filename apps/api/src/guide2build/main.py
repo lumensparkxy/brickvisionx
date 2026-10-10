@@ -103,8 +103,10 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         except ChatBudgetExhausted as error:
             missing("chat_budget_exhausted", str(error), 429)
         except ChatUnavailable as error:
+            app.state.chat_budget.release()  # No model call was made.
             missing("provider_unavailable", str(error), 503)
         except ChatRequestError as error:
+            app.state.chat_budget.release()
             missing("invalid_request", str(error), 422)
         except Exception as error:
             logging.getLogger("uvicorn.error").warning("chat failed: %s", type(error).__name__)

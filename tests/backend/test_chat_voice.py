@@ -165,3 +165,19 @@ def test_reply_budget_caps_paid_calls(tmp_path, monkeypatch):
     second = limited.post("/api/v1/chat", json=ASK)
     assert second.status_code == 429
     assert second.json()["detail"]["code"] == "chat_budget_exhausted"
+
+
+def test_requests_that_never_reach_the_model_do_not_use_the_budget(tmp_path, monkeypatch):
+    for name in ("GOOGLE_API_KEY", "GEMINI_API_KEY"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setattr(chat, "load_local_environment", lambda *args, **kwargs: None)
+    monkeypatch.setattr(chat, "_client", None)
+    monkeypatch.setenv("BRICKVISIONX_CHAT_MAX_REPLIES", "1")
+    limited = TestClient(create_app(tmp_path))
+    for _ in range(3):  # no key: unavailable every time, never "limit reached"
+        assert limited.post("/api/v1/chat", json=ASK).status_code == 503
+    trailing = {"messages": [{"role": "user", "text": "hi"}, {"role": "assistant", "text": "hello"}], "viewer": VIEWER}
+    fake_model(monkeypatch, json.dumps({"reply": "ok", "actions": []}))
+    assert limited.post("/api/v1/chat", json=trailing).status_code == 422
+    assert limited.post("/api/v1/chat", json=ASK).status_code == 200
+    assert limited.post("/api/v1/chat", json=ASK).status_code == 429

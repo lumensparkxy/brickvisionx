@@ -18,7 +18,6 @@ from .core.environment import load_local_environment
 
 DEFAULT_MODEL = "gemini-3.8-flash"  # override with BRICKVISIONX_CHAT_MODEL
 DEFAULT_MAX_REPLIES = 300  # override with BRICKVISIONX_CHAT_MAX_REPLIES
-APP_ACTIONS = {"find_set", "open_tutorial", "go_home", "close_booklet"}
 MAX_VIEWER_CHARS = 60_000
 
 
@@ -61,6 +60,10 @@ class ReplyBudget:
         if self.used >= self.limit:
             raise ChatBudgetExhausted("BrickBuddy reached its reply limit for this session. Restart the API to continue.")
         self.used += 1
+
+    def release(self) -> None:
+        """Give a slot back when the request never reached the model."""
+        self.used = max(0, self.used - 1)
 
 
 def budget_from_environment() -> ReplyBudget:

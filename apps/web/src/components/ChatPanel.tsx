@@ -7,7 +7,7 @@ import IconVolumeOff from '@tabler/icons-react/dist/esm/icons/IconVolumeOff.mjs'
 import IconMessageChatbot from '@tabler/icons-react/dist/esm/icons/IconMessageChatbot.mjs';
 import IconMinus from '@tabler/icons-react/dist/esm/icons/IconMinus.mjs';
 import { askAgent, buddyContext, describeAction, isMuted, listen, onNarration, onVoiceChange, runAction, setMuted, setVoice, speak, stopListening, stopSpeaking,
-  TALK_EVENT, type BuddyAction, type ChatTurn } from '../agent';
+  SCREEN_EVENT, TALK_EVENT, type BuddyAction, type ChatTurn } from '../agent';
 import { MIC_LEVEL_EVENT } from '../gradiumVoice';
 import './chat.css';
 
@@ -98,11 +98,11 @@ export default function ChatPanel() {
   };
   const converseRef = useRef(converse); converseRef.current = converse;
   const tapMic = () => {
-    if (!talking.current) { void converse(); return; }
+    if (!talking.current) { if (!thinking.current) void converse(); return; } // Not while a typed question is still being answered.
     if (hearing.current) { talking.current = false; stopListening(); return; } // Off; whatever was heard is still sent.
     stopSpeaking(); void runAction({ type: 'stop' }); // Tap while BrickBuddy talks: interrupt, then it listens again.
   };
-  useEffect(() => { const start = () => void converseRef.current(); window.addEventListener(TALK_EVENT, start); return () => window.removeEventListener(TALK_EVENT, start); }, []);
+  useEffect(() => { const start = () => { if (!thinking.current) void converseRef.current(); }; window.addEventListener(TALK_EVENT, start); return () => window.removeEventListener(TALK_EVENT, start); }, []);
   // Unmount: stop the mic and the voice, and invalidate any answer still on its way.
   useEffect(() => () => { turn.current++; talking.current = false; stopListening(); stopSpeaking(); }, []);
   // The mic button swells with the input level, so it is obvious whether sound is arriving.
@@ -113,6 +113,8 @@ export default function ChatPanel() {
   }, []);
   useEffect(() => onNarration(text => append({ role: 'assistant', text, narration: true })), []);
   useEffect(() => onVoiceChange(() => setSilent(isMuted())), []);
+  const [, refresh] = useState(0); // Hints and suggestions depend on whether a tutorial is open.
+  useEffect(() => { const update = () => refresh(n => n + 1); window.addEventListener(SCREEN_EVENT, update); return () => window.removeEventListener(SCREEN_EVENT, update); }, []);
   useEffect(() => { list.current?.scrollTo({ top: list.current.scrollHeight, behavior: 'smooth' }); }, [messages, busy, open]);
   useEffect(() => { if (open && !talking.current) input.current?.focus(); }, [open]);
   // Integration surface for scripts and for debugging from the console.
@@ -173,7 +175,7 @@ export default function ChatPanel() {
         {busy && <div className="buddy-msg assistant typing" aria-label="BrickBuddy is thinking"><span/><span/><span/></div>}
       </div>
       <form className="buddy-form" onSubmit={submit}>
-        <button ref={mic} type="button" className={`buddy-mic${listening ? ' live' : handsFree ? ' waiting' : ''}`} aria-pressed={handsFree} aria-label={micLabel} title={micLabel} onClick={tapMic}><IconMicrophone size={20}/></button>
+        <button ref={mic} type="button" className={`buddy-mic${listening ? ' live' : handsFree ? ' waiting' : ''}`} aria-pressed={handsFree} aria-label={micLabel} title={micLabel} disabled={busy && !handsFree} onClick={tapMic}><IconMicrophone size={20}/></button>
         <input ref={input} value={draft} readOnly={listening} onChange={event => setDraft(event.target.value)} placeholder={listening ? 'Listening…' : 'Ask BrickBuddy…'} aria-label="Message BrickBuddy" autoComplete="off"/>
         <button type="submit" className="buddy-send" aria-label="Send" disabled={busy || !draft.trim()}><IconSend2 size={19}/></button>
       </form>

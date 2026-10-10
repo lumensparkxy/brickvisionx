@@ -107,6 +107,8 @@ export default function ViewerWorkspace({ scene: initialScene, guide, onClose, o
   const mainIndex=(n:number,last=false)=>{const hits=numbered.filter(({s})=>s.main_step_number===n);return hits.length?hits[last?hits.length-1:0].i:-1;};
   const controller=useRef<ViewerController>(null!);
   useEffect(()=>registerViewer(controller),[]);
+  // Closing the viewer mid-walkthrough must release whoever awaits it (the app-level chat) and silence the narration.
+  useEffect(()=>()=>{whenIdle.current?.();whenIdle.current=null;stopSpeaking();},[]);
   controller.current={
     context:()=>({set_number:scene.set_number,guide:guide.label,current_step:step.main_step_number,total_steps:lastMain,playing:playback!=='idle',
       steps:[...new Set(numbered.map(({s})=>s.main_step_number))].map(n=>{const group=numbered.filter(({s})=>s.main_step_number===n).map(({s})=>s);return{step:n,instructions:group.map(s=>s.instruction),

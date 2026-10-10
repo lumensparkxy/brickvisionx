@@ -38,7 +38,12 @@ export interface AgentReply { reply: string; actions: BuddyAction[]; }
 interface Hub { app: AppController | null; viewer: { current: ViewerController } | null; }
 const hub: Hub = ((globalThis as { __brickvisionHub?: Hub }).__brickvisionHub ??= { app: null, viewer: null });
 export function registerApp(controller: AppController) { hub.app = controller; return () => { if (hub.app === controller) hub.app = null; }; }
-export function registerViewer(controller: { current: ViewerController }) { hub.viewer = controller; return () => { if (hub.viewer === controller) hub.viewer = null; }; }
+/** Fired when a tutorial opens or closes, so the chat can update its hints. */
+export const SCREEN_EVENT = 'brickvision:screen';
+export function registerViewer(controller: { current: ViewerController }) {
+  hub.viewer = controller; window.dispatchEvent(new Event(SCREEN_EVENT));
+  return () => { if (hub.viewer === controller) hub.viewer = null; window.dispatchEvent(new Event(SCREEN_EVENT)); };
+}
 const APP_ACTIONS = new Set(['find_set', 'open_tutorial', 'go_home', 'close_booklet']);
 export const isAppAction = (action: BuddyAction): action is AppAction => APP_ACTIONS.has(action.type);
 export function buddyContext(): BuddyContext {
