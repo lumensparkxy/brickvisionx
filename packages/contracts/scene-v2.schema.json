@@ -1,0 +1,442 @@
+{
+  "$defs": {
+    "PartInstance": {
+      "additionalProperties": false,
+      "properties": {
+        "color_code": {
+          "pattern": "^[0-9]{1,5}$",
+          "title": "Color Code",
+          "type": "string"
+        },
+        "geometry_ref": {
+          "pattern": "^(parts|p)/[a-zA-Z0-9_./-]+\\.dat$",
+          "title": "Geometry Ref",
+          "type": "string"
+        },
+        "instance_id": {
+          "minLength": 1,
+          "title": "Instance Id",
+          "type": "string"
+        },
+        "mapping_status": {
+          "default": "candidate",
+          "enum": [
+            "candidate",
+            "agent_reviewed",
+            "human_reviewed"
+          ],
+          "title": "Mapping Status",
+          "type": "string"
+        },
+        "origin": {
+          "enum": [
+            "vision_proposal",
+            "pdf_assisted_authoring",
+            "human_correction"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "part_id": {
+          "minLength": 1,
+          "title": "Part Id",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/SourcePanel"
+        }
+      },
+      "required": [
+        "instance_id",
+        "part_id",
+        "color_code",
+        "geometry_ref",
+        "source",
+        "origin"
+      ],
+      "title": "PartInstance",
+      "type": "object"
+    },
+    "Pose": {
+      "additionalProperties": false,
+      "properties": {
+        "position_ldu": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Position Ldu",
+          "type": "array"
+        },
+        "quaternion_xyzw": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Quaternion Xyzw",
+          "type": "array"
+        }
+      },
+      "required": [
+        "position_ldu",
+        "quaternion_xyzw"
+      ],
+      "title": "Pose",
+      "type": "object"
+    },
+    "Section": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "section_id": {
+          "pattern": "^[a-z0-9-]+$",
+          "title": "Section Id",
+          "type": "string"
+        },
+        "source_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Source Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "section_id",
+        "source_sha256",
+        "label"
+      ],
+      "title": "Section",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "guide_id": {
+          "pattern": "^[a-z0-9-]+$",
+          "title": "Guide Id",
+          "type": "string"
+        },
+        "official_url": {
+          "title": "Official Url",
+          "type": "string"
+        },
+        "page_count": {
+          "exclusiveMinimum": 0,
+          "title": "Page Count",
+          "type": "integer"
+        },
+        "source_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Source Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "guide_id",
+        "source_sha256",
+        "official_url",
+        "page_count"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "SourcePanel": {
+      "additionalProperties": false,
+      "properties": {
+        "bbox": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bbox",
+          "type": "array"
+        },
+        "page_index": {
+          "minimum": 0,
+          "title": "Page Index",
+          "type": "integer"
+        },
+        "source_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Source Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "page_index",
+        "bbox",
+        "source_sha256"
+      ],
+      "title": "SourcePanel",
+      "type": "object"
+    },
+    "StepV2": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "add_parts",
+            "build_subassembly",
+            "attach_subassembly",
+            "inspect"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "active_instance_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Active Instance Ids",
+          "type": "array"
+        },
+        "assembly_group_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assembly Group Id"
+        },
+        "instruction": {
+          "minLength": 1,
+          "title": "Instruction",
+          "type": "string"
+        },
+        "introduced_instance_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Introduced Instance Ids",
+          "type": "array"
+        },
+        "main_step_number": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Main Step Number"
+        },
+        "poses": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Pose"
+          },
+          "title": "Poses",
+          "type": "object"
+        },
+        "section_id": {
+          "pattern": "^[a-z0-9-]+$",
+          "title": "Section Id",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/SourcePanel"
+        },
+        "step_id": {
+          "minLength": 1,
+          "title": "Step Id",
+          "type": "string"
+        },
+        "substep_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Substep Label"
+        },
+        "visible_instance_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Visible Instance Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "step_id",
+        "instruction",
+        "source",
+        "introduced_instance_ids",
+        "active_instance_ids",
+        "visible_instance_ids",
+        "poses",
+        "action",
+        "section_id"
+      ],
+      "title": "StepV2",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "connector_check": {
+      "default": "not_run",
+      "enum": [
+        "not_run",
+        "pass",
+        "fail"
+      ],
+      "title": "Connector Check",
+      "type": "string"
+    },
+    "coordinate_system": {
+      "const": "right_handed_y_up_ldu",
+      "default": "right_handed_y_up_ldu",
+      "title": "Coordinate System",
+      "type": "string"
+    },
+    "geometry_check": {
+      "default": "not_run",
+      "enum": [
+        "not_run",
+        "pass",
+        "fail"
+      ],
+      "title": "Geometry Check",
+      "type": "string"
+    },
+    "guide_id": {
+      "pattern": "^[a-z0-9-]+$",
+      "title": "Guide Id",
+      "type": "string"
+    },
+    "instances": {
+      "items": {
+        "$ref": "#/$defs/PartInstance"
+      },
+      "minItems": 1,
+      "title": "Instances",
+      "type": "array"
+    },
+    "physical_build_check": {
+      "default": "not_run",
+      "enum": [
+        "not_run",
+        "pass",
+        "fail"
+      ],
+      "title": "Physical Build Check",
+      "type": "string"
+    },
+    "revision": {
+      "minLength": 1,
+      "title": "Revision",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sections": {
+      "items": {
+        "$ref": "#/$defs/Section"
+      },
+      "minItems": 1,
+      "title": "Sections",
+      "type": "array"
+    },
+    "set_number": {
+      "pattern": "^[0-9]{4,7}$",
+      "title": "Set Number",
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Source Sha256",
+      "type": "string"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "candidate",
+        "needs_review",
+        "agent_reviewed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/StepV2"
+      },
+      "minItems": 1,
+      "title": "Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "set_number",
+    "guide_id",
+    "revision",
+    "source_sha256",
+    "status",
+    "sources",
+    "sections",
+    "instances",
+    "steps"
+  ],
+  "title": "SceneV2",
+  "type": "object"
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "accuracy": {
+      "const": "unverified",
+      "title": "Accuracy",
+      "type": "string"
+    },
+    "artifact_kind": {
+      "enum": [
+        "pdf_assisted_alpha_completion",
+        "exploration_candidate"
+      ],
+      "title": "Artifact Kind",
+      "type": "string"
+    },
+    "coverage_text": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Coverage Text",
+      "type": "string"
+    },
+    "generation_mode": {
+      "enum": [
+        "alpha_fast",
+        "explore"
+      ],
+      "title": "Generation Mode",
+      "type": "string"
+    },
+    "human_review": {
+      "const": "not_run",
+      "title": "Human Review",
+      "type": "string"
+    },
+    "physical_build": {
+      "const": "not_run",
+      "title": "Physical Build",
+      "type": "string"
+    },
+    "source_coverage": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Source Coverage",
+      "type": "string"
+    },
+    "uncertainty_notes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 100,
+      "minItems": 1,
+      "title": "Uncertainty Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "artifact_kind",
+    "generation_mode",
+    "source_coverage",
+    "coverage_text",
+    "uncertainty_notes",
+    "accuracy",
+    "human_review",
+    "physical_build"
+  ],
+  "title": "AlphaDisclosure",
+  "type": "object"
+}

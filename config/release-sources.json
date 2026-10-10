@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "set_number": "30669",
+      "guide_id": "alt-02",
+      "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.additional.extra.pdf/30669_02_BI_Build_Alt.pdf",
+      "page_count": 8
+    },
+    {
+      "set_number": "30669",
+      "guide_id": "alt-01",
+      "source_sha256": "e3e5008e26b1b57bfd36f63845f271e6d18ea3719b207db8ef9e8c1c2382a65c",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.additional.extra.pdf/30669_01_BI_Build_Alt.pdf",
+      "page_count": 9
+    },
+    {
+      "set_number": "30669",
+      "guide_id": "main",
+      "source_sha256": "739fd9d85b599da8cf01c0c2a1c4c3a0bbee49c0af6a95a4d9c039e47f3b92ff",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6491702.pdf",
+      "page_count": 2
+    },
+    {
+      "set_number": "60400",
+      "guide_id": "booklet-01",
+      "source_sha256": "e79d63643b6c6f9bf0d0df151e4bc25581ff5e89feef3dc36808340f48dd3414",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6490975.pdf",
+      "page_count": 32
+    },
+    {
+      "set_number": "60400",
+      "guide_id": "booklet-02",
+      "source_sha256": "44896d6a72321a297270fb62285580edee353a1640c0b721283038737027ac22",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6490976.pdf",
+      "page_count": 36
+    },
+    {
+      "set_number": "31134",
+      "guide_id": "booklet-01",
+      "source_sha256": "156045d1052fd105d873093918d41239641e96e40484cb35fa0b010587339d66",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6457820.pdf",
+      "page_count": 60
+    },
+    {
+      "set_number": "31134",
+      "guide_id": "booklet-02",
+      "source_sha256": "c23fdf1464daa96635e4449b9c802f56788d06cf87d48bf3641d4bb59990aa90",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6457822.pdf",
+      "page_count": 44
+    },
+    {
+      "set_number": "31134",
+      "guide_id": "booklet-03",
+      "source_sha256": "d4de596a11da68a6a92e7b364f1b777ecdb0d062fd47943df5c9470a60985ea6",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6457824.pdf",
+      "page_count": 36
+    },
+    {
+      "set_number": "31129",
+      "guide_id": "booklet-01",
+      "source_sha256": "5a750d6f6764ff1db38312c259725a3cafac0c0c97d8cfb439b06f017ef4393f",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6401641.pdf",
+      "page_count": 132
+    },
+    {
+      "set_number": "31129",
+      "guide_id": "booklet-02",
+      "source_sha256": "90a111f523f8808ebf5da4e713792b53730538ae59593eb974dd05c8aa6f5fde",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6575247.pdf",
+      "page_count": 52
+    },
+    {
+      "set_number": "31129",
+      "guide_id": "booklet-03",
+      "source_sha256": "953f867ed5f3c84aaa2c2b0f75d81f7dbc55ec595f1c179560d5a124cfff12e8",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6401645.pdf",
+      "page_count": 60
+    },
+    {
+      "set_number": "42163",
+      "guide_id": "main",
+      "source_sha256": "b574cca214a0c97d61040beff8c27d949eb237e4e6fd82513a3df205f08058ae",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6495263.pdf",
+      "page_count": 76
+    },
+    {
+      "set_number": "76920",
+      "guide_id": "main",
+      "source_sha256": "8ad72a6eadc28a437347af1121501449267d4b90c8049696261a669637a13c60",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6507100.pdf",
+      "page_count": 100
+    },
+    {
+      "set_number": "42171",
+      "guide_id": "main",
+      "source_sha256": "b1995759c4a359e9f61b869215680c1b4b29d05fa82c8a6685f9ee0eabbc9ecc",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6562099.pdf",
+      "page_count": 360
+    },
+    {
+      "set_number": "21343",
+      "guide_id": "main",
+      "source_sha256": "f7c775a373fdf43a1b109cd3176b508e44c50396d3cc9b7377acd432ecc24023",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6483079.pdf",
+      "page_count": 252
+    },
+    {
+      "set_number": "21061",
+      "guide_id": "main",
+      "source_sha256": "f10a8811f73f050bc7410cd002975f9a091c4cbf29d59253666fb3d89485f910",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6634577.pdf",
+      "page_count": 292
+    },
+    {
+      "set_number": "10316",
+      "guide_id": "booklet-01",
+      "source_sha256": "863ed7658eab26aa2fe5708943f459efbf5417a7b9e5332af00da2b7b4f12de7",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6455635.pdf",
+      "page_count": 184
+    },
+    {
+      "set_number": "10316",
+      "guide_id": "booklet-02",
+      "source_sha256": "7b9a87123642d00a50657822b29c1f716c079f4250b27f812e947fa2466bf782",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6698730.pdf",
+      "page_count": 164
+    },
+    {
+      "set_number": "10316",
+      "guide_id": "booklet-03",
+      "source_sha256": "e5fe9e92759119b9d50302c1bdaadc2bed36ef982eae6b0e62138cbe727f31f8",
+      "official_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6455639.pdf",
+      "page_count": 332
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "artifact_kind": {
+      "enum": [
+        "automatic_reconstruction",
+        "pdf_assisted_authoring",
+        "fixture"
+      ],
+      "title": "Artifact Kind",
+      "type": "string"
+    },
+    "assembly_review": {
+      "enum": [
+        "pass",
+        "fail",
+        "not_run"
+      ],
+      "title": "Assembly Review",
+      "type": "string"
+    },
+    "blockers": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Blockers",
+      "type": "array"
+    },
+    "coverage_index_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Coverage Index Sha256",
+      "type": "string"
+    },
+    "covered_step_keys": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Covered Step Keys",
+      "type": "array"
+    },
+    "expected_step_keys": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Expected Step Keys",
+      "type": "array"
+    },
+    "geometry_provenance_verified": {
+      "title": "Geometry Provenance Verified",
+      "type": "boolean"
+    },
+    "scene_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Scene Sha256",
+      "type": "string"
+    },
+    "source_evidence_verified": {
+      "title": "Source Evidence Verified",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "scene_sha256",
+    "coverage_index_sha256",
+    "expected_step_keys",
+    "covered_step_keys",
+    "source_evidence_verified",
+    "geometry_provenance_verified",
+    "assembly_review",
+    "blockers",
+    "artifact_kind"
+  ],
+  "title": "ReleaseValidation",
+  "type": "object"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "sets": [
+    {
+      "set_number": "30669",
+      "name": "Iconic Red Plane",
+      "official_page": "https://www.lego.com/en-ch/service/building-instructions/30669",
+      "guides": [
+        {
+          "guide_id": "alt-02",
+          "label": "Alternate aeroplane \u2014 booklet 02",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.additional.extra.pdf/30669_02_BI_Build_Alt.pdf",
+          "expected_page_count": 8,
+          "expected_main_steps": 12,
+          "metadata_checked_on": "2026-10-01",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    }
+  ]
+}

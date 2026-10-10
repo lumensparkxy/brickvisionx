@@ -1,0 +1,4619 @@
+{
+  "schema_version": "1.0",
+  "set_number": "30669",
+  "guide_id": "alt-02",
+  "revision": "pdf-assisted-30669-alt02-v1",
+  "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6",
+  "coordinate_system": "right_handed_y_up_ldu",
+  "status": "needs_review",
+  "geometry_check": "not_run",
+  "connector_check": "not_run",
+  "physical_build_check": "not_run",
+  "instances": [
+    {
+      "instance_id": "base",
+      "part_id": "3022",
+      "color_code": "15",
+      "geometry_ref": "parts/3022.dat",
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.17,
+          0.64,
+          0.48
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "keel-left",
+      "part_id": "13547",
+      "color_code": "15",
+      "geometry_ref": "parts/13547.dat",
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.17,
+          0.64,
+          0.48
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "keel-right",
+      "part_id": "13547",
+      "color_code": "15",
+      "geometry_ref": "parts/13547.dat",
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.17,
+          0.64,
+          0.48
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "wing-left",
+      "part_id": "35044",
+      "color_code": "15",
+      "geometry_ref": "parts/35044.dat",
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.54,
+          0.64,
+          0.95
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "wing-right",
+      "part_id": "35044",
+      "color_code": "15",
+      "geometry_ref": "parts/35044.dat",
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.54,
+          0.64,
+          0.95
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "left-wing-base",
+      "part_id": "3020",
+      "color_code": "15",
+      "geometry_ref": "parts/3020.dat",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "left-wing-strip",
+      "part_id": "3710",
+      "color_code": "15",
+      "geometry_ref": "parts/3710.dat",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "left-wing-tip",
+      "part_id": "25269",
+      "color_code": "15",
+      "geometry_ref": "parts/25269.dat",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "right-wing-base",
+      "part_id": "3020",
+      "color_code": "15",
+      "geometry_ref": "parts/3020.dat",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "right-wing-strip",
+      "part_id": "3710",
+      "color_code": "15",
+      "geometry_ref": "parts/3710.dat",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "right-wing-tip",
+      "part_id": "25269",
+      "color_code": "15",
+      "geometry_ref": "parts/25269.dat",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "belly-left",
+      "part_id": "78443",
+      "color_code": "4",
+      "geometry_ref": "parts/78443.dat",
+      "source": {
+        "page_index": 3,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "belly-right",
+      "part_id": "78444",
+      "color_code": "4",
+      "geometry_ref": "parts/78444.dat",
+      "source": {
+        "page_index": 3,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "nose-square",
+      "part_id": "3022",
+      "color_code": "15",
+      "geometry_ref": "parts/3022.dat",
+      "source": {
+        "page_index": 3,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "nose-end",
+      "part_id": "3023",
+      "color_code": "15",
+      "geometry_ref": "parts/3023.dat",
+      "source": {
+        "page_index": 3,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "spine-yellow",
+      "part_id": "3020",
+      "color_code": "14",
+      "geometry_ref": "parts/3020.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "spine-yellow-left",
+      "part_id": "3623",
+      "color_code": "14",
+      "geometry_ref": "parts/3623.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "spine-yellow-right",
+      "part_id": "3623",
+      "color_code": "14",
+      "geometry_ref": "parts/3623.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "nose-shield",
+      "part_id": "22385",
+      "color_code": "4",
+      "geometry_ref": "parts/22385.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "spine-red",
+      "part_id": "3020",
+      "color_code": "4",
+      "geometry_ref": "parts/3020.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "canopy-base",
+      "part_id": "3023",
+      "color_code": "40",
+      "geometry_ref": "parts/3023.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "rear-tile",
+      "part_id": "3068b",
+      "color_code": "4",
+      "geometry_ref": "parts/3068b.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "rear-rail-left",
+      "part_id": "32028",
+      "color_code": "71",
+      "geometry_ref": "parts/32028.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "rear-rail-right",
+      "part_id": "32028",
+      "color_code": "71",
+      "geometry_ref": "parts/32028.dat",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "long-tile-left",
+      "part_id": "6636",
+      "color_code": "4",
+      "geometry_ref": "parts/6636.dat",
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "tail-jumper-left",
+      "part_id": "15573",
+      "color_code": "4",
+      "geometry_ref": "parts/15573.dat",
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "long-tile-right",
+      "part_id": "6636",
+      "color_code": "4",
+      "geometry_ref": "parts/6636.dat",
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "tail-jumper-right",
+      "part_id": "15573",
+      "color_code": "4",
+      "geometry_ref": "parts/15573.dat",
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "canopy-left",
+      "part_id": "11477",
+      "color_code": "40",
+      "geometry_ref": "parts/11477.dat",
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "canopy-right",
+      "part_id": "11477",
+      "color_code": "40",
+      "geometry_ref": "parts/11477.dat",
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "tail-slope",
+      "part_id": "3040b",
+      "color_code": "4",
+      "geometry_ref": "parts/3040b.dat",
+      "source": {
+        "page_index": 6,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    },
+    {
+      "instance_id": "tailplane",
+      "part_id": "18980",
+      "color_code": "4",
+      "geometry_ref": "parts/18980.dat",
+      "source": {
+        "page_index": 6,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "origin": "pdf_assisted_authoring",
+      "mapping_status": "candidate"
+    }
+  ],
+  "steps": [
+    {
+      "step_id": "main-01",
+      "main_step_number": 1,
+      "substep_label": null,
+      "instruction": "Join the two white curved inverted pieces to the rear row of the white 2 × 2 plate.",
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.17,
+          0.64,
+          0.48
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right"
+      ],
+      "active_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-02",
+      "main_step_number": 2,
+      "substep_label": null,
+      "instruction": "Add the two white curved corner plates to the exposed front studs, meeting at the centre seam.",
+      "source": {
+        "page_index": 1,
+        "bbox": [
+          0.035,
+          0.54,
+          0.64,
+          0.95
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "wing-left",
+        "wing-right"
+      ],
+      "active_instance_ids": [
+        "wing-left",
+        "wing-right"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-03-callout-1",
+      "main_step_number": 3,
+      "substep_label": "callout-1",
+      "instruction": "Start the white 2 × 4 wing subassembly.",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "left-wing-base"
+      ],
+      "active_instance_ids": [
+        "left-wing-base"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -150.0,
+            32.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "action": "build_subassembly",
+      "assembly_group_id": "left-wing"
+    },
+    {
+      "step_id": "main-03-callout-2",
+      "main_step_number": 3,
+      "substep_label": "callout-2",
+      "instruction": "Add the 1 × 4 strip and the small rounded corner tile.",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "left-wing-strip",
+        "left-wing-tip"
+      ],
+      "active_instance_ids": [
+        "left-wing-strip",
+        "left-wing-tip"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -150.0,
+            32.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -150.0,
+            40.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -180.0,
+            40.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        }
+      },
+      "action": "build_subassembly",
+      "assembly_group_id": "left-wing"
+    },
+    {
+      "step_id": "main-03-attach",
+      "main_step_number": 3,
+      "substep_label": "attach",
+      "instruction": "Attach the wing subassembly beneath the curved wing edge. Check the source while reviewing the hidden contacts.",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [],
+      "active_instance_ids": [
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        }
+      },
+      "action": "attach_subassembly",
+      "assembly_group_id": "left-wing"
+    },
+    {
+      "step_id": "main-04-callout-1",
+      "main_step_number": 4,
+      "substep_label": "callout-1",
+      "instruction": "Start the white 2 × 4 wing subassembly.",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "right-wing-base"
+      ],
+      "active_instance_ids": [
+        "right-wing-base"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            150.0,
+            32.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "action": "build_subassembly",
+      "assembly_group_id": "right-wing"
+    },
+    {
+      "step_id": "main-04-callout-2",
+      "main_step_number": 4,
+      "substep_label": "callout-2",
+      "instruction": "Add the 1 × 4 strip and the small rounded corner tile.",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "right-wing-strip",
+        "right-wing-tip"
+      ],
+      "active_instance_ids": [
+        "right-wing-strip",
+        "right-wing-tip"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            150.0,
+            32.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            150.0,
+            40.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            180.0,
+            40.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        }
+      },
+      "action": "build_subassembly",
+      "assembly_group_id": "right-wing"
+    },
+    {
+      "step_id": "main-04-attach",
+      "main_step_number": 4,
+      "substep_label": "attach",
+      "instruction": "Attach the wing subassembly beneath the curved wing edge. Check the source while reviewing the hidden contacts.",
+      "source": {
+        "page_index": 2,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [],
+      "active_instance_ids": [
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        }
+      },
+      "action": "attach_subassembly",
+      "assembly_group_id": "right-wing"
+    },
+    {
+      "step_id": "main-05",
+      "main_step_number": 5,
+      "substep_label": null,
+      "instruction": "Add the two red tapered plates beneath the front of the wings.",
+      "source": {
+        "page_index": 3,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "belly-left",
+        "belly-right"
+      ],
+      "active_instance_ids": [
+        "belly-left",
+        "belly-right"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip",
+        "belly-left",
+        "belly-right"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-left": {
+          "position_ldu": [
+            -20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-right": {
+          "position_ldu": [
+            20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-06",
+      "main_step_number": 6,
+      "substep_label": null,
+      "instruction": "Add the white 2 × 2 and 1 × 2 plates at the nose.",
+      "source": {
+        "page_index": 3,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "nose-square",
+        "nose-end"
+      ],
+      "active_instance_ids": [
+        "nose-square",
+        "nose-end"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip",
+        "belly-left",
+        "belly-right",
+        "nose-square",
+        "nose-end"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-left": {
+          "position_ldu": [
+            -20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-right": {
+          "position_ldu": [
+            20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "nose-square": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -110.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "nose-end": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -140.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-07",
+      "main_step_number": 7,
+      "substep_label": null,
+      "instruction": "Add the yellow spine plates and red angled nose tile.",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield"
+      ],
+      "active_instance_ids": [
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip",
+        "belly-left",
+        "belly-right",
+        "nose-square",
+        "nose-end",
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-left": {
+          "position_ldu": [
+            -20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-right": {
+          "position_ldu": [
+            20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "nose-square": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -110.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "nose-end": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -140.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "spine-yellow": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "nose-shield": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -130.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-08",
+      "main_step_number": 8,
+      "substep_label": null,
+      "instruction": "Add the red plate, transparent plate, red tile, and two grey rail plates.",
+      "source": {
+        "page_index": 4,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "spine-red",
+        "canopy-base",
+        "rear-tile",
+        "rear-rail-left",
+        "rear-rail-right"
+      ],
+      "active_instance_ids": [
+        "spine-red",
+        "canopy-base",
+        "rear-tile",
+        "rear-rail-left",
+        "rear-rail-right"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip",
+        "belly-left",
+        "belly-right",
+        "nose-square",
+        "nose-end",
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield",
+        "spine-red",
+        "canopy-base",
+        "rear-tile",
+        "rear-rail-left",
+        "rear-rail-right"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-left": {
+          "position_ldu": [
+            -20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-right": {
+          "position_ldu": [
+            20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "nose-square": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -110.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "nose-end": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -140.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "spine-yellow": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "nose-shield": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -130.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "spine-red": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "canopy-base": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-tile": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-rail-left": {
+          "position_ldu": [
+            -10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "rear-rail-right": {
+          "position_ldu": [
+            10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865476,
+            0.0,
+            -0.7071067811865475
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-09",
+      "main_step_number": 9,
+      "substep_label": null,
+      "instruction": "Add the long red tiles and two red centre-stud plates.",
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "long-tile-left",
+        "tail-jumper-left",
+        "long-tile-right",
+        "tail-jumper-right"
+      ],
+      "active_instance_ids": [
+        "long-tile-left",
+        "tail-jumper-left",
+        "long-tile-right",
+        "tail-jumper-right"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip",
+        "belly-left",
+        "belly-right",
+        "nose-square",
+        "nose-end",
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield",
+        "spine-red",
+        "canopy-base",
+        "rear-tile",
+        "rear-rail-left",
+        "rear-rail-right",
+        "long-tile-left",
+        "tail-jumper-left",
+        "long-tile-right",
+        "tail-jumper-right"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-left": {
+          "position_ldu": [
+            -20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-right": {
+          "position_ldu": [
+            20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "nose-square": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -110.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "nose-end": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -140.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "spine-yellow": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "nose-shield": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -130.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "spine-red": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "canopy-base": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-tile": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-rail-left": {
+          "position_ldu": [
+            -10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "rear-rail-right": {
+          "position_ldu": [
+            10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865476,
+            0.0,
+            -0.7071067811865475
+          ]
+        },
+        "long-tile-left": {
+          "position_ldu": [
+            -10.0,
+            32.0,
+            -30.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tail-jumper-left": {
+          "position_ldu": [
+            -10.0,
+            32.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "long-tile-right": {
+          "position_ldu": [
+            10.0,
+            32.0,
+            -30.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tail-jumper-right": {
+          "position_ldu": [
+            10.0,
+            32.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-10",
+      "main_step_number": 10,
+      "substep_label": null,
+      "instruction": "Add the two transparent curved canopy pieces.",
+      "source": {
+        "page_index": 5,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "canopy-left",
+        "canopy-right"
+      ],
+      "active_instance_ids": [
+        "canopy-left",
+        "canopy-right"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip",
+        "belly-left",
+        "belly-right",
+        "nose-square",
+        "nose-end",
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield",
+        "spine-red",
+        "canopy-base",
+        "rear-tile",
+        "rear-rail-left",
+        "rear-rail-right",
+        "long-tile-left",
+        "tail-jumper-left",
+        "long-tile-right",
+        "tail-jumper-right",
+        "canopy-left",
+        "canopy-right"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-left": {
+          "position_ldu": [
+            -20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-right": {
+          "position_ldu": [
+            20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "nose-square": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -110.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "nose-end": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -140.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "spine-yellow": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "nose-shield": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -130.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "spine-red": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "canopy-base": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-tile": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-rail-left": {
+          "position_ldu": [
+            -10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "rear-rail-right": {
+          "position_ldu": [
+            10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865476,
+            0.0,
+            -0.7071067811865475
+          ]
+        },
+        "long-tile-left": {
+          "position_ldu": [
+            -10.0,
+            32.0,
+            -30.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tail-jumper-left": {
+          "position_ldu": [
+            -10.0,
+            32.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "long-tile-right": {
+          "position_ldu": [
+            10.0,
+            32.0,
+            -30.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tail-jumper-right": {
+          "position_ldu": [
+            10.0,
+            32.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "canopy-left": {
+          "position_ldu": [
+            -10.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "canopy-right": {
+          "position_ldu": [
+            10.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-11",
+      "main_step_number": 11,
+      "substep_label": null,
+      "instruction": "Add the red tail slope. Its direction is an unresolved reconstruction item.",
+      "source": {
+        "page_index": 6,
+        "bbox": [
+          0.035,
+          0.0,
+          0.65,
+          0.49
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "tail-slope"
+      ],
+      "active_instance_ids": [
+        "tail-slope"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip",
+        "belly-left",
+        "belly-right",
+        "nose-square",
+        "nose-end",
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield",
+        "spine-red",
+        "canopy-base",
+        "rear-tile",
+        "rear-rail-left",
+        "rear-rail-right",
+        "long-tile-left",
+        "tail-jumper-left",
+        "long-tile-right",
+        "tail-jumper-right",
+        "canopy-left",
+        "canopy-right",
+        "tail-slope"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-left": {
+          "position_ldu": [
+            -20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-right": {
+          "position_ldu": [
+            20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "nose-square": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -110.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "nose-end": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -140.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "spine-yellow": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "nose-shield": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -130.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "spine-red": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "canopy-base": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-tile": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-rail-left": {
+          "position_ldu": [
+            -10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "rear-rail-right": {
+          "position_ldu": [
+            10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865476,
+            0.0,
+            -0.7071067811865475
+          ]
+        },
+        "long-tile-left": {
+          "position_ldu": [
+            -10.0,
+            32.0,
+            -30.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tail-jumper-left": {
+          "position_ldu": [
+            -10.0,
+            32.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "long-tile-right": {
+          "position_ldu": [
+            10.0,
+            32.0,
+            -30.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tail-jumper-right": {
+          "position_ldu": [
+            10.0,
+            32.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "canopy-left": {
+          "position_ldu": [
+            -10.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "canopy-right": {
+          "position_ldu": [
+            10.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "tail-slope": {
+          "position_ldu": [
+            10.0,
+            56.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    },
+    {
+      "step_id": "main-12",
+      "main_step_number": 12,
+      "substep_label": null,
+      "instruction": "Add the rounded red tailplane; compare the final candidate with the guide.",
+      "source": {
+        "page_index": 6,
+        "bbox": [
+          0.035,
+          0.5,
+          0.65,
+          0.97
+        ],
+        "source_sha256": "6cb3e669fef3662dfd498cba0e631f1d9ec082c2bf8c0fb0a0febe303680a6b6"
+      },
+      "introduced_instance_ids": [
+        "tailplane"
+      ],
+      "active_instance_ids": [
+        "tailplane"
+      ],
+      "visible_instance_ids": [
+        "base",
+        "keel-left",
+        "keel-right",
+        "wing-left",
+        "wing-right",
+        "left-wing-base",
+        "left-wing-strip",
+        "left-wing-tip",
+        "right-wing-base",
+        "right-wing-strip",
+        "right-wing-tip",
+        "belly-left",
+        "belly-right",
+        "nose-square",
+        "nose-end",
+        "spine-yellow",
+        "spine-yellow-left",
+        "spine-yellow-right",
+        "nose-shield",
+        "spine-red",
+        "canopy-base",
+        "rear-tile",
+        "rear-rail-left",
+        "rear-rail-right",
+        "long-tile-left",
+        "tail-jumper-left",
+        "long-tile-right",
+        "tail-jumper-right",
+        "canopy-left",
+        "canopy-right",
+        "tail-slope",
+        "tailplane"
+      ],
+      "poses": {
+        "base": {
+          "position_ldu": [
+            0.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "keel-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "wing-left": {
+          "position_ldu": [
+            -40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "wing-right": {
+          "position_ldu": [
+            40.0,
+            8.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "left-wing-base": {
+          "position_ldu": [
+            -60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-strip": {
+          "position_ldu": [
+            -60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "left-wing-tip": {
+          "position_ldu": [
+            -90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "right-wing-base": {
+          "position_ldu": [
+            60.0,
+            0.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-strip": {
+          "position_ldu": [
+            60.0,
+            8.0,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "right-wing-tip": {
+          "position_ldu": [
+            90.0,
+            8.0,
+            -20.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-left": {
+          "position_ldu": [
+            -20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "belly-right": {
+          "position_ldu": [
+            20.0,
+            0.0,
+            -90.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "nose-square": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -110.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "nose-end": {
+          "position_ldu": [
+            0.0,
+            8.0,
+            -140.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "spine-yellow": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-left": {
+          "position_ldu": [
+            -10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "spine-yellow-right": {
+          "position_ldu": [
+            10.0,
+            16.0,
+            -80.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "nose-shield": {
+          "position_ldu": [
+            0.0,
+            16.0,
+            -130.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "spine-red": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "canopy-base": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-tile": {
+          "position_ldu": [
+            0.0,
+            24.0,
+            10.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "rear-rail-left": {
+          "position_ldu": [
+            -10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "rear-rail-right": {
+          "position_ldu": [
+            10.0,
+            24.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865476,
+            0.0,
+            -0.7071067811865475
+          ]
+        },
+        "long-tile-left": {
+          "position_ldu": [
+            -10.0,
+            32.0,
+            -30.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tail-jumper-left": {
+          "position_ldu": [
+            -10.0,
+            32.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "long-tile-right": {
+          "position_ldu": [
+            10.0,
+            32.0,
+            -30.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tail-jumper-right": {
+          "position_ldu": [
+            10.0,
+            32.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "canopy-left": {
+          "position_ldu": [
+            -10.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "canopy-right": {
+          "position_ldu": [
+            10.0,
+            24.0,
+            -100.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            1.0,
+            0.0,
+            6.123233995736766e-17
+          ]
+        },
+        "tail-slope": {
+          "position_ldu": [
+            10.0,
+            56.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.7071067811865475,
+            0.0,
+            0.7071067811865476
+          ]
+        },
+        "tailplane": {
+          "position_ldu": [
+            0.0,
+            64.0,
+            50.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "action": "add_parts",
+      "assembly_group_id": null
+    }
+  ],
+  "reviews": []
+}

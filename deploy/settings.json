@@ -1,0 +1,17 @@
+{
+  "project": "lumensparkxy",
+  "project_number": "989917723212",
+  "region": "europe-west1",
+  "administrator": "maswadkar@gmail.com",
+  "database": "guide2build",
+  "request_database": "guide2build-requests",
+  "repository": "guide2build",
+  "public_service": "guide2build-web",
+  "preview_service": "guide2build-preview",
+  "staging_bucket": "lumensparkxy-guide2build-staging",
+  "assets_bucket": "lumensparkxy-guide2build-assets",
+  "build_bucket": "lumensparkxy-guide2build-builds",
+  "usd_monthly_target": 10,
+  "max_instances": 1,
+  "min_instances": 0
+}

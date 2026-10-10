@@ -1,0 +1,14 @@
+# Project configuration. Codex must trust the project before applying it.
+# Verified against official documentation on 2026-10-01; check the installed client at preflight.
+# Inherit the user's available model rather than hard-code an unavailable model name.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = false
+
+[agents]
+max_concurrent_threads_per_session = 3
+
+# Narrow project roles are standalone .codex/agents/*.toml files.
+# Older clients: follow docs/09_CODEX_RUNBOOK.md; sequential execution is supported.

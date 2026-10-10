@@ -1,0 +1,63 @@
+{
+  "origin": "pdf_assisted_authoring",
+  "decisions": [
+    {
+      "part_id": "13547",
+      "candidate_ids": [
+        "13547"
+      ],
+      "selection_reason": "Official source step1 shows four lengthwise studs: two solid lower studs and two hollow higher studs, with a curved inverted underside. Individual LDraw header, stud positions and rendered geometry agree.",
+      "catalogue_url": "https://library.ldraw.org/parts/561",
+      "mapping_status": "candidate",
+      "remaining_uncertainty": "Exact hidden underside contact requires connector metadata review."
+    },
+    {
+      "part_id": "35044",
+      "candidate_ids": [
+        "35044"
+      ],
+      "selection_reason": "Step2 quantity2, four-by-four footprint with concave three-by-three quarter-circle cutout; actual individually rendered library geometry matches the distinctive outline.",
+      "catalogue_url": "https://library.ldraw.org/parts/list?tableSearch=35044.dat",
+      "mapping_status": "candidate"
+    },
+    {
+      "part_id": "25269",
+      "candidate_ids": [
+        "25269",
+        "35463"
+      ],
+      "selection_reason": "Source callouts3/4 show a quarter-round one-stud tile with two straight perpendicular edges and one convex quarter-circle edge.25269 was selected over35463 curved-triangle tile; latter was consulted as a shape shortlist only and was not imported.",
+      "catalogue_urls": [
+        "https://library.ldraw.org/parts/2615",
+        "https://library.ldraw.org/parts/6187"
+      ],
+      "mapping_status": "candidate"
+    },
+    {
+      "part_id": "15573",
+      "candidate_ids": [
+        "15573",
+        "3794b"
+      ],
+      "selection_reason": "Step9 shows two centre-stud1\u00d72 jumpers.15573 geometry is used as a provisional modern underside variant. Booklet top view cannot verify underside mould variant.",
+      "catalogue_url": "https://library.ldraw.org/parts/904",
+      "mapping_status": "candidate",
+      "remaining_uncertainty": "Do not report exact underside variant as reviewed."
+    },
+    {
+      "part_ids": [
+        "3023",
+        "11477"
+      ],
+      "color_candidates": [
+        "47",
+        "39",
+        "43"
+      ],
+      "rejected_color": "40",
+      "selection_reason": "Official LDConfig defines47 as Trans_Clear,39 as Trans_Very_Light_Blue and40 as Trans_Brown. The initial mislabel40 was corrected in v2. Pale source artwork alone does not prove whether intended clear or tinted element. Official cover page000 shows a cyan canopy, making43 Trans_Light_Blue another plausible alternative.",
+      "catalogue_url": "https://library.ldraw.org/library/official/LDConfig.ldr",
+      "mapping_status": "candidate"
+    }
+  ]
+}

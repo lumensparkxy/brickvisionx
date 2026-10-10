@@ -1,0 +1,265 @@
+{
+  "schema_version": 1,
+  "sets": [
+    {
+      "set_number": "30669",
+      "name": "Iconic Red Plane",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/30669",
+      "guides": [
+        {
+          "guide_id": "alt-02",
+          "label": "Alternate aeroplane — booklet 02",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.additional.extra.pdf/30669_02_BI_Build_Alt.pdf",
+          "expected_page_count": 8,
+          "expected_main_steps": 12,
+          "metadata_checked_on": "2026-10-01",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "alt-01",
+          "label": "Alternate build — booklet 01",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.additional.extra.pdf/30669_01_BI_Build_Alt.pdf",
+          "expected_page_count": 9,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "main",
+          "label": "Official main booklet",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6491702.pdf",
+          "expected_page_count": 2,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "60400",
+      "name": "Go-Karts and Race Drivers",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/60400",
+      "guides": [
+        {
+          "guide_id": "booklet-01",
+          "label": "Official booklet 1 of 2",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6490975.pdf",
+          "expected_page_count": 32,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "booklet-02",
+          "label": "Official booklet 2 of 2",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6490976.pdf",
+          "expected_page_count": 36,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "31134",
+      "name": "Space Shuttle",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/31134",
+      "guides": [
+        {
+          "guide_id": "booklet-01",
+          "label": "Official booklet 1 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6457820.pdf",
+          "expected_page_count": 60,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "booklet-02",
+          "label": "Official booklet 2 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6457822.pdf",
+          "expected_page_count": 44,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "booklet-03",
+          "label": "Official booklet 3 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6457824.pdf",
+          "expected_page_count": 36,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "31129",
+      "name": "Majestic Tiger",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/31129",
+      "guides": [
+        {
+          "guide_id": "booklet-01",
+          "label": "Official booklet 1 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6401641.pdf",
+          "expected_page_count": 132,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "booklet-02",
+          "label": "Official booklet 2 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6575247.pdf",
+          "expected_page_count": 52,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "booklet-03",
+          "label": "Official booklet 3 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6401645.pdf",
+          "expected_page_count": 60,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "42163",
+      "name": "Heavy-Duty Bulldozer",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/42163",
+      "guides": [
+        {
+          "guide_id": "main",
+          "label": "Official booklet",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6495263.pdf",
+          "expected_page_count": 76,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "76920",
+      "name": "Ford Mustang Dark Horse Sports Car",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/76920",
+      "guides": [
+        {
+          "guide_id": "main",
+          "label": "Official booklet",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6507100.pdf",
+          "expected_page_count": 100,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "42171",
+      "name": "Mercedes-AMG F1 W14 E Performance",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/42171",
+      "guides": [
+        {
+          "guide_id": "main",
+          "label": "Official booklet",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6562099.pdf",
+          "expected_page_count": 360,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "21343",
+      "name": "Viking Village",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/21343",
+      "guides": [
+        {
+          "guide_id": "main",
+          "label": "Official booklet",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6483079.pdf",
+          "expected_page_count": 252,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "21061",
+      "name": "Notre-Dame de Paris",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/21061",
+      "guides": [
+        {
+          "guide_id": "main",
+          "label": "Official booklet",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6634577.pdf",
+          "expected_page_count": 292,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    },
+    {
+      "set_number": "10316",
+      "name": "THE LORD OF THE RINGS: RIVENDELL™",
+      "official_page": "https://www.lego.com/en-us/service/building-instructions/10316",
+      "guides": [
+        {
+          "guide_id": "booklet-01",
+          "label": "Official booklet 1 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6455635.pdf",
+          "expected_page_count": 184,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "booklet-02",
+          "label": "Official booklet 2 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6698730.pdf",
+          "expected_page_count": 164,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        },
+        {
+          "guide_id": "booklet-03",
+          "label": "Official booklet 3 of 3",
+          "pdf_url": "https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6455639.pdf",
+          "expected_page_count": 332,
+          "expected_main_steps": null,
+          "metadata_checked_on": "2026-10-03",
+          "source_sha256": null,
+          "reconstruction_status": "not_started"
+        }
+      ]
+    }
+  ]
+}

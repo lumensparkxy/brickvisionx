@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "AlphaPreviewBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "preview_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Preview Sha256",
+          "type": "string"
+        },
+        "rendered_step_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Rendered Step Id",
+          "type": "string"
+        },
+        "renderer": {
+          "const": "threejs",
+          "title": "Renderer",
+          "type": "string"
+        },
+        "scene_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Scene Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scene_sha256",
+        "preview_sha256",
+        "renderer",
+        "rendered_step_id"
+      ],
+      "title": "AlphaPreviewBinding",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "accuracy": {
+      "const": "unverified",
+      "title": "Accuracy",
+      "type": "string"
+    },
+    "artifact_kind": {
+      "enum": [
+        "pdf_assisted_alpha_completion",
+        "exploration_candidate"
+      ],
+      "title": "Artifact Kind",
+      "type": "string"
+    },
+    "assembly_review": {
+      "const": "not_run",
+      "title": "Assembly Review",
+      "type": "string"
+    },
+    "coverage_index_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Coverage Index Sha256",
+      "type": "string"
+    },
+    "geometry_provenance_verified": {
+      "const": true,
+      "title": "Geometry Provenance Verified",
+      "type": "boolean"
+    },
+    "physical_build": {
+      "const": "not_run",
+      "title": "Physical Build",
+      "type": "string"
+    },
+    "preview_binding": {
+      "$ref": "#/$defs/AlphaPreviewBinding"
+    },
+    "release_kind": {
+      "const": "unverified_alpha",
+      "title": "Release Kind",
+      "type": "string"
+    },
+    "scene_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Scene Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "release_kind",
+    "artifact_kind",
+    "scene_sha256",
+    "coverage_index_sha256",
+    "preview_binding",
+    "geometry_provenance_verified",
+    "accuracy",
+    "assembly_review",
+    "physical_build"
+  ],
+  "title": "AlphaReleaseValidation",
+  "type": "object"
+}

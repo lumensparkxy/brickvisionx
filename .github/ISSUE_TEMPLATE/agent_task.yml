@@ -1,0 +1,23 @@
+name: Agent implementation task
+description: A scoped task with an acceptance contract
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal and product constraint
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Owned paths, dependencies and source evidence
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria and exact verification commands
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Uncertainty, security and unresolved decisions
