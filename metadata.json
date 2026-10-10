@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4JWPFPAWJTKN49C3YP4E6ES",
+  "strategy": "manual-commit",
+  "branch": "codex/migrate-google-adk",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "apps/api/src/guide2build/engine/adk_runtime.py",
+    "apps/api/src/guide2build/engine/corrections.py",
+    "apps/api/src/guide2build/engine/evaluation.py",
+    "apps/api/src/guide2build/engine/exploration.py",
+    "apps/api/src/guide2build/engine/provider.py",
+    "apps/api/src/guide2build/engine/reporting.py",
+    "apps/api/src/guide2build/engine/runtime.py",
+    "apps/api/src/guide2build/engine/schema_transport.py",
+    "apps/api/src/guide2build/engine/store.py",
+    "docs/execution/SHUTTLE_BROWSER_CHECKS.md",
+    "docs/execution/SHUTTLE_VALIDATION.md",
+    "playwright.config.ts",
+    "playwright.shuttle.config.ts",
+    "tests/backend/test_engine_correction_indexes.py",
+    "tests/backend/test_engine_evaluation.py",
+    "tests/backend/test_engine_exploration.py",
+    "tests/backend/test_engine_provider.py",
+    "tests/backend/test_engine_reporting.py",
+    "tests/backend/test_engine_schema_transport.py",
+    "tests/backend/test_engine_store.py",
+    "tests/e2e/adk-shuttle-preview.spec.ts",
+    "tools/engine.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 264934,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 13539840,
+    "output_tokens": 55447,
+    "api_call_count": 145,
+    "subagent_tokens_complete": false
+  }
+}
